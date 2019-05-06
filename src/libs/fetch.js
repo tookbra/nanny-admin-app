@@ -1,4 +1,5 @@
 import axios from "axios";
+import store from '../store'
 
 let fetch = axios.create({
   baseURL: process.env.VUE_APP_URL,
@@ -8,8 +9,8 @@ let fetch = axios.create({
 });
 
 fetch.interceptors.request.use(config => {
-  if (true) {
-    config.headers.Authorization = "token";
+  if (store.state.account.token) {
+    config.headers.Authorization = store.state.account.token;
   }
   return config;
 });
