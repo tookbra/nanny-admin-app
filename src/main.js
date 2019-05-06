@@ -6,6 +6,8 @@ import store from "./store";
 
 import "ant-design-vue/dist/antd.css";
 
+// if (process.env.NODE_ENV !== 'production') require('@/mock')
+
 Vue.config.productionTip = false;
 Vue.use(Antd);
 
