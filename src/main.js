@@ -5,6 +5,7 @@ import router from "./router";
 import store from "./store";
 
 import "ant-design-vue/dist/antd.css";
+import "./styles/index.less"
 
 // if (process.env.NODE_ENV !== 'production') require('@/mock')
 
