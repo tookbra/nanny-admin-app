@@ -1,11 +1,9 @@
 <template>
-
+  <h1>111</h1>
 </template>
 
 <script>
 export default {
-  name: "login-form"
+  name: "tenant"
 };
 </script>
-
-<style scoped></style>

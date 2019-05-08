@@ -1,0 +1,103 @@
+.layout-left,
+.layout-right,
+.layout-logo,
+.layout-content {
+  transition: all .3s;
+}
+
+.layout-header {
+  width: 100%;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.layout-left {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 240px;
+  height: 100%;
+  z-index: 1025;
+}
+
+.layout-right {
+  position: absolute;
+  left: 240px;
+  padding: 0 0 0 0px;
+  width: calc(100% - 240px);
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.layout-content {
+  height: 100%;
+}
+
+.layout-main {
+  padding-bottom: 22px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.layout-collapse {
+  .layout-left,
+  .layout-logo {
+    width: 60px;
+  }
+  .layout-right {
+    width: calc(100% - 60px);
+    left: 60px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  @width: 240px;
+  //登录页面
+  .login-left {
+    display: none !important;
+  }
+  .login-wrapper{
+    margin: 0 auto;
+    width: 96% !important;
+  }
+  .login-right {
+    border-radius: 5px;
+    padding: 40px;
+    margin: 0 auto;
+    float: none !important;
+    width: 100% !important;
+  }
+  .login-right, .login-main {
+    width: 100%!important;
+  }
+
+  .layout-left,
+  .layout-logo {
+    left: -@width;
+  }
+  .layout-right {
+    left: 0;
+    width: 100%;
+  }
+  .layout-header {
+    margin-bottom: 15px;
+    //padding-left: 15px;
+  }
+
+  .layout-collapse {
+    .layout-left,
+    .layout-logo {
+      width: @width;
+      left: 0;
+    }
+    .layout-main {
+      left: @width;
+      width: 100%;
+    }
+    .layout-header {
+      padding: 0;
+      transform: translate3d(230px, 0, 0);
+    }
+  }
+}

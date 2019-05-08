@@ -1,15 +1,31 @@
 <template>
   <div class="login-container">
     <div class="login-wrapper">
-      <div class="login-left"></div>
-      <div class="login-right"></div>
+      <div class="login-left">
+        <a-carousel autoplay>
+          <div><h3>2222</h3></div>
+          <div><h3>2</h3></div>
+          <div><h3>3</h3></div>
+          <div><h3>4</h3></div>
+        </a-carousel>
+      </div>
+      <div class="login-right">
+        <div class="login-main">
+          <h4 class="login-title">登陆</h4>
+          <user-login></user-login>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import UserLogin from "components/login/user-login";
 export default {
-  name: "login"
+  name: "login",
+  components: {
+    UserLogin
+  }
 };
 </script>
 
@@ -56,17 +72,41 @@ export default {
     background-color: #fff;
     width: 50%;
     float: left;
-  }
-
-  .login-right, .login-left {
     position: relative;
-    min-height: 500px;
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
+
+    .login-main {
+      margin: 0 auto;
+      width: 70%;
+    }
+  }
+
+  .login-right,
+  .login-left {
+    min-height: 500px;
+  }
+
+  .login-title {
+    color: #333;
+    margin-bottom: 40px;
+    font-weight: 500;
+    font-size: 22px;
+    text-align: center;
+    letter-spacing: 4px;
+  }
+}
+.ant-carousel {
+  .slick-slide {
+    text-align: center;
+    overflow: hidden;
+    div {
+      min-height: 500px;
+    }
   }
 }
 </style>
