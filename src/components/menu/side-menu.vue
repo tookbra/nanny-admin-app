@@ -1,31 +1,62 @@
 <template>
-  <div class="sidebar">
+  <a-layout-sider
+    :class="['sidebar', theme]"
+    width="240px"
+    v-model="collapsed"
+    :collapsible="collapsible"
+    :trigger="null"
+  >
     <logo />
-    <a-menu class="menu" mode="inline" :inlineCollapsed="collapsed">
-      <a-sub-menu>
-        <span slot="title">
-          <a-icon type="setting" />
-          <span>系统管理</span>
-        </span>
-        <a-menu-item key="1">
-          <a-icon type="pie-chart" />
-          <span>首页</span>
-        </a-menu-item>
-        <a-menu-item key="2">租户管理</a-menu-item>
-      </a-sub-menu>
-    </a-menu>
-  </div>
+
+    <s-menu
+      :menu="menus"
+      :mode="mode"
+      :collapsed="collapsed"
+      style="padding: 16px 0px;"
+    ></s-menu>
+  </a-layout-sider>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import SMenu from "./index";
 import logo from "../logo";
 export default {
   name: "sidebar",
   components: {
-    logo
+    logo,
+    SMenu
   },
-  computed: mapGetters(["collapsed"])
+  props: {
+    mode: {
+      type: String,
+      required: false,
+      default: "inline"
+    },
+    theme: {
+      type: String,
+      required: false,
+      default: "light"
+    },
+    menus: {
+      type: Array,
+      required: true
+    },
+    collapsible: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    collapsed: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  },
+  methods: {
+    onSelect(obj) {
+      this.$emit("menuSelect", obj);
+    }
+  }
 };
 </script>
 <style lang="less">
@@ -64,11 +95,7 @@ export default {
     }
   }
   .ant-menu-inline-collapsed {
-    width: 60px;
-  }
-
-  .ant-menu-inline-collapsed > .ant-menu-submenu > .ant-menu-submenu-title {
-    padding: 0 20px !important;
+    width: 80px;
   }
 }
 </style>

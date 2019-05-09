@@ -10,6 +10,6 @@ import "../styles/index.less";
 
 Vue.use(Antd);
 
-console.log(22222);
-Vue.use(VueStorage, config.storageOptions);
+Vue.use(VueStorage, config.localStorageOptions);
+Vue.use(VueStorage, config.sessionStorageOptions);
 Vue.use(VueCropper);

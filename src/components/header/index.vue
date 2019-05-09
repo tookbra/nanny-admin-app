@@ -86,7 +86,7 @@ export default {
   padding: 0 20px;
   position: relative;
   color: rgba(0, 0, 0, 0.65);
-  font-size: 28px;
+  font-size: 14px;
   height: 64px;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -113,6 +113,7 @@ export default {
     right: 20px;
     display: flex;
     align-items: center;
+    color: #fff;
 
     .avatar {
       margin: 0 8px 0 5px;

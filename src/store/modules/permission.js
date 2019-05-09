@@ -6,6 +6,9 @@ const permission = {
     routers: constantRouterMap,
     addRouters: []
   },
+  getters: {
+    addRouters: state => state.addRouters
+  },
   mutations: {
     SET_ROUTERS: (state, routers) => {
       state.addRouters = routers;

@@ -7,4 +7,5 @@ import "@/core/lazy_lib/components_use";
 import "ant-design-vue/dist/antd.less";
 import "../styles/index.less";
 
-Vue.use(VueStorage, config.storageOptions);
+Vue.use(VueStorage, config.localStorageOptions);
+Vue.use(VueStorage, config.sessionStorageOptions);

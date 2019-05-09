@@ -15,9 +15,14 @@
 
 export default {
   // vue-ls options
-  storageOptions: {
+  localStorageOptions: {
     namespace: "nanny_", // key prefix
     name: "ls", // name variable Vue.[ls] or this.[$ls],
     storage: "local" // storage name session, local, memory
+  },
+  sessionStorageOptions: {
+    namespace: "nanny-", // key prefix
+    name: "st", // name variable Vue.[ls] or this.[$ls],
+    storage: "session" // storage name session, local, memory
   }
 };

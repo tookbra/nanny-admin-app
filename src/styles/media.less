@@ -1,6 +1,8 @@
 .layout-left,
 .layout-right,
 .layout-logo,
+.layout-header,
+.sidebar,
 .layout-content {
   transition: all .3s;
 }
@@ -43,11 +45,11 @@
 .layout-collapse {
   .layout-left,
   .layout-logo {
-    width: 60px;
+    width: 80px;
   }
   .layout-right {
-    width: calc(100% - 60px);
-    left: 60px;
+    width: calc(100% - 80px);
+    left: 80px;
   }
 }
 
@@ -74,30 +76,41 @@
 
   .layout-left,
   .layout-logo {
-    left: -@width;
+    flex: 0 0 240px;
+    width: 240px;
   }
   .layout-right {
-    left: 0;
-    width: 100%;
-  }
-  .layout-header {
-    margin-bottom: 15px;
-    //padding-left: 15px;
+    left: 240px;
   }
 
   .layout-collapse {
     .layout-left,
     .layout-logo {
-      width: @width;
+      width: 80px !important;
       left: 0;
     }
+    .layout-right {
+      left: 80px !important;
+    }
     .layout-main {
-      left: @width;
-      width: 100%;
+      left: 80px;
     }
     .layout-header {
       padding: 0;
-      transform: translate3d(230px, 0, 0);
+      //transform: translate3d(230px, 0, 0);
+    }
+  }
+}
+
+.layout-wrapper {
+  &.mobile {
+    width: 100%;
+    .layout-left {
+      display: none;
+    }
+    .layout-right {
+      left: 0px !important;
+      width: 100%;
     }
   }
 }

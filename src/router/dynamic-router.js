@@ -59,7 +59,8 @@ export const generator = (routerMap, parent) => {
       meta: {
         title: item.title,
         icon: item.icon || undefined,
-        permission: (item.key && [item.key]) || null
+        permission: (item.key && [item.key]) || null,
+        closeable: true
       }
     };
     // 为了防止出现后端返回结果不规范，处理有可能出现拼接出两个 反斜杠

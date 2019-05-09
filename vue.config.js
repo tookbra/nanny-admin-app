@@ -13,5 +13,8 @@ module.exports = {
       .set("@", resolve("src")) // key,value自行定义，比如.set('@@', resolve('src/components'))
       .set("components", resolve("src/components"));
   },
-  productionSourceMap: false
+  productionSourceMap: false,
+  devServer: {
+    port: 8001
+  }
 };

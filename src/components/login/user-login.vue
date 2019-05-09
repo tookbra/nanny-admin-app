@@ -122,7 +122,7 @@ export default {
     },
     loginSuccess(res) {
       console.log(res);
-      this.$router.push({ name: "home" });
+      this.$router.push({ name: "login" });
     },
     requestFailed(err) {
       this.$notification["error"]({

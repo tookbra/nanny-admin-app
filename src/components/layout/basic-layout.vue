@@ -1,16 +1,39 @@
 <template>
-  <div class="layout-wrapper" :class="{ 'layout-collapse': collapsed }">
+  <div
+    class="layout-wrapper"
+    :class="[collapsed ? 'layout-collapse' : null, device]"
+  >
     <a-layout class="layout-container">
       <div class="layout-left">
-        <sidebar />
+        <a-drawer
+          v-if="isMobile()"
+          placement="left"
+          :closable="false"
+          :visible="collapsed"
+          width="240px"
+          @close="drawerClose"
+        >
+          <sidebar
+            mode="inline"
+            :menus="menus"
+            :collapsed="false"
+            :collapsible="true"
+          ></sidebar>
+        </a-drawer>
+        <sidebar
+          v-else-if="!isMobile()"
+          mode="inline"
+          :menus="menus"
+          :collapsed="collapsed"
+          :collapsible="true"
+        />
       </div>
       <a-layout class="layout-right">
         <a-layout-header class="layout-header">
           <navigation />
         </a-layout-header>
-
         <a-layout-content class="layout-content">
-          <!--          <navtab />-->
+          <navtab class="nav-tab" v-if="!isMobile()" />
           <keep-alive>
             <router-view class="layout-main" v-if="$route.meta.keepAlive" />
           </keep-alive>
@@ -22,18 +45,45 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import sidebar from "@/components/menu";
+import { mapGetters, mapState } from "vuex";
+import { mixin, mixinDevice } from "@/libs/mixin";
+import sidebar from "@/components/menu/side-menu";
 import navigation from "@/components/header";
-// import navtab from "@/components/navtab";
+import navtab from "@/components/navtab";
 export default {
   name: "BasicLayout",
+  mixins: [mixin, mixinDevice],
   components: {
     sidebar,
-    navigation
-    // navtab
+    navigation,
+    navtab
   },
-  computed: mapGetters(["collapsed"])
+  data() {
+    return {
+      menus: []
+    };
+  },
+  computed: {
+    ...mapGetters(["collapsed"]),
+    ...mapState({
+      // 动态主路由
+      mainMenu: state => state.permission.addRouters
+    })
+  },
+  watch: {
+    sidebarOpened(val) {
+      console.log(val);
+      this.collapsed = !val;
+    }
+  },
+  created() {
+    this.menus = this.mainMenu.find(item => item.path === "/").children;
+  },
+  methods: {
+    drawerClose() {
+      this.$store.commit("SET_COLLAPSE");
+    }
+  }
 };
 </script>
 

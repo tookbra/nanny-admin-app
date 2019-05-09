@@ -1,33 +1,29 @@
-export const superAdminPermission = {
-  path: "/",
-  name: "index",
-  component: "BasicLayout",
-  meta: { title: "首页" },
-  redirect: "/dashboard/workplace",
-  children: [
-    // dashboard
-    {
-      path: "/system",
-      name: "system",
-      hideChildrenInMenu: true,
-      meta: {
+export const superAdminPermission = [
+  {
+    title: "首页",
+    key: "",
+    name: "index",
+    component: "BasicLayout",
+    children: [
+      {
         title: "系统管理",
-        keepAlive: true,
-        icon: "bxAnaalyse",
-        permission: ["dashboard"]
-      },
-      children: [
-        {
-          path: "/system/tenant",
-          name: "tenant",
-          component: () => import("@/views/system/tenant"),
-          meta: {
+        key: "system",
+        icon: "setting",
+        children: [
+          {
             title: "租户管理",
-            keepAlive: false,
-            permission: ["dashboard"]
+            key: "tenant"
+          },
+          {
+            title: "角色管理",
+            key: "roleList"
+          },
+          {
+            title: "权限管理",
+            key: "tableList"
           }
-        }
-      ]
-    }
-  ]
-};
+        ]
+      }
+    ]
+  }
+];
