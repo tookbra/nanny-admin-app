@@ -6,7 +6,7 @@ import store from "./store";
 import "./core/use";
 import "./permission";
 
-import basicContainer from "./components/basic-container/index";
+import basicContainer from "./components/layout/page-layout";
 
 if (process.env.NODE_ENV !== "production") require("@/mock");
 

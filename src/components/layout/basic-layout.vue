@@ -77,7 +77,7 @@ export default {
     }
   },
   created() {
-    this.menus = this.mainMenu.find(item => item.path === "/").children;
+    this.menus = this.mainMenu;
   },
   methods: {
     drawerClose() {

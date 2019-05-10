@@ -14,7 +14,7 @@ export const constantRouterMap = [
   {
     path: "/",
     component: BasicLayout,
-    redirect: "/home/index",
+    redirect: "/home",
     children: [
       {
         path: "home",
