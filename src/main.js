@@ -8,11 +8,14 @@ import "./permission";
 
 import basicContainer from "./components/layout/page-layout";
 
+import curd from "./components/curd/main";
+
 if (process.env.NODE_ENV !== "production") require("@/mock");
 
 Vue.config.productionTip = false;
 //注册全局容器
 Vue.component("basicContainer", basicContainer);
+Vue.component("curd", curd);
 
 new Vue({
   router,

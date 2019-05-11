@@ -1,5 +1,7 @@
 <template>
-  <h1>111</h1>
+  <basicContainer>
+    <curd />
+  </basicContainer>
 </template>
 
 <script>
