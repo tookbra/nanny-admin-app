@@ -19,6 +19,7 @@ fetch.interceptors.request.use(config => {
 }, err);
 
 fetch.interceptors.response.use(res => {
+  console.log(res.data);
   return res.data;
 }, err);
 
