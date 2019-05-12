@@ -36,11 +36,21 @@
     <s-table
       ref="table"
       size="default"
+      rowKey="id"
       :columns="columns"
       :data="loadData"
       :alert="options.alert"
       :rowSelection="options.rowSelection"
     >
+      <span slot="action">
+        <template>
+          <a>详情</a>
+          <a-divider type="vertical" />
+          <a>编辑</a>
+          <a-divider type="vertical" />
+          <a>删除</a>
+        </template>
+      </span>
     </s-table>
   </basicContainer>
 </template>
@@ -61,22 +71,34 @@ export default {
       columns: [
         {
           title: "租户编号",
-          dataIndex: "code"
+          dataIndex: "tenantCode"
         },
         {
           title: "租户名称",
-          dataIndex: "description"
+          dataIndex: "tenantName"
+        },
+        {
+          title: "联系人",
+          dataIndex: "tenantUserName"
+        },
+        {
+          title: "联系电话",
+          dataIndex: "tenantMobile"
+        },
+        {
+          title: "联系地址",
+          dataIndex: "tenantAddress"
         },
         {
           title: "操作",
           dataIndex: "action",
-          width: "150px",
+          width: "180px",
           scopedSlots: { customRender: "action" }
         }
       ],
       options: {
         alert: {
-          show: true,
+          show: false,
           clear: () => {
             this.selectedRowKeys = [];
           }
@@ -88,6 +110,7 @@ export default {
       },
       selectedRowKeys: [],
       selectedRows: [],
+      optionAlertShow: true,
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         console.log("loadData.parameter", parameter);

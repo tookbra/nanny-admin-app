@@ -338,6 +338,7 @@ export default {
     });
     const table = (
       <a-table
+        bordered
         {...{ props, scopedSlots: { ...this.$scopedSlots } }}
         onChange={this.loadData}
       >
