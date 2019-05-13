@@ -17,6 +17,8 @@ export default {
   padding: 10px 6px;
   border-radius: 10px;
   box-sizing: border-box;
+  height: 100%;
+  overflow-y: auto;
   .el-card {
     width: 100%;
   }

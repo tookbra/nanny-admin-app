@@ -35,6 +35,10 @@ export default {
       type: Boolean,
       default: true
     },
+    showQuickJumper: {
+      type: Boolean,
+      default: true
+    },
     size: {
       type: String,
       default: "default"
@@ -112,7 +116,8 @@ export default {
       Object.assign({}, this.localPagination, {
         current: localPageNum,
         pageSize: this.pageSize,
-        showSizeChanger: this.showSizeChanger
+        showSizeChanger: this.showSizeChanger,
+        showQuickJumper: this.showQuickJumper
       });
     this.needTotalList = this.initTotalList(this.columns);
     this.loadData();
@@ -172,7 +177,6 @@ export default {
       // eslint-disable-next-line
        if ((typeof result === 'object' || typeof result === 'function') && typeof result.then === 'function') {
         result.then(r => {
-          console.log(r);
           this.localPagination = Object.assign({}, this.localPagination, {
             current: r.pageNo, // 返回结果中的当前分页数
             total: r.total, // 返回结果中的总记录数
@@ -339,7 +343,11 @@ export default {
     const table = (
       <a-table
         bordered
-        {...{ props, scopedSlots: { ...this.$scopedSlots } }}
+        {...{
+          props,
+          scopedSlots: { ...this.$scopedSlots },
+          scroll: { x: 1300 }
+        }}
         onChange={this.loadData}
       >
         {Object.keys(this.$slots).map(name => (

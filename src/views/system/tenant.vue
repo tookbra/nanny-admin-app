@@ -1,6 +1,6 @@
 <template>
   <basicContainer>
-    <div class="search-wrapper">
+    <div class="search-wrapper" v-if="showSearch">
       <a-form layout="inline">
         <a-row :gutter="16">
           <a-col :md="5" :sm="24">
@@ -32,49 +32,164 @@
         </a-row>
       </a-form>
     </div>
-
+    <table-menu
+      :showSearch="showSearch"
+      @updateShowSearch="updateShowSearch"
+      @refresh="refresh"
+      @remove="batchRemove"
+      @showAdd="showAdd"
+    />
     <s-table
       ref="table"
       size="default"
       rowKey="id"
       :columns="columns"
       :data="loadData"
-      :alert="options.alert"
-      :rowSelection="options.rowSelection"
+      :alert="false"
+      :rowSelection="{
+        selectedRowKeys: selectedRowKeys,
+        onChange: onSelectChange
+      }"
+      :showSizeChanger="true"
     >
-      <span slot="action">
+      <span slot="action" class="table-nav" slot-scope="text, record">
         <template>
-          <a>详情</a>
+          <a @click="() => showDetail(record)">
+            <a-icon type="eye" />
+            详情
+          </a>
           <a-divider type="vertical" />
-          <a>编辑</a>
+          <a @click="() => showModify(record)">
+            <a-icon type="edit" />
+            编辑
+          </a>
           <a-divider type="vertical" />
-          <a>删除</a>
+          <a @click="() => remove(record)">
+            <a-icon type="delete" />
+            删除
+          </a>
         </template>
       </span>
     </s-table>
+
+    <a-modal
+      :title="title"
+      v-model="visible"
+      @ok="handleOk"
+      width="780px"
+      :afterClose="modalClose"
+    >
+      <a-form :form="tenantForm">
+        <a-form-item
+          label="租户编号"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 12 }"
+        >
+          <a-input
+            v-decorator="[
+              '租户编号',
+              {
+                rules: [{ required: true, message: '请输入租户编号' }]
+              }
+            ]"
+          />
+        </a-form-item>
+        <a-form-item
+          label="租户名称"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 12 }"
+        >
+          <a-input
+            v-decorator="[
+              '租户名称',
+              {
+                rules: [{ required: true, message: '请输入租户名称' }]
+              }
+            ]"
+          />
+        </a-form-item>
+        <a-form-item
+          label="租户人"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 12 }"
+        >
+          <a-input
+            v-decorator="[
+              '租户人',
+              {
+                rules: [{ required: false, message: '请输入租户人' }]
+              }
+            ]"
+          />
+        </a-form-item>
+        <a-form-item
+          label="联系电话"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 12 }"
+        >
+          <a-input
+            v-decorator="[
+              '联系电话',
+              {
+                rules: [{ required: false, message: '请输入联系电话' }]
+              }
+            ]"
+          />
+        </a-form-item>
+        <a-form-item
+          label="联系地址"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 12 }"
+        >
+          <a-textarea
+            :autosize="{ minRows: 4, maxRows: 6 }"
+            v-decorator="[
+              '联系地址',
+              {
+                rules: [{ required: false, message: '请输入联系地址' }]
+              }
+            ]"
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </basicContainer>
 </template>
 
 <script>
-import { STable } from "@/components";
-import { pageTenant } from "@/api/system/tenant";
+import { STable, tableMenu } from "@/components";
+import {
+  pageTenant,
+  removeTenant,
+  batchRemoveTenant
+} from "@/api/system/tenant";
+import AFormItem from "ant-design-vue/es/form/FormItem";
 export default {
   name: "tenant",
   components: {
-    STable
+    AFormItem,
+    STable,
+    tableMenu
   },
   data() {
     return {
       // 查询参数
       queryParam: {},
+      showSearch: true,
+      visible: false,
+      title: "",
+      edit: false,
+      tenantForm: this.$form.createForm(this),
       // 表头
       columns: [
         {
           title: "租户编号",
+          search: true,
           dataIndex: "tenantCode"
         },
         {
           title: "租户名称",
+          search: true,
           dataIndex: "tenantName"
         },
         {
@@ -92,7 +207,7 @@ export default {
         {
           title: "操作",
           dataIndex: "action",
-          width: "180px",
+          width: "230px",
           scopedSlots: { customRender: "action" }
         }
       ],
@@ -110,10 +225,9 @@ export default {
       },
       selectedRowKeys: [],
       selectedRows: [],
-      optionAlertShow: true,
+      optionAlertShow: false,
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        console.log("loadData.parameter", parameter);
         return pageTenant(Object.assign(parameter, this.queryParam)).then(
           res => {
             return res.data;
@@ -127,31 +241,103 @@ export default {
   },
   methods: {
     tableOption() {
-      if (!this.optionAlertShow) {
-        this.options = {
-          alert: {
-            show: true,
-            clear: () => {
-              this.selectedRowKeys = [];
-            }
-          },
-          rowSelection: {
-            selectedRowKeys: this.selectedRowKeys,
-            onChange: this.onSelectChange
+      this.options = {
+        alert: {
+          show: false,
+          clear: () => {
+            this.selectedRowKeys = [];
           }
-        };
-        this.optionAlertShow = true;
-      } else {
-        this.options = {
-          alert: false,
-          rowSelection: null
-        };
-        this.optionAlertShow = false;
-      }
+        },
+        rowSelection: {
+          selectedRowKeys: this.selectedRowKeys,
+          onChange: this.onSelectChange
+        }
+      };
     },
     onSelectChange(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys;
       this.selectedRows = selectedRows;
+    },
+    refresh() {
+      this.$refs.table.refresh(true);
+    },
+    updateShowSearch(showSearch) {
+      this.showSearch = showSearch;
+    },
+    batchRemove() {
+      if (!this.selectedRowKeys.length) {
+        this.$message.warning("请选择需删除的数据");
+        return;
+      }
+
+      const vm = this;
+      this.$confirm({
+        title: "提示",
+        content: "确定删除所选中的记录?",
+        centered: true,
+        onOk() {
+          return new Promise(resolve => {
+            batchRemoveTenant(vm.selectedRowKeys).then(res => {
+              if (res.success) {
+                vm.$message.success("批量删除成功");
+                vm.$refs.table.refresh(true);
+                resolve(res);
+              } else {
+                vm.$message.error(res.msg);
+                resolve("");
+              }
+            });
+          });
+        },
+        onCancel() {}
+      });
+    },
+    remove(row) {
+      const vm = this;
+      this.$confirm({
+        title: "提示",
+        content: "确定删除该行记录?",
+        centered: true,
+        onOk() {
+          return new Promise(resolve => {
+            removeTenant(row.id).then(res => {
+              if (res.success) {
+                vm.$message.success("删除成功");
+                vm.$refs.table.refresh(true);
+                resolve(res);
+              } else {
+                vm.$message.error(res.msg);
+                resolve("");
+              }
+            });
+          });
+        },
+        onCancel() {}
+      });
+    },
+    showAdd() {
+      this.visible = true;
+      this.title = "新增";
+      console.log(this.edit);
+    },
+    showModify(row) {
+      this.visible = true;
+      this.title = "编辑";
+      this.edit = true;
+    },
+    showDetail(row) {
+      this.visible = true;
+      this.title = "编辑";
+    },
+    handleOk() {
+      this.tenantForm.validateFields(err => {
+        if (err) {
+          console.info("success");
+        }
+      });
+    },
+    modalClose() {
+      this.edit = false;
     }
   }
 };

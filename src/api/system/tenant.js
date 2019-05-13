@@ -7,3 +7,18 @@ export function pageTenant(parameter) {
     data: parameter
   });
 }
+
+export function batchRemoveTenant(parameter) {
+  return fetch({
+    url: "/tenants/batch",
+    method: "post",
+    data: parameter
+  });
+}
+
+export function removeTenant(id) {
+  return fetch({
+    url: "/tenants/" + id,
+    method: "delete"
+  });
+}

@@ -99,3 +99,8 @@ export const pageTenant = req => {
     ]
   });
 };
+
+// eslint-disable-next-line no-unused-vars
+export const removeTenant = req => {
+  return commonResult({});
+};
