@@ -14,3 +14,4 @@ Vue.use(Antd);
 Vue.use(VueStorage, config.localStorageOptions);
 Vue.use(VueSessionStorage, config.sessionStorageOptions);
 Vue.use(VueCropper);
+

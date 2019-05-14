@@ -1,8 +1,9 @@
-import { commonResult } from "./common";
+import Mock from "mockjs2";
+import { builder } from "../util";
 
 // eslint-disable-next-line no-unused-vars
-export const getAccountInfo = req => {
-  return commonResult({
+const getAccountInfo = req => {
+  return builder({
     avatar: "https://blog.tookbra.com/images/logo.png",
     name: "admin",
     status: 1,
@@ -43,3 +44,5 @@ export const getAccountInfo = req => {
     }
   });
 };
+
+Mock.mock(/\/account/, getAccountInfo);

@@ -87,7 +87,7 @@
         >
           <a-input
             v-decorator="[
-              '租户编号',
+              'tenantCode',
               {
                 rules: [{ required: true, message: '请输入租户编号' }]
               }
@@ -101,7 +101,7 @@
         >
           <a-input
             v-decorator="[
-              '租户名称',
+              'tenantName',
               {
                 rules: [{ required: true, message: '请输入租户名称' }]
               }
@@ -115,7 +115,7 @@
         >
           <a-input
             v-decorator="[
-              '租户人',
+              'linkName',
               {
                 rules: [{ required: false, message: '请输入租户人' }]
               }
@@ -129,7 +129,7 @@
         >
           <a-input
             v-decorator="[
-              '联系电话',
+              'linkPhone',
               {
                 rules: [{ required: false, message: '请输入联系电话' }]
               }
@@ -137,7 +137,7 @@
           />
         </a-form-item>
         <a-form-item
-          label="联系地址"
+          label="linkAddress"
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 12 }"
         >
@@ -153,15 +153,17 @@
         </a-form-item>
       </a-form>
     </a-modal>
+    <page-loading />
   </basicContainer>
 </template>
 
 <script>
-import { STable, tableMenu } from "@/components";
+import { STable, tableMenu, PageLoading } from "@/components";
 import {
   pageTenant,
   removeTenant,
-  batchRemoveTenant
+  batchRemoveTenant,
+  getTenant
 } from "@/api/system/tenant";
 import AFormItem from "ant-design-vue/es/form/FormItem";
 export default {
@@ -169,7 +171,8 @@ export default {
   components: {
     AFormItem,
     STable,
-    tableMenu
+    tableMenu,
+    PageLoading
   },
   data() {
     return {
@@ -326,18 +329,46 @@ export default {
       this.edit = true;
     },
     showDetail(row) {
-      this.visible = true;
       this.title = "编辑";
+      const vm = this;
+      console.log(row);
+
+      getTenant(row.id).then(res => {
+        if (res.success) {
+          this.visible = true;
+          vm.setFormValues(res.data);
+        } else {
+          vm.$message.error(res.msg);
+        }
+      });
     },
     handleOk() {
       this.tenantForm.validateFields(err => {
-        if (err) {
+        if (!err) {
           console.info("success");
         }
       });
     },
     modalClose() {
       this.edit = false;
+      this.tenantForm.resetFields();
+    },
+    setFormValues({ ...tenant }) {
+      let fields = [
+        "tenantCode",
+        "tenantName",
+        "linkName",
+        "linkPhone",
+        "linkAddress"
+      ];
+      Object.keys(tenant).forEach(key => {
+        if (fields.indexOf(key) !== -1) {
+          this.tenantForm.getFieldDecorator(key);
+          let obj = {};
+          obj[key] = tenant[key];
+          this.tenantForm.setFieldsValue(obj);
+        }
+      });
     }
   }
 };

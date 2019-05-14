@@ -8,6 +8,13 @@ export function pageTenant(parameter) {
   });
 }
 
+export function getTenant(id) {
+  return fetch({
+    url: "/tenants/" + id,
+    method: "get"
+  });
+}
+
 export function batchRemoveTenant(parameter) {
   return fetch({
     url: "/tenants/batch",

@@ -1,8 +1,8 @@
-import { commonResult } from "../common";
+import Mock from "mockjs2";
+import { builder } from "../../util";
 
-// eslint-disable-next-line no-unused-vars
-export const pageTenant = req => {
-  return commonResult({
+const pageTenant = () => {
+  return builder({
     pageNo: 1,
     pages: 1,
     pageSize: 1,
@@ -102,5 +102,22 @@ export const pageTenant = req => {
 
 // eslint-disable-next-line no-unused-vars
 export const removeTenant = req => {
-  return commonResult({});
+  return builder({});
 };
+
+// eslint-disable-next-line no-unused-vars
+export const getTenant = req => {
+  return builder({
+    id: 1,
+    tenantCode: 10001,
+    tenantName: "租户1",
+    tenantUserName: "租户1",
+    tenantMobile: "15000000000",
+    tenantAddress: "杭州"
+  });
+};
+
+Mock.mock(/\/tenants\/1/, "get", getTenant);
+Mock.mock(/\/tenants/, "get", pageTenant);
+Mock.mock(/\/tenants\/batch/, "post", removeTenant);
+Mock.mock(/\/tenants/, "delete", removeTenant);
