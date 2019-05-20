@@ -106,6 +106,16 @@ export const removeTenant = req => {
 };
 
 // eslint-disable-next-line no-unused-vars
+export const addTenant = req => {
+  return builder({});
+};
+
+// eslint-disable-next-line no-unused-vars
+export const modifyTenant = req => {
+  return builder({});
+};
+
+// eslint-disable-next-line no-unused-vars
 export const getTenant = req => {
   return builder({
     id: 1,
@@ -118,6 +128,8 @@ export const getTenant = req => {
 };
 
 Mock.mock(/\/tenants\/1/, "get", getTenant);
+Mock.mock(/\/tenants\/1/, "put", modifyTenant);
 Mock.mock(/\/tenants/, "get", pageTenant);
+Mock.mock(/\/tenants/, "post", addTenant);
 Mock.mock(/\/tenants\/batch/, "post", removeTenant);
 Mock.mock(/\/tenants/, "delete", removeTenant);

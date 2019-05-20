@@ -15,6 +15,29 @@ export function getTenant(id) {
   });
 }
 
+export function addTenant(parameter) {
+  console.log(parameter);
+  return fetch({
+    url: "/tenants",
+    method: "post",
+    data: parameter,
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8"
+    }
+  });
+}
+
+export function modifyTenant(parameter) {
+  return fetch({
+    url: "/tenants/" + parameter.id,
+    method: "put",
+    data: parameter,
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8"
+    }
+  });
+}
+
 export function batchRemoveTenant(parameter) {
   return fetch({
     url: "/tenants/batch",

@@ -75,9 +75,10 @@
     <a-modal
       :title="title"
       v-model="visible"
-      @ok="handleOk"
       width="780px"
       :afterClose="modalClose"
+      @ok="handleOk"
+      :okButtonProps="{ props: { disabled: okDisabled } }"
     >
       <a-form :form="tenantForm">
         <a-form-item
@@ -137,14 +138,14 @@
           />
         </a-form-item>
         <a-form-item
-          label="linkAddress"
+          label="联系地址"
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 12 }"
         >
           <a-textarea
             :autosize="{ minRows: 4, maxRows: 6 }"
             v-decorator="[
-              '联系地址',
+              'linkAddress',
               {
                 rules: [{ required: false, message: '请输入联系地址' }]
               }
@@ -162,7 +163,9 @@ import {
   pageTenant,
   removeTenant,
   batchRemoveTenant,
-  getTenant
+  getTenant,
+  addTenant,
+  modifyTenant
 } from "@/api/system/tenant";
 import AFormItem from "ant-design-vue/es/form/FormItem";
 export default {
@@ -178,6 +181,8 @@ export default {
       queryParam: {},
       showSearch: true,
       visible: false,
+      loading: false,
+      okDisabled: false,
       title: "",
       edit: false,
       tenantForm: this.$form.createForm(this),
@@ -327,18 +332,46 @@ export default {
       this.getTenant(row.id);
     },
     showDetail(row) {
-      this.title = "编辑";
+      this.title = "详情";
+      this.okDisabled = true;
       this.getTenant(row.id);
     },
     handleOk() {
+      const vm = this;
       this.tenantForm.validateFields(err => {
         if (!err) {
-          console.info("success");
+          this.$loading.show();
+          if (this.edit) {
+            modifyTenant(this.tenantForm.getFieldsValue())
+              .then(res => {
+                if (res.success) {
+                  this.visible = false;
+                  this.$refs.table.refresh(true);
+                }
+              })
+              .then(() => {
+                vm.$loading.hide();
+              });
+          } else {
+            addTenant(this.tenantForm.getFieldsValue())
+              .then(res => {
+                if (res.success) {
+                  this.visible = false;
+                  this.$refs.table.refresh(true);
+                }
+              })
+              .then(() => {
+                vm.$loading.hide();
+              });
+          }
         }
       });
     },
     modalClose() {
       this.edit = false;
+      this.visible = false;
+      this.title = "";
+      this.okDisabled = false;
       this.tenantForm.resetFields();
     },
     getTenant(id) {
@@ -359,6 +392,7 @@ export default {
     },
     setFormValues({ ...tenant }) {
       let fields = [
+        "id",
         "tenantCode",
         "tenantName",
         "linkName",
