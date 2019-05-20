@@ -1,7 +1,6 @@
 <template>
   <a-locale-provider :locale="locale">
     <div id="app">
-      <a-spin tip="Loading..." />
       <router-view />
     </div>
   </a-locale-provider>

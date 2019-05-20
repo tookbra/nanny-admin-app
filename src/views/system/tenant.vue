@@ -153,12 +153,11 @@
         </a-form-item>
       </a-form>
     </a-modal>
-    <page-loading />
   </basicContainer>
 </template>
 
 <script>
-import { STable, tableMenu, PageLoading } from "@/components";
+import { STable, tableMenu } from "@/components";
 import {
   pageTenant,
   removeTenant,
@@ -171,8 +170,7 @@ export default {
   components: {
     AFormItem,
     STable,
-    tableMenu,
-    PageLoading
+    tableMenu
   },
   data() {
     return {
@@ -321,26 +319,16 @@ export default {
     showAdd() {
       this.visible = true;
       this.title = "新增";
-      console.log(this.edit);
     },
     showModify(row) {
       this.visible = true;
       this.title = "编辑";
       this.edit = true;
+      this.getTenant(row.id);
     },
     showDetail(row) {
       this.title = "编辑";
-      const vm = this;
-      console.log(row);
-
-      getTenant(row.id).then(res => {
-        if (res.success) {
-          this.visible = true;
-          vm.setFormValues(res.data);
-        } else {
-          vm.$message.error(res.msg);
-        }
-      });
+      this.getTenant(row.id);
     },
     handleOk() {
       this.tenantForm.validateFields(err => {
@@ -352,6 +340,22 @@ export default {
     modalClose() {
       this.edit = false;
       this.tenantForm.resetFields();
+    },
+    getTenant(id) {
+      const vm = this;
+      this.$loading.show();
+      getTenant(id)
+        .then(res => {
+          if (res.success) {
+            this.visible = true;
+            vm.setFormValues(res.data);
+          } else {
+            vm.$message.error(res.msg);
+          }
+        })
+        .then(() => {
+          vm.$loading.hide();
+        });
     },
     setFormValues({ ...tenant }) {
       let fields = [

@@ -7,7 +7,6 @@ const password = ["21232f297a57a5a743894a0e4a801fc3"];
 // eslint-disable-next-line no-unused-vars
 const login = req => {
   const body = getBody(req);
-  console.log("mock: body", body);
   if (!username.includes(body.username) || !password.includes(body.password)) {
     return builder({ isLogin: true }, "账户或密码错误", 401);
   }
