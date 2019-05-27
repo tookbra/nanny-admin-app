@@ -27,7 +27,7 @@
             </router-link>
           </a-menu-item>
           <a-menu-divider />
-          <a-menu-item key="3">
+          <a-menu-item key="3" @click="handleLogout">
             <a href="javascript:;">
               <a-icon type="logout" />
               <span>退出登录</span>

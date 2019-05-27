@@ -2,6 +2,7 @@ import Vue from "vue";
 import { login, logout } from "@/api/account/login";
 import { getAccountInfo } from "@/api/account/account";
 import { ACCESS_TOKEN } from "@/store/mutation-types";
+import { clearStore } from "@/libs/store";
 export default {
   state: {
     userName: "",
@@ -73,7 +74,7 @@ export default {
         commit("SET_TOKEN", "");
         commit("SET_ROLES", []);
         Vue.ls.remove(ACCESS_TOKEN);
-
+        clearStore({ type: "session" });
         logout()
           .then(() => {
             resolve();
