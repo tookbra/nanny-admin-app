@@ -84,9 +84,10 @@
         <a-form-item
           label="租户编号"
           :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 12 }"
+          :wrapper-col="{ span: 14 }"
         >
           <a-input
+            placeholder="请输入租户编号"
             v-decorator="[
               'tenantCode',
               {
@@ -98,9 +99,10 @@
         <a-form-item
           label="租户名称"
           :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 12 }"
+          :wrapper-col="{ span: 14 }"
         >
           <a-input
+            placeholder="请输入租户名称"
             v-decorator="[
               'tenantName',
               {
@@ -112,9 +114,10 @@
         <a-form-item
           label="租户人"
           :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 12 }"
+          :wrapper-col="{ span: 14 }"
         >
           <a-input
+            placeholder="请输入租户人"
             v-decorator="[
               'linkName',
               {
@@ -126,9 +129,10 @@
         <a-form-item
           label="联系电话"
           :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 12 }"
+          :wrapper-col="{ span: 14 }"
         >
           <a-input
+            placeholder="请输入联系电话"
             v-decorator="[
               'linkPhone',
               {
@@ -140,9 +144,10 @@
         <a-form-item
           label="联系地址"
           :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 12 }"
+          :wrapper-col="{ span: 14 }"
         >
           <a-textarea
+            placeholder="请输入联系地址"
             :autosize="{ minRows: 4, maxRows: 6 }"
             v-decorator="[
               'linkAddress',
@@ -150,7 +155,7 @@
                 rules: [{ required: false, message: '请输入联系地址' }]
               }
             ]"
-          />
+          ></a-textarea>
         </a-form-item>
       </a-form>
     </a-modal>
