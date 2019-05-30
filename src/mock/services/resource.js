@@ -15,11 +15,19 @@ const getResource = () => {
         },
         {
           title: "角色管理",
-          key: "roleList"
+          key: "role"
+        },
+        {
+          title: "菜单管理",
+          key: "menu"
         },
         {
           title: "权限管理",
-          key: "tableList"
+          key: "permission"
+        },
+        {
+          title: "字典管理",
+          key: "dict"
         }
       ]
     }

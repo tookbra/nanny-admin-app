@@ -16,6 +16,8 @@ if (
   require("./services/login");
   require("./services/resource");
   require("./services/system/tenant");
+  require("./services/system/menu");
+  require("./services/system/dict");
 
   Mock.setup({
     timeout: 800 // setter delay time
