@@ -15,8 +15,14 @@ export function getDict(id) {
   });
 }
 
+export function getDictByCode(code) {
+  return fetch({
+    url: "/dicts/" + code,
+    method: "get"
+  });
+}
+
 export function addDict(parameter) {
-  console.log(parameter);
   return fetch({
     url: "/dicts",
     method: "post",
@@ -28,7 +34,6 @@ export function addDict(parameter) {
 }
 
 export function modifyDict(parameter) {
-  console.log(parameter);
   return fetch({
     url: "/dicts/" + parameter.id,
     method: "put",

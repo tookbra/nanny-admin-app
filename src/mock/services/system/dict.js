@@ -11,30 +11,35 @@ const pageDict = () => {
       {
         id: 1,
         name: "权限",
+        code: "permission",
         dictKey: "query",
         dictValue: "查询"
       },
       {
         id: 2,
         name: "权限",
+        code: "permission",
         dictKey: "get",
         dictValue: "详情"
       },
       {
         id: 3,
         name: "权限",
+        code: "permission",
         dictKey: "add",
         dictValue: "新增"
       },
       {
         id: 4,
         name: "权限",
+        code: "permission",
         dictKey: "update",
         dictValue: "修改"
       },
       {
         id: 5,
         name: "权限",
+        code: "permission",
         dictKey: "delete",
         dictValue: "删除"
       }
@@ -62,6 +67,7 @@ export const getDict = req => {
   return builder({
     id: 1,
     name: "权限",
+    code: "permission",
     dictKey: "query",
     dictValue: "查询"
   });

@@ -100,6 +100,24 @@
           />
         </a-form-item>
         <a-form-item
+          label="字典编码"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 14 }"
+        >
+          <a-input
+            placeholder="请输入字典编码"
+            v-decorator="[
+              'code',
+              {
+                rules: [
+                  { required: true, message: '请输入字典编码' },
+                  { max: 20, message: '长度不能超过20个字符' }
+                ]
+              }
+            ]"
+          />
+        </a-form-item>
+        <a-form-item
           label="字典键名"
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 14 }"
@@ -174,6 +192,10 @@ export default {
         {
           title: "字典名称",
           dataIndex: "name"
+        },
+        {
+          title: "字典编码",
+          dataIndex: "code"
         },
         {
           title: "字典键名",
@@ -363,7 +385,7 @@ export default {
         });
     },
     setFormValues({ ...dict }) {
-      let fields = ["id", "name", "dictKey", "dictValue"];
+      let fields = ["id", "code", "name", "dictKey", "dictValue"];
       Object.keys(dict).forEach(key => {
         if (fields.indexOf(key) !== -1) {
           this.dictForm.getFieldDecorator(key);
