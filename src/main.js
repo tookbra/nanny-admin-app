@@ -9,6 +9,7 @@ import "./permission";
 import basicContainer from "./components/layout/page-layout";
 
 import curd from "./components/curd/main";
+import "./libs/filters";
 
 if (process.env.NODE_ENV !== "production") require("@/mock");
 
