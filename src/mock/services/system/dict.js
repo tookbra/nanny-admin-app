@@ -13,35 +13,40 @@ const pageDict = () => {
         name: "权限",
         code: "permission",
         dictKey: "query",
-        dictValue: "查询"
+        dictValue: "查询",
+        status: 1
       },
       {
         id: 2,
         name: "权限",
         code: "permission",
         dictKey: "get",
-        dictValue: "详情"
+        dictValue: "详情",
+        status: 1
       },
       {
         id: 3,
         name: "权限",
         code: "permission",
         dictKey: "add",
-        dictValue: "新增"
+        dictValue: "新增",
+        status: 1
       },
       {
         id: 4,
         name: "权限",
         code: "permission",
         dictKey: "update",
-        dictValue: "修改"
+        dictValue: "修改",
+        status: 1
       },
       {
         id: 5,
         name: "权限",
         code: "permission",
         dictKey: "delete",
-        dictValue: "删除"
+        dictValue: "删除",
+        status: 1
       }
     ]
   });
@@ -69,7 +74,8 @@ export const getDict = req => {
     name: "权限",
     code: "permission",
     dictKey: "query",
-    dictValue: "查询"
+    dictValue: "查询",
+    status: 1
   });
 };
 // eslint-disable-next-line no-unused-vars
@@ -80,35 +86,40 @@ export const getDictByCode = req => {
       name: "权限",
       code: "permission",
       dictKey: "query",
-      dictValue: "查询"
+      dictValue: "查询",
+      status: 1
     },
     {
       id: 2,
       name: "权限",
       code: "permission",
       dictKey: "get",
-      dictValue: "详情"
+      dictValue: "详情",
+      status: 1
     },
     {
       id: 3,
       name: "权限",
       code: "permission",
       dictKey: "add",
-      dictValue: "新增"
+      dictValue: "新增",
+      status: 1
     },
     {
       id: 4,
       name: "权限",
       code: "permission",
       dictKey: "update",
-      dictValue: "修改"
+      dictValue: "修改",
+      status: 1
     },
     {
       id: 5,
       name: "权限",
       code: "permission",
       dictKey: "delete",
-      dictValue: "删除"
+      dictValue: "删除",
+      status: 1
     }
   ]);
 };

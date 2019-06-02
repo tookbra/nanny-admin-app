@@ -14,6 +14,15 @@
             </a-form-item>
           </a-col>
           <a-col :md="5" :sm="24">
+            <a-form-item label="状态">
+              <a-select placeholder="请选择" default-value="">
+                <a-select-option value="">全部</a-select-option>
+                <a-select-option value="1">禁用</a-select-option>
+                <a-select-option value="2">启用</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="5" :sm="24">
             <span class="table-page-search-submitButtons">
               <a-button
                 type="primary"
@@ -52,6 +61,9 @@
       }"
       :showSizeChanger="true"
     >
+      <span slot="status" slot-scope="text">
+        {{ text | statusFilter }}
+      </span>
       <span slot="action" class="table-nav" slot-scope="text, record">
         <template>
           <a @click="() => showDetail(record)">
@@ -153,6 +165,24 @@
             ]"
           />
         </a-form-item>
+        <a-form-item
+          label="状态"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 14 }"
+        >
+          <a-select
+            placeholder="请选择状态"
+            v-decorator="[
+              'status',
+              {
+                rules: [{ required: true, message: '请选择状态' }]
+              }
+            ]"
+          >
+            <a-select-option :value="1">正常</a-select-option>
+            <a-select-option :value="2">禁用</a-select-option>
+          </a-select>
+        </a-form-item>
       </a-form>
     </a-modal>
   </basicContainer>
@@ -187,6 +217,7 @@ export default {
       title: "",
       edit: false,
       dictForm: this.$form.createForm(this),
+      dict: {},
       // 表头
       columns: [
         {
@@ -205,6 +236,11 @@ export default {
         {
           title: "字典键值",
           dataIndex: "dictValue"
+        },
+        {
+          title: "状态",
+          dataIndex: "status",
+          scopedSlots: { customRender: "status" }
         },
         {
           title: "操作",
@@ -335,8 +371,10 @@ export default {
       this.dictForm.validateFields(err => {
         if (!err) {
           this.$loading.show();
+          let dict = this.dictForm.getFieldsValue();
+          dict.id = this.dict.id;
           if (this.edit) {
-            modifyDict(this.dictForm.getFieldsValue())
+            modifyDict(dict)
               .then(res => {
                 if (res.success) {
                   this.visible = false;
@@ -347,7 +385,7 @@ export default {
                 vm.$loading.hide();
               });
           } else {
-            addDict(this.dictForm.getFieldsValue())
+            addDict(dict)
               .then(res => {
                 if (res.success) {
                   this.visible = false;
@@ -385,7 +423,7 @@ export default {
         });
     },
     setFormValues({ ...dict }) {
-      let fields = ["id", "code", "name", "dictKey", "dictValue"];
+      let fields = ["id", "code", "name", "dictKey", "dictValue", "status"];
       Object.keys(dict).forEach(key => {
         if (fields.indexOf(key) !== -1) {
           this.dictForm.getFieldDecorator(key);
@@ -394,6 +432,7 @@ export default {
           this.dictForm.setFieldsValue(obj);
         }
       });
+      this.dict = dict;
     }
   }
 };
