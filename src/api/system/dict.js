@@ -1,4 +1,5 @@
 import { fetch } from "@/libs/fetch";
+import { serialize } from "@/libs/util";
 
 export function pageDict(parameter) {
   return fetch({
@@ -16,8 +17,13 @@ export function getDict(id) {
 }
 
 export function getDictByCode(code) {
+  let data = { code: code };
+  return getDictByParam(data);
+}
+
+export function getDictByParam(parameter) {
   return fetch({
-    url: "/dicts/" + code,
+    url: "/dicts?" + serialize(parameter),
     method: "get"
   });
 }

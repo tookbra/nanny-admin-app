@@ -72,7 +72,48 @@ export const getDict = req => {
     dictValue: "查询"
   });
 };
+// eslint-disable-next-line no-unused-vars
+export const getDictByCode = req => {
+  return builder([
+    {
+      id: 1,
+      name: "权限",
+      code: "permission",
+      dictKey: "query",
+      dictValue: "查询"
+    },
+    {
+      id: 2,
+      name: "权限",
+      code: "permission",
+      dictKey: "get",
+      dictValue: "详情"
+    },
+    {
+      id: 3,
+      name: "权限",
+      code: "permission",
+      dictKey: "add",
+      dictValue: "新增"
+    },
+    {
+      id: 4,
+      name: "权限",
+      code: "permission",
+      dictKey: "update",
+      dictValue: "修改"
+    },
+    {
+      id: 5,
+      name: "权限",
+      code: "permission",
+      dictKey: "delete",
+      dictValue: "删除"
+    }
+  ]);
+};
 
+Mock.mock(/\/dicts\?code=permission/, "get", getDictByCode);
 Mock.mock(/\/dicts\/1/, "get", getDict);
 Mock.mock(/\/dicts\/1/, "put", modifyDict);
 Mock.mock(/\/dicts/, "get", pageDict);

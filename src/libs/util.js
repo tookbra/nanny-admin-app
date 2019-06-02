@@ -1,4 +1,3 @@
-
 /**
  * 触发 window.resize
  */
@@ -46,4 +45,17 @@ export function removeLoadingAnimate(id = "", timeout = 1500) {
   setTimeout(() => {
     document.body.removeChild(document.getElementById(id));
   }, timeout);
+}
+
+/**
+ * serialize
+ * @param data
+ * @returns {string}
+ */
+export function serialize(data){
+  let list = [];
+  Object.keys(data).forEach(ele => {
+    list.push(`${ele}=${data[ele]}`);
+  });
+  return list.join("&");
 }
