@@ -191,6 +191,7 @@ export default {
       title: "",
       edit: false,
       tenantForm: this.$form.createForm(this),
+      tenant: {},
       // 表头
       columns: [
         {
@@ -346,8 +347,11 @@ export default {
       this.tenantForm.validateFields(err => {
         if (!err) {
           this.$loading.show();
+          let tenant = this.tenantForm.getFieldsValue();
+          tenant.id = this.tenant.id;
+          console.log(tenant);
           if (this.edit) {
-            modifyTenant(this.tenantForm.getFieldsValue())
+            modifyTenant(tenant)
               .then(res => {
                 if (res.success) {
                   this.visible = false;
@@ -358,7 +362,7 @@ export default {
                 vm.$loading.hide();
               });
           } else {
-            addTenant(this.tenantForm.getFieldsValue())
+            addTenant(tenant)
               .then(res => {
                 if (res.success) {
                   this.visible = false;
@@ -397,7 +401,6 @@ export default {
     },
     setFormValues({ ...tenant }) {
       let fields = [
-        "id",
         "tenantCode",
         "tenantName",
         "linkName",
@@ -412,6 +415,7 @@ export default {
           this.tenantForm.setFieldsValue(obj);
         }
       });
+      this.tenant = tenant;
     }
   }
 };
