@@ -26,7 +26,7 @@ const getResource = () => {
           key: "permission"
         },
         {
-          title: "字典管理",
+          title: "数据字典",
           key: "dict"
         }
       ]
