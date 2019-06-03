@@ -34,4 +34,4 @@ const getResource = () => {
   ]);
 };
 
-Mock.mock(/\/permissions/, getResource);
+Mock.mock(/\/permissions\/router/, getResource);

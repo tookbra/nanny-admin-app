@@ -72,7 +72,6 @@ export default {
   },
   watch: {
     sidebarOpened(val) {
-      console.log(val);
       this.collapsed = !val;
     }
   },

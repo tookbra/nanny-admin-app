@@ -1,30 +1,23 @@
 import { fetch } from "@/libs/fetch";
 
-export function pageTenant(parameter) {
+export function pageRole(parameter) {
   return fetch({
-    url: "/tenants",
+    url: "/roles",
     method: "get",
     data: parameter
   });
 }
 
-export function getTenant(id) {
+export function getRole(id) {
   return fetch({
-    url: "/tenants/" + id,
+    url: "/roles/" + id,
     method: "get"
   });
 }
 
-export function getAllTenant() {
+export function addRole(parameter) {
   return fetch({
-    url: "/tenants/all",
-    method: "get"
-  });
-}
-
-export function addTenant(parameter) {
-  return fetch({
-    url: "/tenants",
+    url: "/roles",
     method: "post",
     data: parameter,
     headers: {
@@ -33,9 +26,9 @@ export function addTenant(parameter) {
   });
 }
 
-export function modifyTenant(parameter) {
+export function modifyRole(parameter) {
   return fetch({
-    url: "/tenants/" + parameter.id,
+    url: "/roles/" + parameter.id,
     method: "put",
     data: parameter,
     headers: {
@@ -44,17 +37,17 @@ export function modifyTenant(parameter) {
   });
 }
 
-export function batchRemoveTenant(parameter) {
+export function batchRemoveRole(parameter) {
   return fetch({
-    url: "/tenants/batch",
+    url: "/roles/batch",
     method: "post",
     data: parameter
   });
 }
 
-export function removeTenant(id) {
+export function removeRole(id) {
   return fetch({
-    url: "/tenants/" + id,
+    url: "/roles/" + id,
     method: "delete"
   });
 }

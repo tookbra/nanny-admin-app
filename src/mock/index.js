@@ -11,16 +11,16 @@ if (
 ) {
   // 使用同步加载依赖
   // 防止 vuex 中的 GetInfo 早于 mock 运行，导致无法 mock 请求返回结果
-  console.log("mock mounting");
   require("./services/account");
   require("./services/login");
   require("./services/resource");
   require("./services/system/tenant");
   require("./services/system/menu");
   require("./services/system/dict");
+  require("./services/system/permission");
+  require("./services/system/role");
 
   Mock.setup({
     timeout: 800 // setter delay time
   });
-  console.log("mock mounted");
 }

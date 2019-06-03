@@ -2,18 +2,36 @@
   <basicContainer>
     <div class="search-wrapper" v-if="showSearch">
       <a-form layout="inline">
-        <a-row :gutter="16">
+        <a-row :gutter="25">
           <a-col :md="5" :sm="24">
-            <a-form-item label="租户编号">
-              <a-input v-model="queryParam.code" placeholder="租户编号" />
+            <a-form-item label="所属租户">
+              <a-input v-model="queryParam.tenantName" placeholder="所属租户" />
             </a-form-item>
           </a-col>
           <a-col :md="5" :sm="24">
-            <a-form-item label="租户名称">
-              <a-input v-model="queryParam.name" placeholder="租户名称" />
+            <a-form-item label="角色名称">
+              <a-input v-model="queryParam.name" placeholder="角色名称" />
             </a-form-item>
           </a-col>
           <a-col :md="5" :sm="24">
+            <a-form-item label="角色编码">
+              <a-input v-model="queryParam.code" placeholder="角色别名" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="5" :sm="24">
+            <a-form-item label="角色状态">
+              <a-select
+                placeholder="请选择"
+                default-value=""
+                v-model="queryParam.status"
+              >
+                <a-select-option value="">全部</a-select-option>
+                <a-select-option value="1">禁用</a-select-option>
+                <a-select-option value="2">启用</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="3" :sm="24">
             <span class="table-page-search-submitButtons">
               <a-button
                 type="primary"
@@ -52,6 +70,9 @@
       }"
       :showSizeChanger="true"
     >
+      <span slot="status" slot-scope="text">
+        {{ text | statusFilter }}
+      </span>
       <span slot="action" class="table-nav" slot-scope="text, record">
         <template>
           <a @click="() => showDetail(record)">
@@ -80,82 +101,78 @@
       @ok="handleOk"
       :okButtonProps="{ props: { disabled: okDisabled } }"
     >
-      <a-form :form="tenantForm">
+      <a-form :form="roleForm">
         <a-form-item
-          label="租户编号"
+          label="角色名称"
           :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 14 }"
+          :wrapper-col="{ span: 12 }"
         >
           <a-input
-            placeholder="请输入租户编号"
             v-decorator="[
-              'tenantCode',
+              'name',
               {
-                rules: [{ required: true, message: '请输入租户编号' }]
+                rules: [{ required: true, message: '请输入角色名称' }]
               }
             ]"
           />
         </a-form-item>
         <a-form-item
-          label="租户名称"
+          label="角色编码"
           :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 14 }"
+          :wrapper-col="{ span: 12 }"
         >
           <a-input
-            placeholder="请输入租户名称"
             v-decorator="[
-              'tenantName',
+              'code',
               {
-                rules: [{ required: true, message: '请输入租户名称' }]
+                rules: [{ required: true, message: '请输入角色编码' }]
               }
             ]"
           />
         </a-form-item>
         <a-form-item
-          label="租户人"
+          label="所属租户"
           :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 14 }"
+          :wrapper-col="{ span: 12 }"
         >
-          <a-input
-            placeholder="请输入租户人"
+          <a-select
+            showSearch
+            allowClear
+            :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
+            placeholder="请选择所属租户"
             v-decorator="[
-              'linkName',
+              'tenantId',
               {
-                rules: [{ required: false, message: '请输入租户人' }]
+                rules: [{ required: true, message: '请选择所属租户' }]
               }
             ]"
-          />
+          >
+            <a-select-option
+              v-for="(item, index) in treeTenant"
+              :key="index"
+              :value="item.value"
+            >
+              {{ item.name }}
+            </a-select-option>
+          </a-select>
         </a-form-item>
         <a-form-item
-          label="联系电话"
+          label="状态"
           :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 14 }"
+          :wrapper-col="{ span: 12 }"
         >
-          <a-input
-            placeholder="请输入联系电话"
+          <a-select
+            placeholder="请选择状态"
             v-decorator="[
-              'linkPhone',
+              'status',
               {
-                rules: [{ required: false, message: '请输入联系电话' }]
+                rules: [{ required: true, message: '请选择状态' }]
               }
             ]"
-          />
-        </a-form-item>
-        <a-form-item
-          label="联系地址"
-          :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 14 }"
-        >
-          <a-textarea
-            placeholder="请输入联系地址"
-            :autosize="{ minRows: 4, maxRows: 6 }"
-            v-decorator="[
-              'linkAddress',
-              {
-                rules: [{ required: false, message: '请输入联系地址' }]
-              }
-            ]"
-          ></a-textarea>
+          >
+            <a-select-option :value="1">正常</a-select-option>
+            <a-select-option :value="2">禁用</a-select-option>
+          </a-select>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -165,13 +182,14 @@
 <script>
 import { STable, tableMenu } from "@/components";
 import {
-  pageTenant,
-  removeTenant,
-  batchRemoveTenant,
-  getTenant,
-  addTenant,
-  modifyTenant
-} from "@/api/system/tenant";
+  pageRole,
+  removeRole,
+  batchRemoveRole,
+  getRole,
+  addRole,
+  modifyRole
+} from "@/api/system/role";
+import { getAllTenant } from "@/api/system/tenant";
 import AFormItem from "ant-design-vue/es/form/FormItem";
 export default {
   name: "tenant",
@@ -190,31 +208,29 @@ export default {
       okDisabled: false,
       title: "",
       edit: false,
-      tenantForm: this.$form.createForm(this),
-      tenant: {},
+      roleForm: this.$form.createForm(this),
+      role: {},
+      treeTenant: [],
       // 表头
       columns: [
         {
-          title: "租户编号",
+          title: "角色名称",
           search: true,
-          dataIndex: "tenantCode"
+          dataIndex: "name"
         },
         {
-          title: "租户名称",
+          title: "角色编码",
           search: true,
+          dataIndex: "code"
+        },
+        {
+          title: "所属租户",
           dataIndex: "tenantName"
         },
         {
-          title: "联系人",
-          dataIndex: "tenantUserName"
-        },
-        {
-          title: "联系电话",
-          dataIndex: "tenantMobile"
-        },
-        {
-          title: "联系地址",
-          dataIndex: "tenantAddress"
+          title: "状态",
+          dataIndex: "status",
+          scopedSlots: { customRender: "status" }
         },
         {
           title: "操作",
@@ -240,16 +256,21 @@ export default {
       optionAlertShow: false,
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        return pageTenant(Object.assign(parameter, this.queryParam)).then(
-          res => {
-            return res.data;
-          }
-        );
+        return pageRole(Object.assign(parameter, this.queryParam)).then(res => {
+          return res.data;
+        });
       }
     };
   },
   created() {
     this.tableOption();
+  },
+  mounted() {
+    getAllTenant().then(res => {
+      res.data.forEach(item => {
+        this.treeTenant.push({ name: item.tenantName, value: item.id });
+      });
+    });
   },
   methods: {
     tableOption() {
@@ -289,7 +310,7 @@ export default {
         centered: true,
         onOk() {
           return new Promise(resolve => {
-            batchRemoveTenant(vm.selectedRowKeys).then(res => {
+            batchRemoveRole(vm.selectedRowKeys).then(res => {
               if (res.success) {
                 vm.$message.success("批量删除成功");
                 vm.$refs.table.refresh(true);
@@ -312,7 +333,7 @@ export default {
         centered: true,
         onOk() {
           return new Promise(resolve => {
-            removeTenant(row.id).then(res => {
+            removeRole(row.id).then(res => {
               if (res.success) {
                 vm.$message.success("删除成功");
                 vm.$refs.table.refresh(true);
@@ -335,22 +356,22 @@ export default {
       this.visible = true;
       this.title = "编辑";
       this.edit = true;
-      this.getTenant(row.id);
+      this.getRole(row.id);
     },
     showDetail(row) {
       this.title = "详情";
       this.okDisabled = true;
-      this.getTenant(row.id);
+      this.getRole(row.id);
     },
     handleOk() {
       const vm = this;
-      this.tenantForm.validateFields(err => {
+      this.roleForm.validateFields(err => {
         if (!err) {
           this.$loading.show();
-          let tenant = this.tenantForm.getFieldsValue();
-          tenant.id = this.tenant.id;
+          let role = this.roleForm.getFieldsValue();
+          role.id = this.role.id;
           if (this.edit) {
-            modifyTenant(tenant)
+            modifyRole(role)
               .then(res => {
                 if (res.success) {
                   this.visible = false;
@@ -361,7 +382,7 @@ export default {
                 vm.$loading.hide();
               });
           } else {
-            addTenant(tenant)
+            addRole(role)
               .then(res => {
                 if (res.success) {
                   this.visible = false;
@@ -380,12 +401,12 @@ export default {
       this.visible = false;
       this.title = "";
       this.okDisabled = false;
-      this.tenantForm.resetFields();
+      this.roleForm.resetFields();
     },
-    getTenant(id) {
+    getRole(id) {
       const vm = this;
       this.$loading.show();
-      getTenant(id)
+      getRole(id)
         .then(res => {
           if (res.success) {
             this.visible = true;
@@ -398,23 +419,17 @@ export default {
           vm.$loading.hide();
         });
     },
-    setFormValues({ ...tenant }) {
-      let fields = [
-        "tenantCode",
-        "tenantName",
-        "linkName",
-        "linkPhone",
-        "linkAddress"
-      ];
-      Object.keys(tenant).forEach(key => {
+    setFormValues({ ...role }) {
+      let fields = ["code", "name", "tenantId", "status"];
+      Object.keys(role).forEach(key => {
         if (fields.indexOf(key) !== -1) {
-          this.tenantForm.getFieldDecorator(key);
+          this.roleForm.getFieldDecorator(key);
           let obj = {};
-          obj[key] = tenant[key];
-          this.tenantForm.setFieldsValue(obj);
+          obj[key] = role[key];
+          this.roleForm.setFieldsValue(obj);
         }
       });
-      this.tenant = tenant;
+      this.role = role;
     }
   }
 };

@@ -48,9 +48,6 @@ export const generatorDynamicRouter = () => {
  */
 export const generator = (routerMap, parent) => {
   return routerMap.map(item => {
-    if (item.component) {
-      console.log(222);
-    }
     const currentRouter = {
       // 路由地址 动态拼接生成如 /dashboard/workplace
       path: `${(parent && parent.path) || ""}/${item.key}`,
@@ -74,7 +71,6 @@ export const generator = (routerMap, parent) => {
         closeable: true
       }
     };
-    console.log(parent);
     // 为了防止出现后端返回结果不规范，处理有可能出现拼接出两个 反斜杠
     currentRouter.path = currentRouter.path.replace("//", "/");
     // 重定向

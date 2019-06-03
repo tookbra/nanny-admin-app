@@ -59,7 +59,6 @@ export default {
       this.remove(e);
     },
     closeThat(e) {
-      console.log(e);
       this.fullPaths.forEach(item => {
         if (item !== e) {
           this.remove(item);
