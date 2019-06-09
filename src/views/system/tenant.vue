@@ -14,6 +14,15 @@
             </a-form-item>
           </a-col>
           <a-col :md="5" :sm="24">
+            <a-form-item label="租户类型">
+              <a-select v-model="queryParam.type" placeholder="请选择租户类型">
+                <a-select-option value="">全部</a-select-option>
+                <a-select-option value="1">医院</a-select-option>
+                <a-select-option value="2">洗涤公司</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="5" :sm="24">
             <span class="table-page-search-submitButtons">
               <a-button
                 type="primary"
@@ -112,6 +121,24 @@
           />
         </a-form-item>
         <a-form-item
+          label="租户类型"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 14 }"
+        >
+          <a-select
+            placeholder="请选择租户类型"
+            v-decorator="[
+              'type',
+              {
+                rules: [{ required: true, message: '请选择租户类型' }]
+              }
+            ]"
+          >
+            <a-select-option :value="1">医院</a-select-option>
+            <a-select-option :value="2">洗涤公司</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
           label="租户人"
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 14 }"
@@ -203,6 +230,10 @@ export default {
           title: "租户名称",
           search: true,
           dataIndex: "tenantName"
+        },
+        {
+          title: "类型",
+          dataIndex: "typeName"
         },
         {
           title: "联系人",
@@ -404,7 +435,8 @@ export default {
         "tenantName",
         "linkName",
         "linkPhone",
-        "linkAddress"
+        "linkAddress",
+        "type"
       ];
       Object.keys(tenant).forEach(key => {
         if (fields.indexOf(key) !== -1) {

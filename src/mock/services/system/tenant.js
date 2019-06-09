@@ -13,6 +13,7 @@ const pageTenant = () => {
         tenantCode: 10001,
         tenantName: "租户1",
         tenantUserName: "租户1",
+        typeName: "医院",
         tenantMobile: "15000000000",
         tenantAddress: "杭州"
       },
@@ -21,6 +22,7 @@ const pageTenant = () => {
         tenantCode: 10001,
         tenantName: "租户1",
         tenantUserName: "租户1",
+        typeName: "医院",
         tenantMobile: "15000000000",
         tenantAddress: "杭州"
       },
@@ -29,6 +31,7 @@ const pageTenant = () => {
         tenantCode: 10001,
         tenantName: "租户1",
         tenantUserName: "租户1",
+        typeName: "医院",
         tenantMobile: "15000000000",
         tenantAddress: "杭州"
       },
@@ -37,6 +40,7 @@ const pageTenant = () => {
         tenantCode: 10001,
         tenantName: "租户1",
         tenantUserName: "租户1",
+        typeName: "医院",
         tenantMobile: "15000000000",
         tenantAddress: "杭州"
       },
@@ -45,6 +49,7 @@ const pageTenant = () => {
         tenantCode: 10001,
         tenantName: "租户1",
         tenantUserName: "租户1",
+        typeName: "医院",
         tenantMobile: "15000000000",
         tenantAddress: "杭州"
       },
@@ -53,6 +58,7 @@ const pageTenant = () => {
         tenantCode: 10001,
         tenantName: "租户1",
         tenantUserName: "租户1",
+        typeName: "医院",
         tenantMobile: "15000000000",
         tenantAddress: "杭州"
       },
@@ -61,6 +67,7 @@ const pageTenant = () => {
         tenantCode: 10001,
         tenantName: "租户1",
         tenantUserName: "租户1",
+        typeName: "医院",
         tenantMobile: "15000000000",
         tenantAddress: "杭州"
       },
@@ -69,6 +76,7 @@ const pageTenant = () => {
         tenantCode: 10001,
         tenantName: "租户1",
         tenantUserName: "租户1",
+        typeName: "医院",
         tenantMobile: "15000000000",
         tenantAddress: "杭州"
       },
@@ -77,6 +85,7 @@ const pageTenant = () => {
         tenantCode: 10001,
         tenantName: "租户1",
         tenantUserName: "租户1",
+        typeName: "医院",
         tenantMobile: "15000000000",
         tenantAddress: "杭州"
       },
@@ -85,6 +94,7 @@ const pageTenant = () => {
         tenantCode: 10001,
         tenantName: "租户1",
         tenantUserName: "租户1",
+        typeName: "医院",
         tenantMobile: "15000000000",
         tenantAddress: "杭州"
       },
@@ -93,6 +103,7 @@ const pageTenant = () => {
         tenantCode: 10001,
         tenantName: "租户1",
         tenantUserName: "租户1",
+        typeName: "医院",
         tenantMobile: "15000000000",
         tenantAddress: "杭州"
       }
@@ -191,7 +202,7 @@ export const getAllTenant = () => {
       tenantAddress: "杭州"
     }
   ]);
-}
+};
 
 // eslint-disable-next-line no-unused-vars
 export const removeTenant = req => {
@@ -216,6 +227,8 @@ export const getTenant = req => {
     tenantName: "租户1",
     tenantUserName: "租户1",
     tenantMobile: "15000000000",
+    type: 1,
+    typeName: "医院",
     tenantAddress: "杭州"
   });
 };
