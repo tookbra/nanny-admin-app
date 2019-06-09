@@ -219,6 +219,22 @@
           </a-col>
           <a-col :md="12" :sm="24">
             <a-form-item
+              label="状态"
+              :label-col="{ span: 5 }"
+              :wrapper-col="{ span: 18 }"
+            >
+              <a-radio-group v-decorator="['status']" name="opened">
+                <a-radio :value="1">
+                  启动
+                </a-radio>
+                <a-radio :value="0">
+                  禁用
+                </a-radio>
+              </a-radio-group>
+            </a-form-item>
+          </a-col>
+          <a-col :md="12" :sm="24">
+            <a-form-item
               label="菜单备注"
               :label-col="{ span: 5 }"
               :wrapper-col="{ span: 18 }"
@@ -528,7 +544,9 @@ export default {
         "sort",
         "parentId",
         "remark",
-        "opened"
+        "opened",
+        "category",
+        "status"
       ];
       Object.keys(menu).forEach(key => {
         if (fields.indexOf(key) !== -1) {

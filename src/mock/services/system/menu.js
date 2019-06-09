@@ -14,8 +14,10 @@ const pageMenu = () => {
         path: "/system",
         icon: "setting",
         code: "system",
+        category: 1,
         sort: 0,
         parentId: "0",
+        status: 1,
         children: [
           {
             id: "2",
@@ -24,7 +26,44 @@ const pageMenu = () => {
             icon: "",
             code: "tenant",
             parentId: "1",
-            sort: 0
+            category: 1,
+            sort: 0,
+            status: 1,
+            children: [
+              {
+                id: "12",
+                name: "新增",
+                path: "/system/tenant",
+                icon: "",
+                code: "tenant",
+                category: 2,
+                status: 1,
+                parentId: "2",
+                sort: 0
+              },
+              {
+                id: "13",
+                name: "修改",
+                path: "/system/tenant",
+                icon: "",
+                code: "tenant",
+                category: 2,
+                parentId: "2",
+                status: 1,
+                sort: 0
+              },
+              {
+                id: "14",
+                name: "删除",
+                path: "/system/tenant",
+                icon: "",
+                code: "tenant",
+                category: 2,
+                parentId: "2",
+                status: 1,
+                sort: 0
+              }
+            ]
           },
           {
             id: "3",
@@ -32,7 +71,9 @@ const pageMenu = () => {
             path: "/system/role",
             icon: "",
             code: "tenant",
+            category: 1,
             parentId: "1",
+            status: 1,
             sort: 0
           },
           {
@@ -42,6 +83,8 @@ const pageMenu = () => {
             icon: "",
             code: "tenant",
             parentId: "1",
+            category: 1,
+            status: 1,
             sort: 0
           }
         ]
@@ -65,6 +108,8 @@ export const getMenu = req => {
     code: "system",
     sort: 0,
     parentId: "1",
+    category: 1,
+    status: 1,
     remark: "22222",
     opened: 1
   });
