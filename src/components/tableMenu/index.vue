@@ -1,9 +1,14 @@
 <template>
   <div class="table-menu">
     <div class="table-menu-permission">
-      <a-button type="primary" icon="plus" @click="showAdd">新增</a-button>
-      <a-button type="danger" class="danger" icon="delete" @click="remove"
+      <a-button type="primary" class="btn" icon="plus" @click="showAdd"
+        >新增</a-button
+      >
+      <a-button type="danger" class="btn anger" icon="delete" @click="remove"
         >删除</a-button
+      >
+      <a-button class="btn" icon="delete" @click="showPermission"
+        >权限设置</a-button
       >
     </div>
     <div class="table-menu-nav">
@@ -34,6 +39,9 @@ export default {
     },
     showAdd() {
       this.$emit("showAdd");
+    },
+    showPermission() {
+      this.$emit("showPermission");
     }
   }
 };
@@ -52,8 +60,10 @@ export default {
   overflow: hidden;
   margin-bottom: 5px;
 
-  .ant-btn-primary {
-    margin-right: 8px;
+  .table-menu-permission {
+    .btn {
+      margin-right: 8px;
+    }
   }
   .table-menu-nav {
     display: flex;

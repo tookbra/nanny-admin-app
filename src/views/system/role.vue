@@ -56,6 +56,7 @@
       @refresh="refresh"
       @remove="batchRemove"
       @showAdd="showAdd"
+      @showPermission="showPermission"
     />
     <s-table
       ref="table"
@@ -347,6 +348,16 @@ export default {
         },
         onCancel() {}
       });
+    },
+    showPermission() {
+      if (!this.selectedRowKeys.length) {
+        this.$message.warning("请选择需授权的数据");
+        return;
+      }
+      if (this.selectedRowKeys.length > 1) {
+        this.$message.warning("只能选择一条需授权的数据");
+        return;
+      }
     },
     showAdd() {
       this.visible = true;

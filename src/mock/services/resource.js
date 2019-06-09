@@ -28,6 +28,10 @@ const getResource = () => {
         {
           title: "数据字典",
           key: "dict"
+        },
+        {
+          title: "系统配置",
+          key: "setting"
         }
       ]
     }
