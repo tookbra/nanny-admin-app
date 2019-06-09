@@ -179,6 +179,30 @@
           </a-col>
           <a-col :md="12" :sm="24">
             <a-form-item
+              label="菜单类型"
+              :label-col="{ span: 5 }"
+              :wrapper-col="{ span: 18 }"
+            >
+              <a-radio-group
+                v-decorator="[
+                  'category',
+                  {
+                    rules: [{ required: true, message: '请选择菜单类型' }]
+                  }
+                ]"
+                name="category"
+              >
+                <a-radio :value="0">
+                  菜单
+                </a-radio>
+                <a-radio :value="1">
+                  按钮
+                </a-radio>
+              </a-radio-group>
+            </a-form-item>
+          </a-col>
+          <a-col :md="12" :sm="24">
+            <a-form-item
               label="新窗口"
               :label-col="{ span: 5 }"
               :wrapper-col="{ span: 18 }"
