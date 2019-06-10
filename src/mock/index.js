@@ -19,6 +19,7 @@ if (
   require("./services/system/dict");
   require("./services/system/permission");
   require("./services/system/role");
+  require("./services/system/department");
 
   Mock.setup({
     timeout: 800 // setter delay time

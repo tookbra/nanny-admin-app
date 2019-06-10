@@ -14,6 +14,14 @@ const getResource = () => {
           key: "tenant"
         },
         {
+          title: "用户管理",
+          key: "account"
+        },
+        {
+          title: "科室管理",
+          key: "department"
+        },
+        {
           title: "角色管理",
           key: "role"
         },
