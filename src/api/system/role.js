@@ -15,6 +15,13 @@ export function getRole(id) {
   });
 }
 
+export function getRoleByTenantId(id) {
+  return fetch({
+    url: "/roles/tenant/" + id,
+    method: "get"
+  });
+}
+
 export function addRole(parameter) {
   return fetch({
     url: "/roles",

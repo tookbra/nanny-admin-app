@@ -82,6 +82,25 @@ const pageRole = () => {
   });
 };
 
+const getRoleByTenantId = () => {
+  return builder([
+    {
+      id: 1,
+      code: 10001,
+      name: "管理员",
+      tenantName: "租户1",
+      status: 1
+    },
+    {
+      id: 2,
+      code: 10001,
+      name: "管理员1",
+      tenantName: "租户1",
+      status: 1
+    }
+  ]);
+};
+
 // eslint-disable-next-line no-unused-vars
 export const removeRole = req => {
   return builder({});
@@ -110,6 +129,7 @@ export const getRole = req => {
 };
 
 Mock.mock(/\/roles\/1/, "get", getRole);
+Mock.mock(/\/roles\/tenant\/1/, "get", getRoleByTenantId);
 Mock.mock(/\/roles\/1/, "put", modifyRole);
 Mock.mock(/\/roles/, "get", pageRole);
 Mock.mock(/\/roles/, "post", addRole);

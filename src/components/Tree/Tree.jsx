@@ -1,6 +1,6 @@
 import { Menu, Icon, Input } from "ant-design-vue";
 
-const { Item, ItemGroup, SubMenu } = Menu;
+const { Item, SubMenu } = Menu;
 const { Search } = Input;
 
 export default {
@@ -9,10 +9,6 @@ export default {
     dataSource: {
       type: Array,
       required: true
-    },
-    openKeys: {
-      type: Array,
-      default: () => []
     },
     search: {
       type: Boolean,
@@ -23,18 +19,7 @@ export default {
       default: () => []
     }
   },
-  created() {
-    this.localOpenKeys = this.openKeys.slice(0);
-  },
-  data() {
-    return {
-      localOpenKeys: []
-    };
-  },
   methods: {
-    handlePlus(item) {
-      this.$emit("add", item);
-    },
     handleTitleClick(...args) {
       this.$emit("titleClick", { args });
     },
@@ -52,12 +37,11 @@ export default {
     },
     renderMenuItem(item) {
       return (
-        <Item key={item.key}>
-          {this.renderIcon(item.icon)}
-          {item.name}
-          <a class="btn" {...{ on: { click: () => this.handlePlus(item) } }}>
-            <a-icon type="plus" />
-          </a>
+        <Item
+          key={item.key}
+          {...{ on: { click: () => this.handleTitleClick(item) } }}
+        >
+          {item.title}
         </Item>
       );
     },
@@ -66,50 +50,23 @@ export default {
         ? this.renderSubItem(item, item.key)
         : this.renderMenuItem(item, item.key);
     },
-    renderItemGroup(item) {
-      const childrenItems = item.children.map(o => {
-        return this.renderItem(o, o.key);
-      });
-
-      return (
-        <ItemGroup key={item.key}>
-          <template slot="title">
-            <span>{item.title}</span>
-            <a-dropdown>
-              <a class="btn">
-                <a-icon type="ellipsis" />
-              </a>
-              <a-menu slot="overlay">
-                <a-menu-item key="1">新增</a-menu-item>
-                <a-menu-item key="2">合并</a-menu-item>
-                <a-menu-item key="3">移除</a-menu-item>
-              </a-menu>
-            </a-dropdown>
-          </template>
-          {childrenItems}
-        </ItemGroup>
-      );
-    },
     renderSubItem(item, key) {
       const childrenItems =
         item.children &&
         item.children.map(o => {
-          return this.renderItem(o, o.id);
+          return this.renderItem(o, o.key);
         });
 
       const title = (
         <span slot="title">
-          {this.renderIcon(item.icon)}
-          <span>{item.title}</span>
+          <span>1{item.title}</span>
         </span>
       );
-
-      // if (item.group) {
-      //   return this.renderItemGroup(item);
-      // }
-      // titleClick={this.handleTitleClick(item)}
       return (
-        <SubMenu key={key}>
+        <SubMenu
+          key={key}
+          {...{ on: { titleClick: () => this.handleTitleClick(item) } }}
+        >
           {title}
           {childrenItems}
         </SubMenu>
@@ -124,8 +81,6 @@ export default {
       return this.renderItem(item);
     });
 
-    console.log(list);
-
     return (
       <div class="tree-wrapper">
         <a-select
@@ -139,19 +94,7 @@ export default {
         </a-select>
         {search ? this.renderSearch() : null}
 
-        <Menu
-          mode="inline"
-          class="custom-tree"
-          {...{
-            on: {
-              click: item => this.$emit("click", item),
-              "update:openKeys": val => {
-                this.localOpenKeys = val;
-              }
-            }
-          }}
-          openKeys={this.localOpenKeys}
-        >
+        <Menu mode="inline" class="custom-tree">
           {list}
         </Menu>
       </div>

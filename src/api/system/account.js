@@ -1,37 +1,37 @@
 import { fetch } from "@/libs/fetch";
 
-export function pageMenu(parameter) {
+export function pageAccount(parameter) {
   return fetch({
-    url: "/menus",
+    url: "/accounts",
     method: "get",
     data: parameter
   });
 }
 
-export function getMenu(id) {
+export function getAccount(id) {
   return fetch({
-    url: "/menus/" + id,
+    url: "/accounts/" + id,
     method: "get"
   });
 }
 
-export function batchRemoveMenu(parameter) {
+export function batchRemoveAccount(parameter) {
   return fetch({
-    url: "/menus/batch",
+    url: "/accounts/batch",
     method: "post",
     data: parameter
   });
 }
-export function removeMenu(id) {
+export function removeAccount(id) {
   return fetch({
-    url: "/menus/" + id,
+    url: "/accounts/" + id,
     method: "delete"
   });
 }
 
-export function addMenu(parameter) {
+export function addAccount(parameter) {
   return fetch({
-    url: "/menus",
+    url: "/accounts",
     method: "post",
     data: parameter,
     headers: {
@@ -40,9 +40,9 @@ export function addMenu(parameter) {
   });
 }
 
-export function modifyMenu(parameter) {
+export function modifyAccount(parameter) {
   return fetch({
-    url: "/menus/" + parameter.id,
+    url: "/accounts/" + parameter.id,
     method: "put",
     data: parameter,
     headers: {

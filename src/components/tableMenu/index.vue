@@ -10,6 +10,9 @@
       <a-button class="btn" icon="delete" @click="showPermission"
         >权限设置</a-button
       >
+      <a-button class="btn" icon="reset" @click="showPermission"
+        >重置密码</a-button
+      >
     </div>
     <div class="table-menu-nav">
       <a-button shape="circle" icon="sync" @click="refresh" />
