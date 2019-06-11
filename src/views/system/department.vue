@@ -241,7 +241,7 @@ export default {
     },
     handleRemove() {
       this.$loading.show();
-      remove(this.rightClickSelected.key)
+      remove(this.rightClickSelected.dataRef.key)
         .then(resp => {
           if (resp.success) {
             this.$message.success("删除成功!");
