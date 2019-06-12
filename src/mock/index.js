@@ -20,6 +20,7 @@ if (
   require("./services/system/role");
   require("./services/system/department");
   require("./services/system/account");
+  require("./services/basicInfo/product");
 
   Mock.setup({
     timeout: 800 // setter delay time

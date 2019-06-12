@@ -4,6 +4,30 @@ import { builder } from "../util";
 const getResource = () => {
   return builder([
     {
+      title: "基础资料",
+      key: "basicInfo",
+      icon: "setting",
+      component: "BasicLayout",
+      children: [
+        {
+          title: "产品信息",
+          key: "product"
+        }
+      ]
+    },
+    {
+      title: "芯片管理",
+      key: "rfid",
+      icon: "setting",
+      component: "BasicLayout",
+      children: [
+        {
+          title: "芯片信息",
+          key: "rfidInfo"
+        }
+      ]
+    },
+    {
       title: "系统管理",
       key: "system",
       icon: "setting",
