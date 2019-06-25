@@ -149,11 +149,11 @@ export default {
       this.localLoading = true;
       const parameter = Object.assign(
         {
-          pageNo:
+          current:
             (pagination && pagination.current) ||
             this.localPagination.current ||
             this.pageNum,
-          pageSize:
+          size:
             (pagination && pagination.pageSize) ||
             this.localPagination.pageSize ||
             this.pageSize
@@ -177,8 +177,9 @@ export default {
       // eslint-disable-next-line
        if ((typeof result === 'object' || typeof result === 'function') && typeof result.then === 'function') {
         result.then(r => {
+          console.log(r);
           this.localPagination = Object.assign({}, this.localPagination, {
-            current: r.pageNo, // 返回结果中的当前分页数
+            current: r.current, // 返回结果中的当前分页数
             total: r.total, // 返回结果中的总记录数
             showSizeChanger: this.showSizeChanger,
             pageSize:
