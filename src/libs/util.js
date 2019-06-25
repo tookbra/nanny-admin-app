@@ -52,7 +52,7 @@ export function removeLoadingAnimate(id = "", timeout = 1500) {
  * @param data
  * @returns {string}
  */
-export function serialize(data){
+export function serialize(data) {
   let list = [];
   Object.keys(data).forEach(ele => {
     list.push(`${ele}=${data[ele]}`);

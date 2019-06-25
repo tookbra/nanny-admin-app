@@ -4,7 +4,10 @@ import store from "@/store";
 import notification from "ant-design-vue/es/notification";
 
 export const fetch = axios.create({
-  baseURL: process.env.VUE_APP_URL,
+  baseURL:
+    process.env.VUE_APP_PROXY === "true"
+      ? process.env.VUE_APP_PROXY_URL
+      : process.env.VUE_APP_URL,
   timeout: 5000,
   validateStatus: function(status) {
     return status >= 200 && status < 300;

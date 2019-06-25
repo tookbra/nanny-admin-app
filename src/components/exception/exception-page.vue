@@ -82,7 +82,7 @@ export default {
     }
     .desc {
       margin-bottom: 16px;
-      color: rgba(0,0,0,.45);
+      color: rgba(0, 0, 0, 0.45);
       font-size: 20px;
       line-height: 28px;
     }
