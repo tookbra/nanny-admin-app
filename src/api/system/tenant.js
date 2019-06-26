@@ -26,10 +26,7 @@ export function addTenant(parameter) {
   return fetch({
     url: "/system/tenants",
     method: "post",
-    data: parameter,
-    headers: {
-      "Content-Type": "application/json;charset=UTF-8"
-    }
+    data: parameter
   });
 }
 
@@ -37,10 +34,7 @@ export function modifyTenant(parameter) {
   return fetch({
     url: "/system/tenants/" + parameter.id,
     method: "put",
-    data: parameter,
-    headers: {
-      "Content-Type": "application/json;charset=UTF-8"
-    }
+    data: parameter
   });
 }
 

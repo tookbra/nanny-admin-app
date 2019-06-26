@@ -61,6 +61,12 @@
       }"
       :showSizeChanger="true"
     >
+      <span slot="type" slot-scope="text">
+        {{ text | typeFilter(typeMap) }}
+      </span>
+      <span slot="status" slot-scope="text">
+        {{ text | statusFilter }}
+      </span>
       <span slot="action" class="table-nav" slot-scope="text, record">
         <template>
           <a @click="() => showDetail(record)">
@@ -98,9 +104,12 @@
           <a-input
             placeholder="请输入租户编号"
             v-decorator="[
-              'tenantCode',
+              'code',
               {
-                rules: [{ required: true, message: '请输入租户编号' }]
+                rules: [
+                  { required: true, message: '请输入租户编号' },
+                  { min: 4, max: 10, message: '租户编号长度为[4,10]' }
+                ]
               }
             ]"
           />
@@ -113,9 +122,12 @@
           <a-input
             placeholder="请输入租户名称"
             v-decorator="[
-              'tenantName',
+              'name',
               {
-                rules: [{ required: true, message: '请输入租户名称' }]
+                rules: [
+                  { required: true, message: '请输入租户名称' },
+                  { min: 1, max: 15, message: '租户名称长度为[1,15]' }
+                ]
               }
             ]"
           />
@@ -137,6 +149,21 @@
             <a-select-option :value="1">医院</a-select-option>
             <a-select-option :value="2">洗涤公司</a-select-option>
           </a-select>
+        </a-form-item>
+        <a-form-item
+          label="使用日期"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 14 }"
+        >
+          <a-range-picker
+            @change="rangePickerChange"
+            v-decorator="[
+              'rangePicker',
+              {
+                rules: [{ required: true, message: '请选择使用日期' }]
+              }
+            ]"
+          />
         </a-form-item>
         <a-form-item
           label="租户人"
@@ -161,7 +188,7 @@
           <a-input
             placeholder="请输入联系电话"
             v-decorator="[
-              'linkPhone',
+              'phone',
               {
                 rules: [{ required: false, message: '请输入联系电话' }]
               }
@@ -177,12 +204,45 @@
             placeholder="请输入联系地址"
             :autosize="{ minRows: 4, maxRows: 6 }"
             v-decorator="[
-              'linkAddress',
+              'address',
               {
                 rules: [{ required: false, message: '请输入联系地址' }]
               }
             ]"
           ></a-textarea>
+        </a-form-item>
+        <a-form-item
+          label="备注"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 14 }"
+        >
+          <a-textarea
+            placeholder="请输入备注"
+            :autosize="{ minRows: 4, maxRows: 6 }"
+            v-decorator="[
+              'remark',
+              {
+                rules: [{ required: false, message: '请输入联系地址' }]
+              }
+            ]"
+          ></a-textarea>
+        </a-form-item>
+        <a-form-item
+          label="状态"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 14 }"
+        >
+          <a-switch
+            checkedChildren="启用"
+            unCheckedChildren="冻结"
+            :checked="tenantStatus"
+            v-decorator="[
+              'status',
+              {
+                rules: [{ required: false, message: '请选择状态' }]
+              }
+            ]"
+          />
         </a-form-item>
       </a-form>
     </a-modal>
@@ -191,6 +251,7 @@
 
 <script>
 import { STable, tableMenu } from "@/components";
+import { getSwitchStatus } from "@/libs/util";
 import {
   pageTenant,
   removeTenant,
@@ -219,33 +280,48 @@ export default {
       edit: false,
       tenantForm: this.$form.createForm(this),
       tenant: {},
+      tenantStatus: true,
+      startDate: "",
+      endDate: "",
+      typeMap: {
+        1: "正常",
+        2: "禁用"
+      },
       // 表头
       columns: [
         {
           title: "租户编号",
-          search: true,
-          dataIndex: "tenantCode"
+          dataIndex: "code"
         },
         {
           title: "租户名称",
-          search: true,
-          dataIndex: "tenantName"
+          dataIndex: "name"
         },
         {
           title: "类型",
-          dataIndex: "typeName"
+          dataIndex: "type",
+          scopedSlots: { customRender: "type" }
+        },
+        {
+          title: "开始日期",
+          dataIndex: "startDate"
+        },
+        {
+          title: "结束日期",
+          dataIndex: "endDate"
+        },
+        {
+          title: "状态",
+          dataIndex: "status",
+          scopedSlots: { customRender: "status" }
         },
         {
           title: "联系人",
-          dataIndex: "tenantUserName"
+          dataIndex: "linkman"
         },
         {
           title: "联系电话",
-          dataIndex: "tenantMobile"
-        },
-        {
-          title: "联系地址",
-          dataIndex: "tenantAddress"
+          dataIndex: "phone"
         },
         {
           title: "操作",
@@ -373,6 +449,10 @@ export default {
       this.okDisabled = true;
       this.getTenant(row.id);
     },
+    rangePickerChange(dates, dataStr) {
+      this.startDate = dataStr[0];
+      this.endDate = dataStr[0];
+    },
     handleOk() {
       const vm = this;
       this.tenantForm.validateFields(err => {
@@ -380,26 +460,34 @@ export default {
           this.$loading.show();
           let tenant = this.tenantForm.getFieldsValue();
           tenant.id = this.tenant.id;
+          tenant.status = getSwitchStatus(this.tenantStatus);
+          tenant.startDate = this.startDate;
+          tenant.endDate = this.endDate;
           if (this.edit) {
             modifyTenant(tenant)
               .then(res => {
-                if (res.success) {
+                if (!res.success) {
+                  vm.$message.error(res.msg);
+                } else {
                   this.visible = false;
                   this.$refs.table.refresh(true);
                 }
               })
-              .then(() => {
+              .finally(() => {
                 vm.$loading.hide();
               });
           } else {
+            console.log(tenant);
             addTenant(tenant)
               .then(res => {
-                if (res.success) {
+                if (!res.success) {
+                  vm.$message.error(res.msg);
+                } else {
                   this.visible = false;
                   this.$refs.table.refresh(true);
                 }
               })
-              .then(() => {
+              .finally(() => {
                 vm.$loading.hide();
               });
           }
@@ -431,12 +519,13 @@ export default {
     },
     setFormValues({ ...tenant }) {
       let fields = [
-        "tenantCode",
-        "tenantName",
+        "code",
+        "name",
         "linkName",
-        "linkPhone",
-        "linkAddress",
-        "type"
+        "phone",
+        "address",
+        "type",
+        "remark"
       ];
       Object.keys(tenant).forEach(key => {
         if (fields.indexOf(key) !== -1) {

@@ -16,6 +16,7 @@ export function handleScrollHeader(callback) {
   window.addEventListener(
     "scroll",
     event => {
+      console.log(event);
       clearTimeout(timer);
       timer = setTimeout(() => {
         let direction = "up";
@@ -58,4 +59,13 @@ export function serialize(data) {
     list.push(`${ele}=${data[ele]}`);
   });
   return list.join("&");
+}
+
+/**
+ * 获取状态
+ * @param check
+ * @returns {number}
+ */
+export function getSwitchStatus(check) {
+  return check ? 1 : 2;
 }

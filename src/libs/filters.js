@@ -6,3 +6,7 @@ const statusMap = {
 Vue.filter("statusFilter", function(status) {
   return statusMap[status];
 });
+
+Vue.filter("typeFilter", function(type, typeMap) {
+  return typeMap[type];
+});
