@@ -5,20 +5,24 @@
         <a-row :gutter="25">
           <a-col :md="5" :sm="24">
             <a-form-item label="菜单名称">
-              <a-input v-model="queryParam.code" placeholder="菜单名称" />
+              <a-input v-model="queryParam.name" placeholder="菜单名称" />
             </a-form-item>
           </a-col>
           <a-col :md="5" :sm="24">
             <a-form-item label="菜单编码">
-              <a-input v-model="queryParam.name" placeholder="菜单编码" />
+              <a-input v-model="queryParam.code" placeholder="菜单编码" />
             </a-form-item>
           </a-col>
           <a-col :md="5" :sm="24">
             <a-form-item label="状态">
-              <a-select placeholder="请选择" default-value="">
+              <a-select
+                placeholder="请选择"
+                v-model="queryParam.status"
+                default-value=""
+              >
                 <a-select-option value="">全部</a-select-option>
-                <a-select-option value="1">禁用</a-select-option>
-                <a-select-option value="2">启用</a-select-option>
+                <a-select-option value="2">禁用</a-select-option>
+                <a-select-option value="1">启用</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -62,6 +66,9 @@
       :pagination="pagination"
       :showSizeChanger="true"
     >
+      <span slot="status" slot-scope="text">
+        {{ text | statusFilter }}
+      </span>
       <span slot="action" class="table-nav" slot-scope="text, record">
         <template>
           <a @click="() => showDetail(record)">
@@ -108,7 +115,30 @@
                 v-decorator="[
                   'name',
                   {
-                    rules: [{ required: true, message: '请输入菜单名称' }]
+                    rules: [
+                      { required: true, message: '请输入菜单名称' },
+                      { min: 2, max: 15, message: '菜单名称长度为[2, 10]' }
+                    ]
+                  }
+                ]"
+              />
+            </a-form-item>
+          </a-col>
+          <a-col :md="12" :sm="24">
+            <a-form-item
+              label="菜单编码"
+              :label-col="{ span: 5 }"
+              :wrapper-col="{ span: 18 }"
+            >
+              <a-input
+                placeholder="请输入菜单编码"
+                v-decorator="[
+                  'code',
+                  {
+                    rules: [
+                      { required: true, message: '请输入菜单编码' },
+                      { min: 2, max: 15, message: '菜单编码长度为[2, 10]' }
+                    ]
                   }
                 ]"
               />
@@ -139,6 +169,7 @@
             >
               <a-tree-select
                 showSearch
+                :disabled="menuTreeDisabled"
                 :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
                 :treeData="treeMenu"
                 placeholder="请选择上级菜单"
@@ -192,10 +223,10 @@
                 ]"
                 name="category"
               >
-                <a-radio :value="0">
+                <a-radio :value="1">
                   菜单
                 </a-radio>
-                <a-radio :value="1">
+                <a-radio :value="2">
                   按钮
                 </a-radio>
               </a-radio-group>
@@ -223,21 +254,31 @@
               :label-col="{ span: 5 }"
               :wrapper-col="{ span: 18 }"
             >
-              <a-radio-group v-decorator="['status']" name="opened">
+              <a-radio-group
+                v-decorator="[
+                  'status',
+                  {
+                    rules: [{ required: true, message: '请选择状态' }]
+                  }
+                ]"
+                name="opened"
+              >
                 <a-radio :value="1">
-                  启动
+                  启用
                 </a-radio>
-                <a-radio :value="0">
+                <a-radio :value="2">
                   禁用
                 </a-radio>
               </a-radio-group>
             </a-form-item>
           </a-col>
-          <a-col :md="12" :sm="24">
+        </a-row>
+        <a-row>
+          <a-col :md="24" :sm="48">
             <a-form-item
               label="菜单备注"
-              :label-col="{ span: 5 }"
-              :wrapper-col="{ span: 18 }"
+              :label-col="{ span: 2 }"
+              :wrapper-col="{ span: 21 }"
             >
               <a-textarea
                 placeholder="请输入备注"
@@ -293,6 +334,7 @@ export default {
       visible: false,
       loading: false,
       okDisabled: false,
+      menuTreeDisabled: false,
       title: "",
       iconType: "",
       edit: false,
@@ -306,7 +348,6 @@ export default {
       columns: [
         {
           title: "名称",
-          search: true,
           dataIndex: "name"
         },
         {
@@ -315,8 +356,21 @@ export default {
         },
         {
           title: "路由地址",
-          search: true,
           dataIndex: "path"
+        },
+        {
+          title: "类型",
+          dataIndex: "category",
+          customRender: text => {
+            switch (text) {
+              case 1:
+                return <a-tag color="cyan"> 菜单 </a-tag>;
+              case 2:
+                return <a-tag color="pink"> 按钮 </a-tag>;
+              default:
+                return text;
+            }
+          }
         },
         {
           title: "图标",
@@ -326,6 +380,11 @@ export default {
         {
           title: "排序",
           dataIndex: "sort"
+        },
+        {
+          title: "状态",
+          dataIndex: "status",
+          scopedSlots: { customRender: "status" }
         },
         {
           title: "操作",
@@ -389,6 +448,8 @@ export default {
           this.assemblyTree(item.children);
         }
       });
+      console.log(111111);
+      console.log(this.treeMenu);
     },
     chooseIcon() {
       this.showIcon = true;
@@ -425,18 +486,19 @@ export default {
         content: "确定删除所选中的记录?",
         centered: true,
         onOk() {
-          return new Promise(resolve => {
-            batchRemoveMenu(vm.selectedRowKeys).then(res => {
+          vm.$loading.show();
+          batchRemoveMenu(vm.selectedRowKeys)
+            .then(res => {
               if (res.success) {
                 vm.$message.success("批量删除成功");
                 vm.$refs.table.refresh(true);
-                resolve(res);
               } else {
                 vm.$message.error(res.msg);
-                resolve("");
               }
+            })
+            .finally(() => {
+              vm.$loading.hide();
             });
-          });
         },
         onCancel() {}
       });
@@ -448,18 +510,19 @@ export default {
         content: "确定删除该行记录?",
         centered: true,
         onOk() {
-          return new Promise(resolve => {
-            removeMenu(row.id).then(res => {
+          vm.$loading.show();
+          removeMenu(row.id)
+            .then(res => {
               if (res.success) {
                 vm.$message.success("删除成功");
                 vm.$refs.table.refresh(true);
-                resolve(res);
               } else {
                 vm.$message.error(res.msg);
-                resolve("");
               }
+            })
+            .finally(() => {
+              vm.$loading.hide();
             });
-          });
         },
         onCancel() {}
       });

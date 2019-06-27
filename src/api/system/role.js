@@ -47,7 +47,7 @@ export function modifyRole(parameter) {
 export function batchRemoveRole(parameter) {
   return fetch({
     url: "/system/roles/batch",
-    method: "post",
+    method: "delete",
     data: parameter
   });
 }

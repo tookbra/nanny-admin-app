@@ -315,18 +315,19 @@ export default {
         content: "确定删除所选中的记录?",
         centered: true,
         onOk() {
-          return new Promise(resolve => {
-            batchRemoveRole(vm.selectedRowKeys).then(res => {
+          vm.$loading.show();
+          batchRemoveRole(vm.selectedRowKeys)
+            .then(res => {
               if (res.success) {
                 vm.$message.success("批量删除成功");
                 vm.$refs.table.refresh(true);
-                resolve(res);
               } else {
                 vm.$message.error(res.msg);
-                resolve("");
               }
+            })
+            .finally(() => {
+              vm.$loading.hide();
             });
-          });
         },
         onCancel() {}
       });

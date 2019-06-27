@@ -2,51 +2,45 @@ import { fetch } from "@/libs/fetch";
 
 export function pageMenu(parameter) {
   return fetch({
-    url: "/menus",
+    url: "/system/menus",
     method: "get",
-    data: parameter
+    params: parameter
   });
 }
 
 export function getMenu(id) {
   return fetch({
-    url: "/menus/" + id,
+    url: "/system/menus/" + id,
     method: "get"
   });
 }
 
 export function batchRemoveMenu(parameter) {
   return fetch({
-    url: "/menus/batch",
-    method: "post",
+    url: "/system/menus/batch",
+    method: "delete",
     data: parameter
   });
 }
 export function removeMenu(id) {
   return fetch({
-    url: "/menus/" + id,
+    url: "/system/menus/" + id,
     method: "delete"
   });
 }
 
 export function addMenu(parameter) {
   return fetch({
-    url: "/menus",
+    url: "/system/menus",
     method: "post",
-    data: parameter,
-    headers: {
-      "Content-Type": "application/json;charset=UTF-8"
-    }
+    data: parameter
   });
 }
 
 export function modifyMenu(parameter) {
   return fetch({
-    url: "/menus/" + parameter.id,
+    url: "/system/menus/" + parameter.id,
     method: "put",
-    data: parameter,
-    headers: {
-      "Content-Type": "application/json;charset=UTF-8"
-    }
+    data: parameter
   });
 }
