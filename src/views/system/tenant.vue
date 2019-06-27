@@ -418,18 +418,19 @@ export default {
         content: "确定删除该行记录?",
         centered: true,
         onOk() {
-          return new Promise(resolve => {
-            removeTenant(row.id).then(res => {
+          this.$loading.show();
+          removeTenant(row.id)
+            .then(res => {
               if (res.success) {
                 vm.$message.success("删除成功");
                 vm.$refs.table.refresh(true);
-                resolve(res);
               } else {
                 vm.$message.error(res.msg);
-                resolve("");
               }
+            })
+            .finally(() => {
+              vm.$loading.hide();
             });
-          });
         },
         onCancel() {}
       });
