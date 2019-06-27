@@ -121,6 +121,7 @@ export default {
       });
     },
     loginSuccess(res) {
+      console.log(res);
       this.$router.push({ name: "home" });
     },
     requestFailed(err) {

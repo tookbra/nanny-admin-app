@@ -17,8 +17,8 @@ if (
   require("./services/system/menu");
   require("./services/system/dict");
   require("./services/system/permission");
-  require("./services/system/role");
-  require("./services/system/department");
+  // require("./services/system/role");
+  // require("./services/system/department");
   require("./services/system/account");
   require("./services/basicInfo/product");
 

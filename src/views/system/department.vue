@@ -14,21 +14,17 @@
             >
           </div>
           <a-select
-            allowClear=""
             placeholder="请选择租户"
             style="width: 100%; margin-bottom: 0.4rem;"
+            @change="tenantChange"
           >
             <a-select-option
               v-for="(item, index) in tenants"
               :key="index"
               :value="item.id"
-              >{{ item.tenantName }}</a-select-option
+              >{{ item.name }}</a-select-option
             >
           </a-select>
-          <a-input-search
-            style="width:100%;margin-top: 10px"
-            placeholder="请输入科室名称"
-          />
           <template>
             <a-dropdown
               :trigger="[this.dropTrigger]"
@@ -47,8 +43,9 @@
               <!--新增右键点击事件,和增加添加和删除功能-->
               <a-menu slot="overlay">
                 <a-menu-item @click="handleAdd()" key="1">添加</a-menu-item>
-                <a-menu-item @click="handleRemove()" key="2">删除</a-menu-item>
-                <a-menu-item @click="handleDrop()" key="3">取消</a-menu-item>
+                <a-menu-item @click="handleEdit()" key="2">编辑</a-menu-item>
+                <a-menu-item @click="handleRemove()" key="3">删除</a-menu-item>
+                <a-menu-item @click="handleDrop()" key="4">取消</a-menu-item>
               </a-menu>
             </a-dropdown>
           </template>
@@ -77,15 +74,20 @@
               :labelCol="{ lg: { span: 7 }, sm: { span: 7 } }"
               :wrapperCol="{ lg: { span: 10 }, sm: { span: 17 } }"
             >
-              <a-input
+              <a-tree-select
                 v-bind:disabled="disabled"
+                showSearch
+                :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
+                :treeData="orgTree"
+                placeholder="请选择上级科室"
+                @change="deptTreeChange"
                 v-decorator="[
-                  'parentName',
-                  { rules: [{ required: true, message: '请输入科室名称' }] }
+                  'parentId',
+                  { rules: [{ required: true, message: '请选择上级科室' }] }
                 ]"
-                name="name"
-                placeholder="请输入上级科室"
-              />
+                treeDefaultExpandAll
+              >
+              </a-tree-select>
             </a-form-item>
             <a-form-item
               label="排序"
@@ -147,7 +149,8 @@ import {
   getDepartment,
   batchRemove,
   remove,
-  addDepartment
+  addDepartment,
+  modifyDeparment
 } from "@/api/system/department";
 import { getAllTenant } from "@/api/system/tenant";
 export default {
@@ -158,6 +161,8 @@ export default {
       tenants: [],
       tenantId: 0,
       disabled: true,
+      edit: false,
+      orgValue: "",
       departmentForm: this.$form.createForm(this),
       dropTrigger: "",
       selectedKeys: [],
@@ -166,7 +171,6 @@ export default {
     };
   },
   mounted() {
-    this.loadTree();
     getAllTenant().then(res => {
       this.tenants = res.data;
     });
@@ -181,19 +185,7 @@ export default {
     onSelect(selectedKeys, info) {
       console.log("onSelect", info);
       if (info.selected) {
-        const _this = this;
-        this.$loading.show();
-        getDepartment(info.node.dataRef.value)
-          .then(res => {
-            if (res.success) {
-              _this.setFormValues(res.data);
-            } else {
-              _this.$message.error(res.msg);
-            }
-          })
-          .then(() => {
-            _this.$loading.hide();
-          });
+        this.getDepartment(info.node.dataRef.value);
       } else {
         this.departmentForm.resetFields();
       }
@@ -204,25 +196,60 @@ export default {
         this.checkedKeys.push(item);
       });
     },
+    deptTreeChange(value) {
+      this.orgValue = value;
+    },
     showAdd() {
       this.departmentForm.resetFields();
       this.disabled = false;
+      this.edit = false;
       let department = {};
       if (this.selectedKeys) {
         department = { parentName: this.selectedKeys.name };
       }
       this.setFormValues(department);
     },
+    tenantChange(value) {
+      this.tenantId = value;
+      this.loadTree();
+    },
     loadTree() {
       this.$loading.show();
       const _this = this;
       getDepartmentByTenant(this.tenantId)
         .then(res => {
-          this.orgTree = res.data;
+          if (res.success) {
+            this.orgTree = [];
+            if (res.data.length === 0) {
+              this.orgTree.push({
+                key: "0",
+                value: "0",
+                title: "领导科室",
+                children: res.data
+              });
+            } else {
+              this.orgTree = res.data;
+            }
+          } else {
+            this.$message.error("获取部门失败");
+          }
         })
-        .then(() => {
+        .finally(() => {
           _this.$loading.hide();
         });
+    },
+    assemblyTree(data) {
+      data.forEach(item => {
+        this.treeMenu.push({
+          id: item.id,
+          pId: item.parentId,
+          label: item.name,
+          value: item.id
+        });
+        if (item.children) {
+          this.assemblyTree(item.children);
+        }
+      });
     },
     // 右键操作方法
     rightHandle(node) {
@@ -238,6 +265,10 @@ export default {
         department = { parentName: title };
       }
       this.setFormValues(department);
+    },
+    handleEdit() {
+      this.disabled = false;
+      this.getDepartment(this.rightClickSelected.dataRef.key);
     },
     handleRemove() {
       this.$loading.show();
@@ -257,31 +288,41 @@ export default {
     handleDrop() {
       this.dropTrigger = "";
     },
+    getDepartment(value) {
+      this.$loading.show();
+      getDepartment(value)
+        .then(res => {
+          if (res.success) {
+            this.setFormValues(res.data);
+          } else {
+            this.$message.error(res.msg);
+          }
+        })
+        .finally(() => {
+          this.$loading.hide();
+        });
+    },
     remove() {
       if (this.checkedKeys.length <= 0) {
         this.$message.warning("请选择需删除的数据！");
       } else {
-        let ids = "";
-        for (let a = 0; a < this.checkedKeys.length; a++) {
-          ids += this.checkedKeys[a] + ",";
-        }
         const _this = this;
         this.$confirm({
           title: "确认删除",
           content: "确定要删除所选中的 " + this.checkedKeys.length + " 条数据?",
           onOk: function() {
             _this.$loading.show();
-            batchRemove({ ids: ids })
+            batchRemove(_this.checkedKeys)
               .then(res => {
                 if (res.success) {
-                  _this.$message.success(res.message);
+                  _this.$message.success(res.msg);
                   _this.loadTree();
                   _this.onClearSelected();
                 } else {
-                  _this.$message.warning(res.message);
+                  _this.$message.warning(res.msg);
                 }
               })
-              .then(() => {
+              .finally(() => {
                 _this.$loading.hide();
               });
           }
@@ -295,26 +336,51 @@ export default {
     },
     handleSubmit(e) {
       e.preventDefault();
+      const vm = this;
       this.departmentForm.validateFields((err, values) => {
         if (!err) {
           this.$loading.show();
           let department = values;
-          addDepartment(department)
-            .then(res => {
-              if (res.success) {
-                this.loadTree();
-                this.onClearSelected();
-                this.disabled = true;
-              }
-            })
-            .then(() => {
-              this.$loading.hide();
-            });
+          department.tenantId = this.tenantId;
+          if (this.edit) {
+            modifyDeparment(department)
+              .then(res => {
+                if (!res.success) {
+                  vm.$message.error(res.msg);
+                } else {
+                  this.loadTree();
+                  this.onClearSelected();
+                  this.disabled = true;
+                }
+              })
+              .finally(() => {
+                vm.$loading.hide();
+              });
+          } else {
+            addDepartment(department)
+              .then(res => {
+                if (res.success) {
+                  this.loadTree();
+                  this.onClearSelected();
+                  this.disabled = true;
+                }
+              })
+              .finally(() => {
+                this.$loading.hide();
+              });
+          }
         }
       });
     },
     setFormValues({ ...department }) {
-      let fields = ["name", "address", "sort", "remark", "parentName"];
+      let fields = [
+        "tenantId",
+        "name",
+        "address",
+        "sort",
+        "remark",
+        "parentId"
+      ];
       Object.keys(department).forEach(key => {
         if (fields.indexOf(key) !== -1) {
           this.departmentForm.getFieldDecorator(key);

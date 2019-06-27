@@ -26,8 +26,8 @@
                 v-model="queryParam.status"
               >
                 <a-select-option value="">全部</a-select-option>
-                <a-select-option value="1">禁用</a-select-option>
-                <a-select-option value="2">启用</a-select-option>
+                <a-select-option value="2">禁用</a-select-option>
+                <a-select-option value="1">启用</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -112,7 +112,10 @@
             v-decorator="[
               'name',
               {
-                rules: [{ required: true, message: '请输入角色名称' }]
+                rules: [
+                  { required: true, message: '请输入角色名称' },
+                  { min: 4, max: 10, message: '角色名称长度为[4,10]' }
+                ]
               }
             ]"
           />
@@ -126,7 +129,10 @@
             v-decorator="[
               'code',
               {
-                rules: [{ required: true, message: '请输入角色编码' }]
+                rules: [
+                  { required: true, message: '请输入角色编码' },
+                  { min: 4, max: 10, message: '角色编码长度为[4,10]' }
+                ]
               }
             ]"
           />
@@ -152,28 +158,22 @@
               v-for="(item, index) in treeTenant"
               :key="index"
               :value="item.value"
+              >{{ item.name }}</a-select-option
             >
-              {{ item.name }}
-            </a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item
           label="状态"
           :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 12 }"
+          :wrapper-col="{ span: 14 }"
         >
-          <a-select
-            placeholder="请选择状态"
-            v-decorator="[
-              'status',
-              {
-                rules: [{ required: true, message: '请选择状态' }]
-              }
-            ]"
-          >
-            <a-select-option :value="1">正常</a-select-option>
-            <a-select-option :value="2">禁用</a-select-option>
-          </a-select>
+          <a-switch
+            checkedChildren="启用"
+            unCheckedChildren="禁用"
+            defaultChecked
+            :checked="roleStatus"
+            @change="switchRoleType"
+          />
         </a-form-item>
       </a-form>
     </a-modal>
@@ -182,6 +182,7 @@
 
 <script>
 import { STable, tableMenu } from "@/components";
+import { getSwitchStatus } from "@/libs/util";
 import {
   pageRole,
   removeRole,
@@ -212,6 +213,7 @@ export default {
       roleForm: this.$form.createForm(this),
       role: {},
       treeTenant: [],
+      roleStatus: true,
       // 表头
       columns: [
         {
@@ -269,7 +271,7 @@ export default {
   mounted() {
     getAllTenant().then(res => {
       res.data.forEach(item => {
-        this.treeTenant.push({ name: item.tenantName, value: item.id });
+        this.treeTenant.push({ name: item.name, value: item.id });
       });
     });
   },
@@ -294,6 +296,9 @@ export default {
     },
     refresh() {
       this.$refs.table.refresh(true);
+    },
+    switchRoleType(checked) {
+      this.roleStatus = checked;
     },
     updateShowSearch(showSearch) {
       this.showSearch = showSearch;
@@ -381,6 +386,7 @@ export default {
           this.$loading.show();
           let role = this.roleForm.getFieldsValue();
           role.id = this.role.id;
+          role.status = getSwitchStatus(this.roleStatus);
           if (this.edit) {
             modifyRole(role)
               .then(res => {
@@ -389,7 +395,7 @@ export default {
                   this.$refs.table.refresh(true);
                 }
               })
-              .then(() => {
+              .finally(() => {
                 vm.$loading.hide();
               });
           } else {
@@ -400,7 +406,7 @@ export default {
                   this.$refs.table.refresh(true);
                 }
               })
-              .then(() => {
+              .finally(() => {
                 vm.$loading.hide();
               });
           }
@@ -413,6 +419,7 @@ export default {
       this.title = "";
       this.okDisabled = false;
       this.roleForm.resetFields();
+      this.roleStatus = true;
     },
     getRole(id) {
       const vm = this;
@@ -440,6 +447,7 @@ export default {
           this.roleForm.setFieldsValue(obj);
         }
       });
+      this.roleStatus = role["status"] == 1;
       this.role = role;
     }
   }

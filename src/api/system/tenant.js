@@ -4,7 +4,7 @@ export function pageTenant(parameter) {
   return fetch({
     url: "/system/tenants",
     method: "get",
-    data: parameter
+    params: parameter
   });
 }
 
@@ -41,7 +41,7 @@ export function modifyTenant(parameter) {
 export function batchRemoveTenant(parameter) {
   return fetch({
     url: "/system/tenants/batch",
-    method: "post",
+    method: "delete",
     data: parameter
   });
 }

@@ -235,13 +235,9 @@
           <a-switch
             checkedChildren="启用"
             unCheckedChildren="冻结"
+            defaultChecked
             :checked="tenantStatus"
-            v-decorator="[
-              'status',
-              {
-                rules: [{ required: false, message: '请选择状态' }]
-              }
-            ]"
+            @change="switchTenantType"
           />
         </a-form-item>
       </a-form>
@@ -252,6 +248,7 @@
 <script>
 import { STable, tableMenu } from "@/components";
 import { getSwitchStatus } from "@/libs/util";
+import moment from "moment";
 import {
   pageTenant,
   removeTenant,
@@ -383,6 +380,9 @@ export default {
     updateShowSearch(showSearch) {
       this.showSearch = showSearch;
     },
+    switchTenantType(checked) {
+      this.tenantStatus = checked;
+    },
     batchRemove() {
       if (!this.selectedRowKeys.length) {
         this.$message.warning("请选择需删除的数据");
@@ -395,18 +395,19 @@ export default {
         content: "确定删除所选中的记录?",
         centered: true,
         onOk() {
-          return new Promise(resolve => {
-            batchRemoveTenant(vm.selectedRowKeys).then(res => {
+          vm.$loading.show();
+          batchRemoveTenant(vm.selectedRowKeys)
+            .then(res => {
               if (res.success) {
                 vm.$message.success("批量删除成功");
                 vm.$refs.table.refresh(true);
-                resolve(res);
               } else {
                 vm.$message.error(res.msg);
-                resolve("");
               }
+            })
+            .finally(() => {
+              vm.$loading.hide();
             });
-          });
         },
         onCancel() {}
       });
@@ -418,7 +419,7 @@ export default {
         content: "确定删除该行记录?",
         centered: true,
         onOk() {
-          this.$loading.show();
+          vm.$loading.show();
           removeTenant(row.id)
             .then(res => {
               if (res.success) {
@@ -452,7 +453,7 @@ export default {
     },
     rangePickerChange(dates, dataStr) {
       this.startDate = dataStr[0];
-      this.endDate = dataStr[0];
+      this.endDate = dataStr[1];
     },
     handleOk() {
       const vm = this;
@@ -501,6 +502,7 @@ export default {
       this.title = "";
       this.okDisabled = false;
       this.tenantForm.resetFields();
+      this.tenantStatus = true;
     },
     getTenant(id) {
       const vm = this;
@@ -526,8 +528,11 @@ export default {
         "phone",
         "address",
         "type",
-        "remark"
+        "remark",
+        "startDate",
+        "endDate"
       ];
+
       Object.keys(tenant).forEach(key => {
         if (fields.indexOf(key) !== -1) {
           this.tenantForm.getFieldDecorator(key);
@@ -536,6 +541,20 @@ export default {
           this.tenantForm.setFieldsValue(obj);
         }
       });
+      console.log(this.tenantForm.getFieldsValue());
+      setTimeout(() => {
+        let dateFormat = "YYYY-MM-DD";
+        this.tenantForm.setFieldsValue({
+          rangePicker: [
+            moment(tenant["startDate"], dateFormat),
+            moment(tenant["endDate"], dateFormat)
+          ]
+        });
+      }, 0);
+      this.startDate = tenant["startDate"];
+      this.endDate = tenant["endDate"];
+      this.tenantStatus = tenant["status"] == 1;
+
       this.tenant = tenant;
     }
   }

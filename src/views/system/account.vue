@@ -11,8 +11,8 @@
             <a-select-option
               v-for="(item, index) in tenants"
               :key="index"
-              :value="item.id"
-              >{{ item.tenantName }}</a-select-option
+              :value="item.value"
+              >{{ item.name }}</a-select-option
             >
           </a-select>
           <a-input-search
@@ -307,14 +307,18 @@ export default {
   mounted() {
     this.loadTree();
     getAllTenant().then(res => {
-      this.tenants = res.data;
-      this.tenants.forEach(item => {
-        this.userTenants.push({
-          id: item.id,
-          label: item.tenantName,
-          value: item.id
+      if (res.success) {
+        this.tenants = res.data;
+        this.tenants.forEach(item => {
+          this.userTenants.push({
+            id: item.id,
+            label: item.name,
+            value: item.id
+          });
         });
-      });
+      } else {
+        this.$message.error("获取租户失败");
+      }
     });
   },
   methods: {
