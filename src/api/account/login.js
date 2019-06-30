@@ -1,10 +1,14 @@
 import { fetch } from "@/libs/fetch";
-
+const scope = "server";
 export function login(parameter) {
+  const grant_type = "password";
   return fetch({
-    url: "/auth/login",
+    url: "/auth/oauth/token",
     method: "post",
-    data: parameter
+    headers: {
+      Authorization: "Basic cGlnOnBpZw=="
+    },
+    params: Object.assign(parameter, { grant_type: grant_type, scope: scope })
   });
 }
 
