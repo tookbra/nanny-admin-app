@@ -3,22 +3,22 @@ import { serialize } from "@/libs/util";
 
 export function dictTree() {
   return fetch({
-    url: "/system/dicts/tree",
+    url: "/system/dictDatas/tree",
     method: "get"
   });
 }
 
-export function pageDict(parameter) {
+export function pageDictData(parameter) {
   return fetch({
-    url: "/system/dicts",
+    url: "/system/dicts/data",
     method: "get",
-    data: parameter
+    params: parameter
   });
 }
 
-export function getDict(id) {
+export function getDictData(id) {
   return fetch({
-    url: "/system/dicts/" + id,
+    url: "/system/dicts/data/" + id,
     method: "get"
   });
 }
@@ -30,38 +30,38 @@ export function getDictByCode(code) {
 
 export function getDictByParam(parameter) {
   return fetch({
-    url: "/system/dicts?" + serialize(parameter),
+    url: "/system/dictDatas?" + serialize(parameter),
     method: "get"
   });
 }
 
-export function addDict(parameter) {
+export function addDictData(parameter) {
   return fetch({
-    url: "/system/dicts",
+    url: "/system/dicts/data",
     method: "post",
     data: parameter
   });
 }
 
-export function modifyDict(parameter) {
+export function modifyDictData(parameter) {
   return fetch({
-    url: "/system/dicts/" + parameter.id,
+    url: "/system/dicts/data/" + parameter.id,
     method: "put",
     data: parameter
   });
 }
 
-export function batchRemoveDict(parameter) {
+export function batchRemoveDictData(parameter) {
   return fetch({
-    url: "/system/dicts/batch",
-    method: "post",
+    url: "/system/dicts/data/batch",
+    method: "delete",
     data: parameter
   });
 }
 
-export function removeDict(id) {
+export function removeData(id) {
   return fetch({
-    url: "/system/dicts/" + id,
+    url: "/system/dicts/data/" + id,
     method: "delete"
   });
 }

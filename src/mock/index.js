@@ -15,7 +15,7 @@ if (
   require("./services/resource");
   // require("./services/system/tenant");
   // require("./services/system/menu");
-  require("./services/system/dict");
+  // require("./services/system/dict");
   require("./services/system/permission");
   // require("./services/system/role");
   // require("./services/system/department");

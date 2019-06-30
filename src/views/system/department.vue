@@ -42,10 +42,9 @@
               </span>
               <!--新增右键点击事件,和增加添加和删除功能-->
               <a-menu slot="overlay">
-                <a-menu-item @click="handleAdd()" key="1">添加</a-menu-item>
-                <a-menu-item @click="handleEdit()" key="2">编辑</a-menu-item>
-                <a-menu-item @click="handleRemove()" key="3">删除</a-menu-item>
-                <a-menu-item @click="handleDrop()" key="4">取消</a-menu-item>
+                <a-menu-item @click="handleEdit()" key="1">编辑</a-menu-item>
+                <a-menu-item @click="handleRemove()" key="">删除</a-menu-item>
+                <a-menu-item @click="handleDrop()" key="3">取消</a-menu-item>
               </a-menu>
             </a-dropdown>
           </template>
