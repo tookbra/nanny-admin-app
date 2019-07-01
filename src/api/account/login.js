@@ -7,7 +7,7 @@ export function login(parameter) {
     url: "/auth/oauth/token",
     method: "post",
     headers: {
-      Authorization: "Basic cGlnOnBpZw=="
+      Authorization: "Basic bmFubnk6bmFubnk="
     },
     params: Object.assign(parameter, { grant_type: grant_type, scope: scope })
   });
@@ -16,9 +16,6 @@ export function login(parameter) {
 export function logout() {
   return fetch({
     url: "/auth/logout",
-    method: "post",
-    headers: {
-      "Content-Type": "application/json;charset=UTF-8"
-    }
+    method: "post"
   });
 }

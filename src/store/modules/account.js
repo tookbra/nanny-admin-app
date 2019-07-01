@@ -23,14 +23,13 @@ export default {
       return new Promise((resolve, reject) => {
         login(userInfo)
           .then(response => {
-            if (response.success) {
-              const result = response.data;
-              Vue.ls.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000);
-              commit("SET_TOKEN", result.token);
-              resolve();
-            } else {
-              reject(response.msg);
-            }
+            Vue.ls.set(
+              ACCESS_TOKEN,
+              response.access_token,
+              7 * 24 * 60 * 60 * 1000
+            );
+            commit("SET_TOKEN", response.access_token);
+            resolve();
           })
           .catch(error => {
             reject(error);
@@ -43,7 +42,7 @@ export default {
         getAccountInfo()
           .then(response => {
             const result = response.data;
-            if (result.role && result.role.permissions.length > 0) {
+            if (result.role && result.permissions.length > 0) {
               const role = result.role;
               role.permissions = result.role.permissions;
               role.permissions.map(per => {

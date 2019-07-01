@@ -16,7 +16,7 @@ export const fetch = axios.create({
 
 fetch.interceptors.request.use(config => {
   if (store.state.account.token) {
-    config.headers.Authorization = store.state.account.token;
+    config.headers.Authorization = "Bearer " + store.state.account.token;
   }
   return config;
 }, err);

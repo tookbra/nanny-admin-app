@@ -82,7 +82,6 @@
 </template>
 
 <script>
-import md5 from "md5";
 import { mapActions } from "vuex";
 export default {
   name: "UserLogin",
@@ -106,15 +105,8 @@ export default {
         if (!err) {
           console.log("Received values of form: ", values);
           const loginParams = { ...values };
-          loginParams.password = md5(values.password);
           Login(loginParams)
-            .then(res => {
-              if (res.success) {
-                this.loginSuccess(res);
-              } else {
-                this.requestFailed(res.msg);
-              }
-            })
+            .then(() => this.loginSuccess())
             .catch(err => this.requestFailed(err))
             .finally(() => {
               state.loginBtn = false;
@@ -126,8 +118,7 @@ export default {
         }
       });
     },
-    loginSuccess(res) {
-      console.log(res);
+    loginSuccess() {
       this.$router.push({ name: "home" });
     },
     requestFailed(err) {
