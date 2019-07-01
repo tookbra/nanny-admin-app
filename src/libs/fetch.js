@@ -10,7 +10,7 @@ export const fetch = axios.create({
       : process.env.VUE_APP_URL,
   timeout: 5000,
   validateStatus: function(status) {
-    return status >= 200 && status < 300;
+    return status >= 200 && status <= 500;
   }
 });
 

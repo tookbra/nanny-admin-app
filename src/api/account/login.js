@@ -1,4 +1,5 @@
 import { fetch } from "@/libs/fetch";
+
 const scope = "server";
 export function login(parameter) {
   const grant_type = "password";
