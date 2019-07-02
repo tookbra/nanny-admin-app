@@ -1,7 +1,7 @@
 import axios from "axios";
 import Vue from "vue";
 import { ACCESS_TOKEN } from "@/store/mutation-types";
-
+import errorCode from "@/const/errorCode";
 import notification from "ant-design-vue/es/notification";
 
 export const fetch = axios.create({
@@ -24,6 +24,16 @@ fetch.interceptors.request.use(config => {
 }, err);
 
 fetch.interceptors.response.use(res => {
+  const status = Number(res.status) || 200;
+  const message = res.data.msg || errorCode[status] || errorCode["default"];
+  if (status !== 200) {
+    Vue.prototype.$loading("hide");
+    notification.error({
+      message: "操作失败",
+      description: message
+    });
+    return Promise.reject(res.data);
+  }
   return res.data;
 }, err);
 

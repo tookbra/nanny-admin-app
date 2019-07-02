@@ -2,36 +2,36 @@ import { fetch } from "@/libs/fetch";
 
 export function pageAccount(parameter) {
   return fetch({
-    url: "/accounts",
+    url: "/system/accounts",
     method: "get",
-    data: parameter
+    params: parameter
   });
 }
 
 export function getAccount(id) {
   return fetch({
-    url: "/accounts/" + id,
+    url: "/system/accounts/" + id,
     method: "get"
   });
 }
 
 export function batchRemoveAccount(parameter) {
   return fetch({
-    url: "/accounts/batch",
+    url: "/system/accounts/batch",
     method: "post",
     data: parameter
   });
 }
 export function removeAccount(id) {
   return fetch({
-    url: "/accounts/" + id,
+    url: "/system/accounts/" + id,
     method: "delete"
   });
 }
 
 export function addAccount(parameter) {
   return fetch({
-    url: "/accounts",
+    url: "/system/accounts",
     method: "post",
     data: parameter,
     headers: {
@@ -42,7 +42,7 @@ export function addAccount(parameter) {
 
 export function modifyAccount(parameter) {
   return fetch({
-    url: "/accounts/" + parameter.id,
+    url: "/system/accounts/" + parameter.id,
     method: "put",
     data: parameter,
     headers: {

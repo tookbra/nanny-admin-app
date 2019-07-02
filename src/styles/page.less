@@ -24,3 +24,37 @@
     white-space: nowrap;
   }
 }
+
+.table-menu {
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+  min-height: 40px;
+  height: auto;
+  overflow: hidden;
+  margin-bottom: 5px;
+
+  .table-menu-permission {
+    .btn {
+      margin-right: 8px;
+    }
+  }
+  .table-menu-nav {
+    display: flex;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+
+    .ant-btn {
+      margin-right: 8px;
+    }
+  }
+  .danger {
+    color: #f56c6c;
+    background: #fef0f0;
+    border-color: #fbc4c4;
+  }
+}

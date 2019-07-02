@@ -45,18 +45,7 @@ export default {
             if (result.roles && result.permissions.length > 0) {
               const role = result.roles;
               role.permissions = result.permissions;
-              role.permissions.map(per => {
-                if (per.actions != null && per.actions.length > 0) {
-                  const action = per.actions.map(action => {
-                    return action.action;
-                  });
-                  per.actionList = action;
-                }
-              });
-              role.permissionList = role.permissions.map(permission => {
-                return permission.permissionId;
-              });
-              commit("SET_ROLES", result.roles);
+              commit("SET_ROLES", role);
               commit("SET_INFO", result);
             } else {
               reject(new Error("getInfo: roles must be a non-null array !"));

@@ -449,6 +449,7 @@ export default {
       loadData: parameter => {
         parameter.pageSize = 50;
         return pageMenu(Object.assign(parameter, this.queryParam)).then(res => {
+          this.treeMenu = [];
           this.assemblyTree(res.data.records);
           return res.data;
         });
@@ -623,11 +624,9 @@ export default {
               });
           } else {
             addMenu(menu)
-              .then(res => {
-                if (res.success) {
-                  this.visible = false;
-                  this.$refs.table.refresh(true);
-                }
+              .then(() => {
+                this.visible = false;
+                this.$refs.table.refresh(true);
               })
               .then(() => {
                 vm.$loading.hide();

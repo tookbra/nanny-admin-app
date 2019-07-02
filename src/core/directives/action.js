@@ -15,16 +15,14 @@ import store from "@/store";
  *  @see https://github.com/sendya/ant-design-pro-vue/pull/53
  */
 const action = Vue.directive("action", {
+  // eslint-disable-next-line no-unused-vars
   inserted: function(el, binding, vnode) {
     const actionName = binding.arg;
     const roles = store.getters.roles;
-    const elVal = vnode.context.$route.meta.permission;
-    const permissionId = (elVal instanceof String && [elVal]) || elVal;
+    console.log(roles.permissions);
     roles.permissions.forEach(p => {
-      if (!permissionId.includes(p.permissionId)) {
-        return;
-      }
-      if (p.actionList && !p.actionList.includes(actionName)) {
+      console.log(p);
+      if (!p.includes(actionName)) {
         (el.parentNode && el.parentNode.removeChild(el)) ||
           (el.style.display = "none");
       }

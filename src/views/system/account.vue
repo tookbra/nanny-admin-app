@@ -4,20 +4,21 @@
       <a-col :md="24" :lg="7">
         <a-card :bordered="false">
           <a-select
-            allowClear=""
+            :allowClear="true"
             placeholder="请选择租户"
             style="width: 100%; margin-bottom: 0.4rem;"
+            @change="tenantChange"
           >
             <a-select-option
               v-for="(item, index) in tenants"
               :key="index"
-              :value="item.value"
+              :value="item.id"
               >{{ item.name }}</a-select-option
             >
           </a-select>
           <a-input-search
             style="width:100%;margin-top: 10px"
-            placeholder="请输入科室名称"
+            placeholder="请输入部门名称"
           ></a-input-search>
           <a-tree
             :checkable="false"
@@ -124,6 +125,21 @@
     >
       <a-form :form="accountForm">
         <a-form-item
+          label="用户姓名"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 14 }"
+        >
+          <a-input
+            placeholder="用户姓名"
+            v-decorator="[
+              'name',
+              {
+                rules: [{ required: true, message: '请输入用户姓名' }]
+              }
+            ]"
+          />
+        </a-form-item>
+        <a-form-item
           label="用户账号"
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 14 }"
@@ -159,21 +175,6 @@
           />
         </a-form-item>
         <a-form-item
-          label="真实姓名"
-          :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 14 }"
-        >
-          <a-input
-            placeholder="请输入真实姓名"
-            v-decorator="[
-              'realName',
-              {
-                rules: [{ required: true, message: '请输入真实姓名' }]
-              }
-            ]"
-          />
-        </a-form-item>
-        <a-form-item
           label="密码"
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 14 }"
@@ -184,7 +185,74 @@
             v-decorator="[
               'password',
               {
-                rules: [{ required: true, message: '请输入密码' }]
+                rules: [{ min: 6, max: 15, message: '密码长度为[6.15]' }]
+              }
+            ]"
+          />
+        </a-form-item>
+        <a-form-item
+          label="手机号"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 14 }"
+        >
+          <a-input
+            placeholder="请输入手机号"
+            v-decorator="[
+              'phone',
+              {
+                rules: [{ min: 11, max: 11, message: '手机号长度错误' }]
+              }
+            ]"
+          />
+        </a-form-item>
+        <a-form-item
+          label="性别"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 14 }"
+        >
+          <a-select placeholder="请选择性别">
+            <a-select-option value="1">男</a-select-option>
+            <a-select-option value="2">女</a-select-option>
+            <a-select-option value="0">未知</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+          label="头像"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 14 }"
+        >
+          <a-row :gutter="8">
+            <a-col :span="12">
+              <a-input placeholder="请输入头像地址" v-decorator="['avatar']" />
+            </a-col>
+            <a-col :span="12">
+              <a-upload
+                name="file"
+                :showUploadList="false"
+                :multiple="false"
+                accept="image/*"
+                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+              >
+                <a-button> <a-icon type="upload" /> Click to Upload </a-button>
+              </a-upload>
+            </a-col>
+          </a-row>
+        </a-form-item>
+        <a-form-item
+          label="所属部门"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 14 }"
+        >
+          <a-tree-select
+            showSearch
+            allowClear
+            :treeData="orgTree"
+            placeholder="所属部门"
+            treeDefaultExpandAll
+            v-decorator="[
+              'departmentId',
+              {
+                rules: [{ required: true, message: '所属部门' }]
               }
             ]"
           />
@@ -209,17 +277,6 @@
               }
             ]"
           />
-        </a-form-item>
-        <a-form-item
-          label="性别"
-          :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 14 }"
-        >
-          <a-select placeholder="请选择性别">
-            <a-select-option value="1">男</a-select-option>
-            <a-select-option value="2">女</a-select-option>
-            <a-select-option value="0">未知</a-select-option>
-          </a-select>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -255,7 +312,6 @@ export default {
       userRoles: [],
       tenantId: 0,
       disabled: true,
-      departmentForm: this.$form.createForm(this),
       dropTrigger: "",
       selectedKeys: [],
       checkedKeys: [],
@@ -305,7 +361,6 @@ export default {
     };
   },
   mounted() {
-    this.loadTree();
     getAllTenant().then(res => {
       if (res.success) {
         this.tenants = res.data;
@@ -329,10 +384,18 @@ export default {
       this.showSearch = showSearch;
     },
     showAdd() {
+      if (this.tenantId == 0) {
+        this.$message.error("请选择租户");
+        return;
+      }
       this.visible = true;
       this.title = "新增";
     },
     showDetail(row) {
+      if (this.tenantId == 0) {
+        this.$message.error("请选择租户");
+        return;
+      }
       this.title = "详情";
       this.okDisabled = true;
       this.getAccount(row.id);
@@ -360,6 +423,20 @@ export default {
       this.title = "";
       this.okDisabled = false;
       this.accountForm.resetFields();
+    },
+    tenantChange(value) {
+      console.log(value);
+      this.tenantId = value;
+      this.loadTree();
+      if (value) {
+        this.userTenantsChange(value);
+        this.accountForm.getFieldDecorator("tenantId");
+        let obj = {};
+        obj["tenantId"] = this.tenantId;
+        this.accountForm.setFieldsValue(obj);
+      } else {
+        this.userRoles = [];
+      }
     },
     onSelectChange(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys;
@@ -452,7 +529,7 @@ export default {
     },
     handleOk() {
       const vm = this;
-      this.menuForm.validateFields(err => {
+      this.accountForm.validateFields(err => {
         if (!err) {
           this.$loading.show();
           let account = this.accountForm.getFieldsValue();
@@ -483,21 +560,26 @@ export default {
         }
       });
     },
-    onSelect(selectedKeys) {
-      console.log(selectedKeys);
-      this.queryParam = Object.assign(this.queryParam, {
-        tenantId: selectedKeys
-      });
-      this.$refs.table.refresh(true);
+    onSelect(selectedKeys, info) {
+      if (info.selected) {
+        this.queryParam.tenantId = info.node.dataRef.value;
+        this.$refs.table.refresh(true);
+
+        this.accountForm.getFieldDecorator("departmentId");
+        let obj = {};
+        obj["departmentId"] = info.node.dataRef.value;
+        this.accountForm.setFieldsValue(obj);
+      }
+      this.selectedKeys = selectedKeys;
     },
     setFormValues({ ...department }) {
       let fields = ["account", "realName"];
       Object.keys(department).forEach(key => {
         if (fields.indexOf(key) !== -1) {
-          this.departmentForm.getFieldDecorator(key);
+          this.accountForm.getFieldDecorator(key);
           let obj = {};
           obj[key] = department[key];
-          this.departmentForm.setFieldsValue(obj);
+          this.accountForm.setFieldsValue(obj);
         }
       });
     }
