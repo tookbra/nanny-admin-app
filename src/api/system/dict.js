@@ -1,5 +1,4 @@
 import { fetch } from "@/libs/fetch";
-import { serialize } from "@/libs/util";
 
 export function dictTree() {
   return fetch({
@@ -23,14 +22,9 @@ export function getDict(id) {
   });
 }
 
-export function getDictByCode(code) {
-  let data = { code: code };
-  return getDictByParam(data);
-}
-
-export function getDictByParam(parameter) {
+export function getDictByType(parameter) {
   return fetch({
-    url: "/system/dicts?" + serialize(parameter),
+    url: "/system/dicts/type/" + parameter,
     method: "get"
   });
 }

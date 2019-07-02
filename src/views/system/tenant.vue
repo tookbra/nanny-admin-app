@@ -17,8 +17,12 @@
             <a-form-item label="租户类型">
               <a-select v-model="queryParam.type" placeholder="请选择租户类型">
                 <a-select-option value="">全部</a-select-option>
-                <a-select-option value="1">医院</a-select-option>
-                <a-select-option value="2">洗涤公司</a-select-option>
+                <a-select-option
+                  v-for="(item, index) in tenantTypes"
+                  :key="index"
+                  :value="item.data"
+                  >{{ item.name }}</a-select-option
+                >
               </a-select>
             </a-form-item>
           </a-col>
@@ -69,7 +73,7 @@
       </span>
       <span slot="action" class="table-nav" slot-scope="text, record">
         <template>
-          <a @click="() => showDetail(record)">
+          <a v-action="edit" @click="() => showDetail(record)">
             <a-icon type="eye" />
             详情
           </a>
@@ -146,8 +150,12 @@
               }
             ]"
           >
-            <a-select-option :value="1">医院</a-select-option>
-            <a-select-option :value="2">洗涤公司</a-select-option>
+            <a-select-option
+              v-for="(item, index) in tenantTypes"
+              :key="index"
+              :value="item.data"
+              >{{ item.name }}</a-select-option
+            >
           </a-select>
         </a-form-item>
         <a-form-item
@@ -257,6 +265,8 @@ import {
   addTenant,
   modifyTenant
 } from "@/api/system/tenant";
+import { getDictByType } from "@/api/system/dict";
+import dict from "@/const/dict";
 import AFormItem from "ant-design-vue/es/form/FormItem";
 export default {
   name: "tenant",
@@ -280,10 +290,8 @@ export default {
       tenantStatus: true,
       startDate: "",
       endDate: "",
-      typeMap: {
-        1: "正常",
-        2: "禁用"
-      },
+      tenantTypes: [],
+      typeMap: new Map(),
       // 表头
       columns: [
         {
@@ -354,6 +362,21 @@ export default {
   },
   created() {
     this.tableOption();
+  },
+  beforeMount() {
+    this.$loading.show();
+    getDictByType(dict.tenantType)
+      .then(res => {
+        if (res.success) {
+          this.tenantTypes = res.data;
+          res.data.forEach(item => {
+            this.typeMap.set(item.data, item.name);
+          });
+        }
+      })
+      .finally(() => {
+        this.$loading.hide();
+      });
   },
   methods: {
     tableOption() {

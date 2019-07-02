@@ -12,7 +12,7 @@ if (
   // 使用同步加载依赖
   // 防止 vuex 中的 GetInfo 早于 mock 运行，导致无法 mock 请求返回结果
   // require("./services/login");
-  require("./services/resource");
+  // require("./services/resource");
   // require("./services/system/tenant");
   // require("./services/system/menu");
   // require("./services/system/dict");

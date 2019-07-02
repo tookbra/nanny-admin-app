@@ -166,7 +166,7 @@ import {
   addPermission,
   modifyPermission
 } from "@/api/system/permission";
-import { getDictByCode } from "@/api/system/dict";
+import { getDictByType } from "@/api/system/dict";
 import AFormItem from "ant-design-vue/es/form/FormItem";
 export default {
   name: "tenant",
@@ -240,7 +240,7 @@ export default {
     this.tableOption();
   },
   mounted() {
-    getDictByCode("permission").then(res => {
+    getDictByType("permission").then(res => {
       res.data.forEach(item => {
         console.log(item);
         this.permissionList.push({

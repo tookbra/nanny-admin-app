@@ -50,24 +50,24 @@ export const generator = (routerMap, parent) => {
   return routerMap.map(item => {
     const currentRouter = {
       // 路由地址 动态拼接生成如 /dashboard/workplace
-      path: `${(parent && parent.path) || ""}/${item.key}`,
+      path: `${(parent && parent.path) || ""}/${item.path}`,
       // 路由名称，建议唯一
       name: item.name || item.key || "",
       // 该路由对应页面的 组件
       component: item.component
-        ? constantRouterComponents[item.component || item.key]
+        ? constantRouterComponents[item.component || item.path]
         : function(resolve) {
             require([
               `../views` +
-                `${(parent && parent.path) || ""}/${item.key}` +
+                `${(parent && parent.path) || ""}/${item.path}` +
                 `.vue`
             ], resolve);
           },
       // meta: 页面标题, 菜单图标, 页面权限(供指令权限用，可去掉)
       meta: {
-        title: item.title,
+        title: item.name,
         icon: item.icon || undefined,
-        permission: (item.key && [item.key]) || null,
+        permission: (item.path && [item.path]) || null,
         closeable: true
       }
     };

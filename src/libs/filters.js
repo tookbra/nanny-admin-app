@@ -8,5 +8,5 @@ Vue.filter("statusFilter", function(status) {
 });
 
 Vue.filter("typeFilter", function(type, typeMap) {
-  return typeMap[type];
+  return typeMap.get(type + "");
 });

@@ -1,5 +1,6 @@
 import axios from "axios";
-import store from "@/store";
+import Vue from "vue";
+import { ACCESS_TOKEN } from "@/store/mutation-types";
 
 import notification from "ant-design-vue/es/notification";
 
@@ -15,8 +16,9 @@ export const fetch = axios.create({
 });
 
 fetch.interceptors.request.use(config => {
-  if (store.state.account.token) {
-    config.headers.Authorization = "Bearer " + store.state.account.token;
+  const token = Vue.ls.get(ACCESS_TOKEN);
+  if (token) {
+    config.headers.Authorization = "Bearer " + token;
   }
   return config;
 }, err);

@@ -210,19 +210,51 @@
           </a-col>
           <a-col :md="12" :sm="24">
             <a-form-item
+              label="前端组件"
+              :label-col="{ span: 5 }"
+              :wrapper-col="{ span: 18 }"
+            >
+              <a-select
+                allowClear
+                placeholder="请选择前端组件"
+                v-decorator="['component']"
+              >
+                <a-select-option
+                  v-for="(item, index) in components"
+                  :key="index"
+                  :value="item.data"
+                  >{{ item.name }}</a-select-option
+                >
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="12" :sm="24">
+            <a-form-item
+              label="按钮权限类型"
+              :label-col="{ span: 5 }"
+              :wrapper-col="{ span: 18 }"
+            >
+              <a-select
+                allowClear
+                placeholder="请选择按钮权限类型"
+                v-decorator="['permission']"
+              >
+                <a-select-option
+                  v-for="(item, index) in permissions"
+                  :key="index"
+                  :value="item.data"
+                  >{{ item.name }}</a-select-option
+                >
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="12" :sm="24">
+            <a-form-item
               label="菜单类型"
               :label-col="{ span: 5 }"
               :wrapper-col="{ span: 18 }"
             >
-              <a-radio-group
-                v-decorator="[
-                  'category',
-                  {
-                    rules: [{ required: true, message: '请选择菜单类型' }]
-                  }
-                ]"
-                name="category"
-              >
+              <a-radio-group v-decorator="['category']" name="category">
                 <a-radio :value="1">
                   菜单
                 </a-radio>
@@ -313,6 +345,8 @@ import {
   addMenu,
   modifyMenu
 } from "@/api/system/menu";
+import { getDictByType } from "@/api/system/dict";
+import dict from "@/const/dict";
 import AFormItem from "ant-design-vue/es/form/FormItem";
 import ACol from "ant-design-vue/es/grid/Col";
 export default {
@@ -340,6 +374,9 @@ export default {
       edit: false,
       menuForm: this.$form.createForm(this),
       menu: {},
+      components: [],
+      permissions: [],
+      category: 0,
       pagination: {
         defaultPageSize: 50,
         hideOnSinglePage: true
@@ -421,6 +458,27 @@ export default {
   created() {
     this.tableOption();
   },
+  beforeMount() {
+    this.$loading.show();
+    getDictByType(dict.componentType)
+      .then(res => {
+        if (res.success) {
+          this.components = res.data;
+        }
+      })
+      .finally(() => {
+        this.$loading.hide();
+      });
+    getDictByType(dict.permissionType)
+      .then(res => {
+        if (res.success) {
+          this.permissions = res.data;
+        }
+      })
+      .finally(() => {
+        this.$loading.hide();
+      });
+  },
   methods: {
     tableOption() {
       this.options = {
@@ -438,6 +496,9 @@ export default {
     },
     assemblyTree(data) {
       data.forEach(item => {
+        if (item.category == 2) {
+          return;
+        }
         this.treeMenu.push({
           id: item.id,
           pId: item.parentId,

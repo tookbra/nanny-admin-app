@@ -10,7 +10,11 @@ import "ant-design-vue/dist/antd.css";
 import "../styles/index.less";
 import Loading from "../components/loading";
 
+import action from "./directives/action";
+
 Vue.use(Antd);
+
+Vue.use(action);
 
 Vue.use(VueStorage, config.localStorageOptions);
 Vue.use(VueSessionStorage, config.sessionStorageOptions);

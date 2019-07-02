@@ -1,7 +1,7 @@
 <template>
   <basicContainer>
     <a-row :gutter="24">
-      <a-col :md="24" :lg="7">
+      <a-col :md="24" :lg="5">
         <a-card :bordered="false">
           <div class="table-operator">
             <a-button class="btn" type="primary" @click="showAdd" icon="plus"
@@ -38,17 +38,17 @@
           </template>
         </a-card>
       </a-col>
-      <a-col :md="24" :lg="17">
+      <a-col :md="24" :lg="19">
         <a-card :bordered="false">
           <div class="search-wrapper" v-if="showSearch">
             <a-form layout="inline">
               <a-row :gutter="16">
-                <a-col :md="5" :sm="24">
+                <a-col :md="8" :sm="24">
                   <a-form-item label="字典名称">
                     <a-input v-model="queryParam.name" placeholder="字典名称" />
                   </a-form-item>
                 </a-col>
-                <a-col :md="5" :sm="24">
+                <a-col :md="8" :sm="24">
                   <a-form-item label="状态">
                     <a-select
                       v-model="queryParam.status"
@@ -60,7 +60,7 @@
                     </a-select>
                   </a-form-item>
                 </a-col>
-                <a-col :md="5" :sm="24">
+                <a-col :md="8" :sm="24">
                   <span class="table-page-search-submitButtons">
                     <a-button
                       type="primary"
@@ -140,7 +140,7 @@
               {
                 rules: [
                   { required: true, message: '请输入字典名称' },
-                  { min: 2, max: 10, message: '字典名称长度为[2,10]' }
+                  { min: 2, max: 15, message: '字典名称长度为[2,15]' }
                 ]
               }
             ]"
@@ -158,7 +158,7 @@
               {
                 rules: [
                   { required: true, message: '请输入字典编码' },
-                  { min: 2, max: 10, message: '字典编码长度为[2,10]' }
+                  { min: 2, max: 15, message: '字典编码长度为[2,15]' }
                 ]
               }
             ]"
@@ -209,7 +209,7 @@
               {
                 rules: [
                   { required: true, message: '请输入字典名称' },
-                  { min: 2, max: 10, message: '字典名称长度为[2,10]' }
+                  { min: 1, max: 15, message: '字典名称长度为[1,15]' }
                 ]
               }
             ]"
@@ -243,6 +243,17 @@
             :min="0"
             :max="100"
           />
+        </a-form-item>
+        <a-form-item
+          label="备注"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 14 }"
+        >
+          <a-textarea
+            placeholder="请输入备注"
+            :autosize="{ minRows: 4, maxRows: 6 }"
+            v-decorator="['remark']"
+          ></a-textarea>
         </a-form-item>
         <a-form-item
           label="状态"
