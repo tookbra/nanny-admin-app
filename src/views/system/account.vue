@@ -1,7 +1,7 @@
 <template>
   <div class="page-header-index-wide page-header-wrapper-grid-content-main">
     <a-row :gutter="24">
-      <a-col :md="24" :lg="7">
+      <a-col :md="24" :lg="4">
         <a-card :bordered="false">
           <a-select
             :allowClear="true"
@@ -29,25 +29,26 @@
           />
         </a-card>
       </a-col>
-      <a-col :md="24" :lg="17">
+      <a-col :md="24" :lg="20">
         <a-card :bordered="false">
           <div class="search-wrapper" v-if="showSearch">
             <a-form layout="inline">
               <a-row :gutter="25">
                 <a-col :md="5" :sm="24">
                   <a-form-item label="用户名">
-                    <a-input
-                      v-model="queryParam.realName"
-                      placeholder="用户名"
-                    />
+                    <a-input v-model="queryParam.name" placeholder="用户名" />
                   </a-form-item>
                 </a-col>
                 <a-col :md="5" :sm="24">
                   <a-form-item label="状态">
-                    <a-select placeholder="请选择" default-value="">
+                    <a-select
+                      placeholder="请选择"
+                      default-value=""
+                      v-model="queryParam.status"
+                    >
                       <a-select-option value="">全部</a-select-option>
-                      <a-select-option value="1">禁用</a-select-option>
-                      <a-select-option value="2">启用</a-select-option>
+                      <a-select-option value="2">禁用</a-select-option>
+                      <a-select-option value="1">启用</a-select-option>
                     </a-select>
                   </a-form-item>
                 </a-col>
@@ -90,6 +91,9 @@
             }"
             :showSizeChanger="true"
           >
+            <span slot="sex" slot-scope="text">
+              {{ text | statusFilter }}
+            </span>
             <span slot="status" slot-scope="text">
               {{ text | statusFilter }}
             </span>
@@ -103,6 +107,11 @@
                 <a @click="() => showModify(record)">
                   <a-icon type="edit" />
                   编辑
+                </a>
+                <a-divider type="vertical" />
+                <a @click="() => disableUser(record)">
+                  <a-icon type="lock" />
+                  禁用
                 </a>
                 <a-divider type="vertical" />
                 <a @click="() => remove(record)">
@@ -134,7 +143,10 @@
             v-decorator="[
               'name',
               {
-                rules: [{ required: true, message: '请输入用户姓名' }]
+                rules: [
+                  { required: true, message: '请输入用户姓名' },
+                  { min: 2, max: 5, message: '用户姓名长度为[2, 5]' }
+                ]
               }
             ]"
           />
@@ -149,7 +161,10 @@
             v-decorator="[
               'account',
               {
-                rules: [{ required: true, message: '请输入用户账号' }]
+                rules: [
+                  { required: true, message: '请输入用户账号' },
+                  { min: 4, max: 12, message: '用户姓名长度为[4, 12]' }
+                ]
               }
             ]"
           />
@@ -210,10 +225,10 @@
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 14 }"
         >
-          <a-select placeholder="请选择性别">
-            <a-select-option value="1">男</a-select-option>
-            <a-select-option value="2">女</a-select-option>
-            <a-select-option value="0">未知</a-select-option>
+          <a-select placeholder="请选择性别" v-decorator="['sex']">
+            <a-select-option :value="1">男</a-select-option>
+            <a-select-option :value="2">女</a-select-option>
+            <a-select-option :value="0">未知</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item
@@ -231,7 +246,7 @@
                 :showUploadList="false"
                 :multiple="false"
                 accept="image/*"
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                action="localhost:20000/oss/upload/file"
               >
                 <a-button> <a-icon type="upload" /> Click to Upload </a-button>
               </a-upload>
@@ -271,11 +286,24 @@
             treeDefaultExpandAll
             :treeDataSimpleMode="true"
             v-decorator="[
-              'roleId',
+              'roleIds',
               {
                 rules: [{ required: true, message: '请选择所属角色' }]
               }
             ]"
+          />
+        </a-form-item>
+        <a-form-item
+          label="状态"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 14 }"
+        >
+          <a-switch
+            checkedChildren="启用"
+            unCheckedChildren="禁用"
+            defaultChecked
+            :checked="userStatus"
+            @change="switchUserStatus"
           />
         </a-form-item>
       </a-form>
@@ -290,8 +318,10 @@ import {
   removeAccount,
   getAccount,
   modifyAccount,
-  addAccount
+  addAccount,
+  disable
 } from "@/api/system/account";
+import { getSwitchStatus } from "@/libs/util";
 import { getDepartmentByTenant } from "@/api/system/department";
 import { STable, tableMenu } from "@/components";
 import { getAllTenant } from "@/api/system/tenant";
@@ -323,6 +353,7 @@ export default {
       selectedRows: [],
       account: {},
       okDisabled: false,
+      userStatus: true,
       accountForm: this.$form.createForm(this),
       // 表头
       columns: [
@@ -332,11 +363,12 @@ export default {
         },
         {
           title: "真实姓名",
-          dataIndex: "realName"
+          dataIndex: "name"
         },
         {
           title: "性别",
-          dataIndex: "sex"
+          dataIndex: "sex",
+          scopedSlots: { customRender: "sex" }
         },
         {
           title: "状态",
@@ -392,24 +424,23 @@ export default {
       this.title = "新增";
     },
     showDetail(row) {
-      if (this.tenantId == 0) {
-        this.$message.error("请选择租户");
-        return;
-      }
       this.title = "详情";
       this.okDisabled = true;
       this.getAccount(row.id);
     },
     showModify(row) {
-      console.log(row);
       this.visible = true;
       this.title = "编辑";
       this.edit = true;
+      this.getAccount(row.id);
     },
-    loadTree() {
+    switchUserStatus(checked) {
+      this.userStatus = checked;
+    },
+    async loadTree() {
       this.$loading.show();
       const _this = this;
-      getDepartmentByTenant(this.tenantId)
+      await getDepartmentByTenant(this.tenantId)
         .then(res => {
           this.orgTree = res.data;
         })
@@ -425,7 +456,6 @@ export default {
       this.accountForm.resetFields();
     },
     tenantChange(value) {
-      console.log(value);
       this.tenantId = value;
       this.loadTree();
       if (value) {
@@ -442,9 +472,9 @@ export default {
       this.selectedRowKeys = selectedRowKeys;
       this.selectedRows = selectedRows;
     },
-    userTenantsChange(value) {
+    async userTenantsChange(value) {
       const _this = this;
-      getRoleByTenantId(value)
+      await getRoleByTenantId(value)
         .then(res => {
           if (res.success) {
             res.data.forEach(item => {
@@ -481,24 +511,15 @@ export default {
         this.$message.warning("请选择需删除的数据");
         return;
       }
-
       const vm = this;
       this.$confirm({
         title: "提示",
         content: "确定删除所选中的记录?",
         centered: true,
         onOk() {
-          return new Promise(resolve => {
-            batchRemoveAccount(vm.selectedRowKeys).then(res => {
-              if (res.success) {
-                vm.$message.success("批量删除成功");
-                vm.$refs.table.refresh(true);
-                resolve(res);
-              } else {
-                vm.$message.error(res.msg);
-                resolve("");
-              }
-            });
+          batchRemoveAccount(vm.selectedRowKeys).then(() => {
+            vm.$message.success("批量删除成功");
+            vm.$refs.table.refresh(true);
           });
         },
         onCancel() {}
@@ -508,20 +529,12 @@ export default {
       const vm = this;
       this.$confirm({
         title: "提示",
-        content: "确定删除该行记录?",
+        content: "确定删除用户" + row.name + "?",
         centered: true,
         onOk() {
-          return new Promise(resolve => {
-            removeAccount(row.id).then(res => {
-              if (res.success) {
-                vm.$message.success("删除成功");
-                vm.$refs.table.refresh(true);
-                resolve(res);
-              } else {
-                vm.$message.error(res.msg);
-                resolve("");
-              }
-            });
+          removeAccount(row.id).then(() => {
+            vm.$message.success("删除成功");
+            vm.$refs.table.refresh(true);
           });
         },
         onCancel() {}
@@ -533,7 +546,8 @@ export default {
         if (!err) {
           this.$loading.show();
           let account = this.accountForm.getFieldsValue();
-          account.id = this.menu.id;
+          account.id = this.account.id;
+          account.status = getSwitchStatus(this.userStatus);
           if (this.edit) {
             modifyAccount(account)
               .then(res => {
@@ -560,9 +574,25 @@ export default {
         }
       });
     },
+    disableUser(row) {
+      const vm = this;
+      this.$confirm({
+        title: "提示",
+        content: "确定要禁用用户" + row.name + "?",
+        centered: true,
+        onOk() {
+          disable(row.id).then(() => {
+            vm.$message.success("操作成功");
+            vm.$refs.table.refresh(true);
+          });
+        },
+        onCancel() {}
+      });
+    },
     onSelect(selectedKeys, info) {
       if (info.selected) {
-        this.queryParam.tenantId = info.node.dataRef.value;
+        this.queryParam.departmentId = selectedKeys[0];
+        this.queryParam.tenantId = this.tenantId;
         this.$refs.table.refresh(true);
 
         this.accountForm.getFieldDecorator("departmentId");
@@ -572,16 +602,42 @@ export default {
       }
       this.selectedKeys = selectedKeys;
     },
-    setFormValues({ ...department }) {
-      let fields = ["account", "realName"];
-      Object.keys(department).forEach(key => {
+    setFormValues({ ...account }) {
+      this.tenantId = account.tenantId;
+      if (this.orgTree.length == 0) {
+        this.loadTree();
+      }
+      if (this.userRoles.length == 0) {
+        this.userTenantsChange(this.tenantId);
+      }
+      let fields = [
+        "account",
+        "name",
+        "tenantId",
+        "phone",
+        "sex",
+        "departmentId",
+        "avatar",
+        "status",
+        "remark"
+      ];
+      Object.keys(account).forEach(key => {
         if (fields.indexOf(key) !== -1) {
           this.accountForm.getFieldDecorator(key);
           let obj = {};
-          obj[key] = department[key];
+          obj[key] = account[key];
           this.accountForm.setFieldsValue(obj);
         }
       });
+      let roleIds = [];
+      account.roles.forEach(item => {
+        roleIds.push(item.id);
+      });
+      this.accountForm.getFieldDecorator("roleIds");
+      let obj = {};
+      obj["roleIds"] = roleIds;
+      this.accountForm.setFieldsValue(obj);
+      this.account = account;
     }
   }
 };

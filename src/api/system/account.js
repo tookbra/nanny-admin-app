@@ -18,7 +18,7 @@ export function getAccount(id) {
 export function batchRemoveAccount(parameter) {
   return fetch({
     url: "/system/accounts/batch",
-    method: "post",
+    method: "delete",
     data: parameter
   });
 }
@@ -33,10 +33,7 @@ export function addAccount(parameter) {
   return fetch({
     url: "/system/accounts",
     method: "post",
-    data: parameter,
-    headers: {
-      "Content-Type": "application/json;charset=UTF-8"
-    }
+    data: parameter
   });
 }
 
@@ -44,9 +41,13 @@ export function modifyAccount(parameter) {
   return fetch({
     url: "/system/accounts/" + parameter.id,
     method: "put",
-    data: parameter,
-    headers: {
-      "Content-Type": "application/json;charset=UTF-8"
-    }
+    data: parameter
+  });
+}
+
+export function disable(parameter) {
+  return fetch({
+    url: "/system/accounts/disable/" + parameter,
+    method: "put"
   });
 }

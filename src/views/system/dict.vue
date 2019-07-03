@@ -495,11 +495,8 @@ export default {
     handleDataOk() {
       this.dataForm.validateFields((err, values) => {
         if (!err) {
-          console.log(this.dictData);
           values.id = this.dictData.id;
-          console.log(this.dictStatus);
           values.status = getSwitchStatus(this.dictStatus);
-          console.log(values);
           if (this.editData) {
             values.dictId = this.dictData.dictId;
             modifyDictData(values)

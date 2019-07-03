@@ -242,7 +242,6 @@ export default {
   mounted() {
     getDictByType("permission").then(res => {
       res.data.forEach(item => {
-        console.log(item);
         this.permissionList.push({
           label: item.dictValue,
           value: item.id

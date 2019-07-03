@@ -5,6 +5,7 @@ import store from "./store";
 
 import "./core/use";
 import "./permission";
+import dictUtil from "@/libs/dictUtil";
 
 import basicContainer from "./components/layout/page-layout";
 
@@ -26,5 +27,8 @@ Vue.component("curd", curd);
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
+  mounted() {
+    dictUtil.initDictData(this);
+  }
 }).$mount("#app");

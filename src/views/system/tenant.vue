@@ -27,6 +27,19 @@
             </a-form-item>
           </a-col>
           <a-col :md="5" :sm="24">
+            <a-form-item label="状态">
+              <a-select v-model="queryParam.status" placeholder="请选择状态">
+                <a-select-option value="">全部</a-select-option>
+                <a-select-option
+                  v-for="(item, index) in status"
+                  :key="index"
+                  :value="item.data"
+                  >{{ item.name }}</a-select-option
+                >
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="5" :sm="24">
             <span class="table-page-search-submitButtons">
               <a-button
                 type="primary"
@@ -276,6 +289,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import { STable } from "@/components";
 import { getSwitchStatus } from "@/libs/util";
 import moment from "moment";
@@ -287,14 +301,15 @@ import {
   addTenant,
   modifyTenant
 } from "@/api/system/tenant";
-import { getDictByType } from "@/api/system/dict";
-import dict from "@/const/dict";
 import AFormItem from "ant-design-vue/es/form/FormItem";
 export default {
   name: "tenant",
   components: {
     AFormItem,
     STable
+  },
+  computed: {
+    ...mapGetters(["tenantTypes", "status"])
   },
   data() {
     return {
@@ -311,7 +326,6 @@ export default {
       tenantStatus: true,
       startDate: "",
       endDate: "",
-      tenantTypes: [],
       typeMap: new Map(),
       // 表头
       columns: [
@@ -385,19 +399,9 @@ export default {
     this.tableOption();
   },
   beforeMount() {
-    this.$loading.show();
-    getDictByType(dict.tenantType)
-      .then(res => {
-        if (res.success) {
-          this.tenantTypes = res.data;
-          res.data.forEach(item => {
-            this.typeMap.set(item.data, item.name);
-          });
-        }
-      })
-      .finally(() => {
-        this.$loading.hide();
-      });
+    this.tenantTypes.forEach(item => {
+      this.typeMap.set(item.data, item.name);
+    });
   },
   methods: {
     tableOption() {

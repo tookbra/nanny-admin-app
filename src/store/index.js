@@ -5,6 +5,7 @@ import account from "./modules/account";
 import app from "./modules/app";
 import permission from "./modules/permission";
 import tags from "./modules/tags";
+import dict from "./modules/dict";
 
 Vue.use(Vuex);
 
@@ -16,6 +17,7 @@ export default new Vuex.Store({
     account,
     app,
     permission,
-    tags
+    tags,
+    dict
   }
 });

@@ -182,7 +182,6 @@ export default {
       }
     },
     onSelect(selectedKeys, info) {
-      console.log("onSelect", info);
       if (info.selected) {
         this.getDepartment(info.node.dataRef.value);
       } else {

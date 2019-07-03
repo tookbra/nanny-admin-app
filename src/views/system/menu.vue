@@ -510,8 +510,6 @@ export default {
           this.assemblyTree(item.children);
         }
       });
-      console.log(111111);
-      console.log(this.treeMenu);
     },
     chooseIcon() {
       this.showIcon = true;
