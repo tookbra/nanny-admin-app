@@ -4,16 +4,39 @@
       <a-col :md="24" :lg="7">
         <a-card :bordered="false">
           <div class="table-operator">
-            <a-button class="btn" type="primary" @click="showAdd" icon="plus"
+            <a-button
+              v-action:department_add
+              class="btn"
+              type="primary"
+              @click="showAdd"
+              icon="plus"
               >添加科室</a-button
             >
-            <a-button class="btn" type="primary" icon="import">导入</a-button>
-            <a-button class="btn" type="primary" icon="download">导出</a-button>
-            <a-button class="btn" type="default" @click="remove" icon="delete"
+            <a-button
+              v-action:department_import
+              class="btn"
+              type="primary"
+              icon="import"
+              >导入</a-button
+            >
+            <a-button
+              v-action:department_export
+              class="btn"
+              type="primary"
+              icon="download"
+              >导出</a-button
+            >
+            <a-button
+              v-action:department_delete
+              class="btn"
+              type="default"
+              @click="remove"
+              icon="delete"
               >删除</a-button
             >
           </div>
           <a-select
+            :allowClear="true"
             placeholder="请选择租户"
             style="width: 100%; margin-bottom: 0.4rem;"
             @change="tenantChange"
@@ -82,7 +105,7 @@
                 @change="deptTreeChange"
                 v-decorator="[
                   'parentId',
-                  { rules: [{ required: true, message: '请选择上级科室' }] }
+                  { rules: [{ message: '请选择上级科室' }] }
                 ]"
                 treeDefaultExpandAll
               >
@@ -163,6 +186,7 @@ export default {
       edit: false,
       orgValue: "",
       departmentForm: this.$form.createForm(this),
+      department: {},
       dropTrigger: "",
       selectedKeys: [],
       checkedKeys: [],
@@ -183,16 +207,16 @@ export default {
     },
     onSelect(selectedKeys, info) {
       if (info.selected) {
+        this.edit = true;
         this.getDepartment(info.node.dataRef.value);
       } else {
+        this.edit = false;
         this.departmentForm.resetFields();
       }
       this.selectedKeys = selectedKeys;
     },
     onCheck(checkedKeys) {
-      checkedKeys.forEach(item => {
-        this.checkedKeys.push(item);
-      });
+      this.checkedKeys = checkedKeys;
     },
     deptTreeChange(value) {
       this.orgValue = value;
@@ -208,8 +232,13 @@ export default {
       this.setFormValues(department);
     },
     tenantChange(value) {
-      this.tenantId = value;
-      this.loadTree();
+      if (value) {
+        this.tenantId = value;
+        this.loadTree();
+      } else {
+        this.tenantId = 0;
+        this.orgTree = [];
+      }
     },
     loadTree() {
       this.$loading.show();
@@ -217,17 +246,7 @@ export default {
       getDepartmentByTenant(this.tenantId)
         .then(res => {
           if (res.success) {
-            this.orgTree = [];
-            if (res.data.length === 0) {
-              this.orgTree.push({
-                key: "0",
-                value: "0",
-                title: "领导科室",
-                children: res.data
-              });
-            } else {
-              this.orgTree = res.data;
-            }
+            this.orgTree = res.data;
           } else {
             this.$message.error("获取部门失败");
           }
@@ -340,6 +359,7 @@ export default {
           this.$loading.show();
           let department = values;
           department.tenantId = this.tenantId;
+          department.id = this.department.id;
           if (this.edit) {
             modifyDeparment(department)
               .then(res => {
@@ -372,6 +392,7 @@ export default {
     },
     setFormValues({ ...department }) {
       let fields = [
+        "id",
         "tenantId",
         "name",
         "address",
@@ -387,6 +408,7 @@ export default {
           this.departmentForm.setFieldsValue(obj);
         }
       });
+      this.department = department;
     }
   }
 };

@@ -14,6 +14,11 @@ dictUtil.initDictData = function(vm) {
       vm.$store.commit("SET_STATUS", res.data);
     }
   });
+  getDictByType("sex").then(res => {
+    if (res.success) {
+      vm.$store.commit("SET_SEX", res.data);
+    }
+  });
 };
 
 export default dictUtil;

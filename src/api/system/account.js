@@ -51,3 +51,10 @@ export function disable(parameter) {
     method: "put"
   });
 }
+
+export function getAllAccount(parameter) {
+  return fetch({
+    url: "/system/accounts/tenant/" + parameter + "/all",
+    method: "get"
+  });
+}

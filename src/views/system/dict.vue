@@ -1,5 +1,5 @@
 <template>
-  <basicContainer>
+  <div class="page-header-index-wide page-header-wrapper-grid-content-main">
     <a-row :gutter="24">
       <a-col :md="24" :lg="5">
         <a-card :bordered="false">
@@ -270,7 +270,7 @@
         </a-form-item>
       </a-form>
     </a-modal>
-  </basicContainer>
+  </div>
 </template>
 
 <script>

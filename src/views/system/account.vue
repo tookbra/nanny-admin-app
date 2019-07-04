@@ -1,8 +1,26 @@
 <template>
   <div class="page-header-index-wide page-header-wrapper-grid-content-main">
     <a-row :gutter="24">
-      <a-col :md="24" :lg="4">
+      <a-col :md="24" :lg="5">
         <a-card :bordered="false">
+          <div class="table-operator">
+            <a-button
+              v-action:account_import
+              class="btn"
+              type="primary"
+              icon="import"
+              >导入</a-button
+            >
+            <a-dropdown>
+              <a-menu slot="overlay" @click="handleExportClick">
+                <a-menu-item key="1">导出所选数据</a-menu-item>
+                <a-menu-item key="2">导出全部数据</a-menu-item>
+              </a-menu>
+              <a-button v-action:account_export icon="export"
+                >导出 <a-icon type="down" />
+              </a-button>
+            </a-dropdown>
+          </div>
           <a-select
             :allowClear="true"
             placeholder="请选择租户"
@@ -29,9 +47,9 @@
           />
         </a-card>
       </a-col>
-      <a-col :md="24" :lg="20">
+      <a-col :md="24" :lg="19">
         <a-card :bordered="false">
-          <div class="search-wrapper" v-if="showSearch">
+          <div class="search-wrapper" v-if="showSearch" v-action:tenant_search>
             <a-form layout="inline">
               <a-row :gutter="25">
                 <a-col :md="5" :sm="24">
@@ -42,13 +60,16 @@
                 <a-col :md="5" :sm="24">
                   <a-form-item label="状态">
                     <a-select
-                      placeholder="请选择"
-                      default-value=""
                       v-model="queryParam.status"
+                      placeholder="请选择状态"
                     >
                       <a-select-option value="">全部</a-select-option>
-                      <a-select-option value="2">禁用</a-select-option>
-                      <a-select-option value="1">启用</a-select-option>
+                      <a-select-option
+                        v-for="(item, index) in status"
+                        :key="index"
+                        :value="item.data"
+                        >{{ item.name }}</a-select-option
+                      >
                     </a-select>
                   </a-form-item>
                 </a-col>
@@ -71,13 +92,34 @@
               </a-row>
             </a-form>
           </div>
-          <table-menu
-            :showSearch="showSearch"
-            @updateShowSearch="updateShowSearch"
-            @refresh="refresh"
-            @showAdd="showAdd"
-            @remove="batchRemove"
-          />
+          <div class="table-menu">
+            <div class="table-menu-permission">
+              <a-button
+                v-action:account_add
+                type="primary"
+                class="btn"
+                icon="plus"
+                @click="showAdd"
+                >新增</a-button
+              >
+              <a-button
+                v-action:account_delete
+                type="danger"
+                class="btn anger"
+                icon="delete"
+                @click="batchRemove"
+                >删除</a-button
+              >
+            </div>
+            <div v-action:account_search class="table-menu-nav">
+              <a-button shape="circle" icon="sync" @click="refresh" />
+              <a-button
+                shape="circle"
+                icon="search"
+                @click="updateShowSearch"
+              />
+            </div>
+          </div>
           <s-table
             ref="table"
             size="default"
@@ -92,29 +134,29 @@
             :showSizeChanger="true"
           >
             <span slot="sex" slot-scope="text">
-              {{ text | statusFilter }}
+              {{ text | typeFilter(sexMap) }}
             </span>
             <span slot="status" slot-scope="text">
               {{ text | statusFilter }}
             </span>
             <span slot="action" class="table-nav" slot-scope="text, record">
               <template>
-                <a @click="() => showDetail(record)">
+                <a v-action:account_view @click="() => showDetail(record)">
                   <a-icon type="eye" />
                   详情
                 </a>
-                <a-divider type="vertical" />
-                <a @click="() => showModify(record)">
+                <a-divider v-action:account_edit type="vertical" />
+                <a v-action:account_edit @click="() => showModify(record)">
                   <a-icon type="edit" />
                   编辑
                 </a>
-                <a-divider type="vertical" />
-                <a @click="() => disableUser(record)">
+                <a-divider v-action:account_disable type="vertical" />
+                <a v-action:account_disable @click="() => disableUser(record)">
                   <a-icon type="lock" />
                   禁用
                 </a>
-                <a-divider type="vertical" />
-                <a @click="() => remove(record)">
+                <a-divider v-action:account_delete type="vertical" />
+                <a v-action:account_delete @click="() => remove(record)">
                   <a-icon type="delete" />
                   删除
                 </a>
@@ -308,10 +350,16 @@
         </a-form-item>
       </a-form>
     </a-modal>
+    <export-csv
+      :dialogVisible="exportVisible"
+      @dialogCancel="exportCancel"
+      :params="exportData"
+    ></export-csv>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import {
   pageAccount,
   batchRemoveAccount,
@@ -319,18 +367,27 @@ import {
   getAccount,
   modifyAccount,
   addAccount,
-  disable
+  disable,
+  getAllAccount
 } from "@/api/system/account";
 import { getSwitchStatus } from "@/libs/util";
 import { getDepartmentByTenant } from "@/api/system/department";
-import { STable, tableMenu } from "@/components";
+import { STable, exportCsv } from "@/components";
 import { getAllTenant } from "@/api/system/tenant";
 import { getRoleByTenantId } from "@/api/system/role";
 export default {
   name: "account",
   components: {
     STable,
-    tableMenu
+    exportCsv
+  },
+  computed: {
+    ...mapGetters(["sex", "status"])
+  },
+  beforeMount() {
+    this.sex.forEach(item => {
+      this.sexMap.set(item.data, item.name);
+    });
   },
   data() {
     return {
@@ -354,7 +411,29 @@ export default {
       account: {},
       okDisabled: false,
       userStatus: true,
+      exportVisible: false,
       accountForm: this.$form.createForm(this),
+      sexMap: new Map(),
+      exportData: {
+        columns: [
+          {
+            title: "姓名",
+            key: "name"
+          },
+          {
+            title: "性别",
+            key: "sex"
+          },
+          {
+            title: "状态",
+            key: "status"
+          },
+          {
+            title: "手机号",
+            key: "phone"
+          }
+        ]
+      },
       // 表头
       columns: [
         {
@@ -490,6 +569,28 @@ export default {
           _this.$loading.hide();
         });
     },
+    handleExportClick(e) {
+      if (this.tenantId == 0) {
+        this.$message.error("请选择租户");
+        return;
+      }
+      if (e.key == "2") {
+        this.$loading.show();
+        getAllAccount(this.tenantId)
+          .then(res => {
+            this.exportData = Object.assign(this.exportData, {
+              data: res.data
+            });
+          })
+          .finally(() => {
+            this.$loading.hide();
+          });
+      }
+      this.exportVisible = true;
+    },
+    exportCancel() {
+      this.exportVisible = false;
+    },
     getAccount(id) {
       const vm = this;
       this.$loading.show();
@@ -502,7 +603,7 @@ export default {
             vm.$message.error(res.msg);
           }
         })
-        .then(() => {
+        .finally(() => {
           vm.$loading.hide();
         });
     },
@@ -593,13 +694,14 @@ export default {
       if (info.selected) {
         this.queryParam.departmentId = selectedKeys[0];
         this.queryParam.tenantId = this.tenantId;
-        this.$refs.table.refresh(true);
-
         this.accountForm.getFieldDecorator("departmentId");
         let obj = {};
         obj["departmentId"] = info.node.dataRef.value;
         this.accountForm.setFieldsValue(obj);
+      } else {
+        this.queryParam.departmentId = "";
       }
+      this.$refs.table.refresh(true);
       this.selectedKeys = selectedKeys;
     },
     setFormValues({ ...account }) {

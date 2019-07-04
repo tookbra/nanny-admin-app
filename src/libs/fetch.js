@@ -26,7 +26,7 @@ fetch.interceptors.request.use(config => {
 fetch.interceptors.response.use(res => {
   const status = Number(res.status) || 200;
   const message = res.data.msg || errorCode[status] || errorCode["default"];
-  if (status !== 200 || !res.data.success) {
+  if (status !== 200 || (res.data.success && !res.data.success)) {
     Vue.prototype.$loading("hide");
     notification.error({
       message: "操作失败",

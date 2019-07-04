@@ -1,6 +1,6 @@
 <template>
   <basicContainer>
-    <div class="search-wrapper" v-if="showSearch">
+    <div v-action:role_search class="search-wrapper" v-if="showSearch">
       <a-form layout="inline">
         <a-row :gutter="25">
           <a-col :md="5" :sm="24">
@@ -50,14 +50,30 @@
         </a-row>
       </a-form>
     </div>
-    <table-menu
-      :showSearch="showSearch"
-      @updateShowSearch="updateShowSearch"
-      @refresh="refresh"
-      @remove="batchRemove"
-      @showAdd="showAdd"
-      @showPermission="showPermission"
-    />
+    <div class="table-menu">
+      <div class="table-menu-permission">
+        <a-button
+          v-action:role_add
+          type="primary"
+          class="btn"
+          icon="plus"
+          @click="showAdd"
+          >新增</a-button
+        >
+        <a-button
+          v-action:role_delete
+          type="danger"
+          class="btn anger"
+          icon="delete"
+          @click="batchRemove"
+          >删除</a-button
+        >
+      </div>
+      <div v-action:role_search class="table-menu-nav">
+        <a-button shape="circle" icon="sync" @click="refresh" />
+        <a-button shape="circle" icon="search" @click="updateShowSearch" />
+      </div>
+    </div>
     <s-table
       ref="table"
       size="default"
@@ -76,17 +92,17 @@
       </span>
       <span slot="action" class="table-nav" slot-scope="text, record">
         <template>
-          <a @click="() => showDetail(record)">
+          <a v-action:role_view @click="() => showDetail(record)">
             <a-icon type="eye" />
             详情
           </a>
-          <a-divider type="vertical" />
-          <a @click="() => showModify(record)">
+          <a-divider v-action:role_edit type="vertical" />
+          <a v-action:role_edit @click="() => showModify(record)">
             <a-icon type="edit" />
             编辑
           </a>
-          <a-divider type="vertical" />
-          <a @click="() => remove(record)">
+          <a-divider v-action:role_delete type="vertical" />
+          <a v-action:role_delete @click="() => remove(record)">
             <a-icon type="delete" />
             删除
           </a>
@@ -181,7 +197,7 @@
 </template>
 
 <script>
-import { STable, tableMenu } from "@/components";
+import { STable } from "@/components";
 import { getSwitchStatus } from "@/libs/util";
 import {
   pageRole,
@@ -197,8 +213,7 @@ export default {
   name: "tenant",
   components: {
     AFormItem,
-    STable,
-    tableMenu
+    STable
   },
   data() {
     return {
