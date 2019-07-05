@@ -106,6 +106,10 @@
             <a-icon type="delete" />
             删除
           </a>
+          <a @click="() => showPermission(record)">
+            <a-icon type="setting" />
+            权限设置
+          </a>
         </template>
       </span>
     </s-table>
@@ -193,12 +197,26 @@
         </a-form-item>
       </a-form>
     </a-modal>
+    <a-modal
+      title="分配权限"
+      v-model="permissionVisible"
+      width="780px"
+      @ok="handlePermissionOk"
+    >
+      <a-tree
+        checkable
+        @check="onMenuCheck"
+        :selectedKeys="menuCheckedKeys"
+        :treeData="menuTree"
+      />
+    </a-modal>
   </basicContainer>
 </template>
 
 <script>
 import { STable } from "@/components";
 import { getSwitchStatus } from "@/libs/util";
+import { menuTree } from "@/api/system/menu";
 import {
   pageRole,
   removeRole,
@@ -221,6 +239,7 @@ export default {
       queryParam: {},
       showSearch: true,
       visible: false,
+      permissionVisible: false,
       loading: false,
       okDisabled: false,
       title: "",
@@ -228,6 +247,8 @@ export default {
       roleForm: this.$form.createForm(this),
       role: {},
       treeTenant: [],
+      menuCheckedKeys: [],
+      menuTree: [],
       roleStatus: true,
       // 表头
       columns: [
@@ -289,6 +310,9 @@ export default {
         this.treeTenant.push({ name: item.name, value: item.id });
       });
     });
+    menuTree().then(res => {
+      this.menuTree = res.data;
+    });
   },
   methods: {
     tableOption() {
@@ -317,6 +341,15 @@ export default {
     },
     updateShowSearch(showSearch) {
       this.showSearch = showSearch;
+    },
+    showPermission() {
+      this.permissionVisible = true;
+    },
+    onMenuCheck(checkedKeys) {
+      this.menuCheckedKeys = checkedKeys;
+    },
+    handlePermissionOk() {
+      console.log(111);
     },
     batchRemove() {
       if (!this.selectedRowKeys.length) {
@@ -369,16 +402,6 @@ export default {
         },
         onCancel() {}
       });
-    },
-    showPermission() {
-      if (!this.selectedRowKeys.length) {
-        this.$message.warning("请选择需授权的数据");
-        return;
-      }
-      if (this.selectedRowKeys.length > 1) {
-        this.$message.warning("只能选择一条需授权的数据");
-        return;
-      }
     },
     showAdd() {
       this.visible = true;

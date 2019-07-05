@@ -8,6 +8,13 @@ export function pageMenu(parameter) {
   });
 }
 
+export function menuTree() {
+  return fetch({
+    url: "/system/menus/tree",
+    method: "get"
+  });
+}
+
 export function getMenu(id) {
   return fetch({
     url: "/system/menus/" + id,

@@ -290,6 +290,7 @@
                 v-decorator="[
                   'status',
                   {
+                    initialValue: 1,
                     rules: [{ required: true, message: '请选择状态' }]
                   }
                 ]"
@@ -304,13 +305,36 @@
               </a-radio-group>
             </a-form-item>
           </a-col>
-        </a-row>
-        <a-row>
-          <a-col :md="24" :sm="48">
+          <a-col :md="12" :sm="24">
+            <a-form-item
+              label="是否显示"
+              :label-col="{ span: 5 }"
+              :wrapper-col="{ span: 18 }"
+            >
+              <a-radio-group
+                v-decorator="[
+                  'showed',
+                  {
+                    initialValue: 1,
+                    rules: [{ required: true, message: '请选择是否显示' }]
+                  }
+                ]"
+                name="opened"
+              >
+                <a-radio :value="1">
+                  显示
+                </a-radio>
+                <a-radio :value="0">
+                  隐藏
+                </a-radio>
+              </a-radio-group>
+            </a-form-item>
+          </a-col>
+          <a-col :md="12" :sm="424">
             <a-form-item
               label="菜单备注"
-              :label-col="{ span: 2 }"
-              :wrapper-col="{ span: 21 }"
+              :label-col="{ span: 5 }"
+              :wrapper-col="{ span: 18 }"
             >
               <a-textarea
                 placeholder="请输入备注"

@@ -4,10 +4,16 @@
       <a-col :md="24" :lg="5">
         <a-card :bordered="false">
           <div class="table-operator">
-            <a-button class="btn" type="primary" @click="showAdd" icon="plus"
+            <a-button
+              v-action:dict_add
+              class="btn"
+              type="primary"
+              @click="showAdd"
+              icon="plus"
               >添加字典</a-button
             >
             <a-button
+              v-action:dict_delete
               class="btn"
               type="default"
               @click="handleRemoveDict"
@@ -30,8 +36,15 @@
               </span>
               <!--新增右键点击事件,和增加添加和删除功能-->
               <a-menu slot="overlay">
-                <a-menu-item @click="handleEdit()" key="1">编辑</a-menu-item>
-                <a-menu-item @click="handleRemove()" key="2">删除</a-menu-item>
+                <a-menu-item v-action:dict_edit @click="handleEdit()" key="1"
+                  >编辑</a-menu-item
+                >
+                <a-menu-item
+                  v-action:dict_delete
+                  @click="handleRemove()"
+                  key="2"
+                  >删除</a-menu-item
+                >
                 <a-menu-item @click="handleDrop()" key="3">取消</a-menu-item>
               </a-menu>
             </a-dropdown>
@@ -40,7 +53,7 @@
       </a-col>
       <a-col :md="24" :lg="19">
         <a-card :bordered="false">
-          <div class="search-wrapper" v-if="showSearch">
+          <div v-action:dict_search class="search-wrapper" v-if="showSearch">
             <a-form layout="inline">
               <a-row :gutter="16">
                 <a-col :md="8" :sm="24">
@@ -79,13 +92,35 @@
               </a-row>
             </a-form>
           </div>
-          <table-menu
-            :showSearch="showSearch"
-            @updateShowSearch="updateShowSearch"
-            @refresh="refresh"
-            @remove="batchRemove"
-            @showAdd="showDataAdd"
-          />
+          <div class="table-menu">
+            <div class="table-menu-permission">
+              <a-button
+                v-action:dict_add
+                type="primary"
+                class="btn"
+                icon="plus"
+                @click="showAdd"
+                >新增</a-button
+              >
+              <a-button
+                v-action:dict_delete
+                type="danger"
+                class="btn anger"
+                icon="delete"
+                @click="batchRemove"
+                >删除</a-button
+              >
+            </div>
+            <div class="table-menu-nav">
+              <a-button shape="circle" icon="sync" @click="refresh" />
+              <a-button
+                v-action:dict_search
+                shape="circle"
+                icon="search"
+                @click="updateShowSearch"
+              />
+            </div>
+          </div>
           <s-table
             ref="table"
             size="default"
@@ -274,7 +309,7 @@
 </template>
 
 <script>
-import { STable, tableMenu } from "@/components";
+import { STable } from "@/components";
 import { getSwitchStatus } from "@/libs/util";
 import {
   removeDict,
@@ -294,8 +329,7 @@ import {
 export default {
   name: "dict",
   components: {
-    STable,
-    tableMenu
+    STable
   },
   data() {
     return {
