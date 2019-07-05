@@ -19,12 +19,10 @@ const action = Vue.directive("action", {
   inserted: function(el, binding, vnode) {
     const actionName = binding.arg;
     const roles = store.getters.roles;
-    roles.permissions.forEach(p => {
-      if (!p.includes(actionName)) {
-        (el.parentNode && el.parentNode.removeChild(el)) ||
-          (el.style.display = "none");
-      }
-    });
+    if (!roles.permissions.includes(actionName)) {
+      (el.parentNode && el.parentNode.removeChild(el)) ||
+        (el.style.display = "none");
+    }
   }
 });
 

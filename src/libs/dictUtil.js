@@ -1,24 +1,29 @@
 import { getDictByType } from "@/api/system/dict";
+import Vue from "vue";
+import { ACCESS_TOKEN } from "@/store/mutation-types";
 
 let dictUtil = {};
 
 // 获取常用的数据字典保存至vuex
 dictUtil.initDictData = function(vm) {
-  getDictByType("tenant_type").then(res => {
-    if (res.success) {
-      vm.$store.commit("SET_TENANT_TYPE", res.data);
-    }
-  });
-  getDictByType("status").then(res => {
-    if (res.success) {
-      vm.$store.commit("SET_STATUS", res.data);
-    }
-  });
-  getDictByType("sex").then(res => {
-    if (res.success) {
-      vm.$store.commit("SET_SEX", res.data);
-    }
-  });
+  const token = Vue.ls.get(ACCESS_TOKEN);
+  if (token && token != null) {
+    getDictByType("tenant_type").then(res => {
+      if (res.success) {
+        vm.$store.commit("SET_TENANT_TYPE", res.data);
+      }
+    });
+    getDictByType("status").then(res => {
+      if (res.success) {
+        vm.$store.commit("SET_STATUS", res.data);
+      }
+    });
+    getDictByType("sex").then(res => {
+      if (res.success) {
+        vm.$store.commit("SET_SEX", res.data);
+      }
+    });
+  }
 };
 
 export default dictUtil;

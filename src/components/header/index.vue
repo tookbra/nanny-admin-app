@@ -57,10 +57,11 @@ export default {
         title: "提示",
         content: "真的要注销登录吗 ?",
         onOk() {
-          return that
+          that
             .Logout({})
             .then(() => {
-              window.location.reload();
+              console.log(2222);
+              that.$router.push({ name: "login" });
             })
             .catch(err => {
               that.$message.error({

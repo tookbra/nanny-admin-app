@@ -6,6 +6,7 @@ import PageLoading from "@/components/PageLoading";
 import IconSelector from "@/components/IconSelector";
 import Tree from "@/components/Tree/Tree";
 import exportCsv from "@/components/table/export-csv";
+import importFile from "@/components/importFile/index";
 
 export {
   ExceptionPage,
@@ -15,5 +16,6 @@ export {
   PageLoading,
   IconSelector,
   Tree,
-  exportCsv
+  exportCsv,
+  importFile
 };

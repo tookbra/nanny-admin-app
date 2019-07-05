@@ -39,7 +39,7 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :md="5" :sm="24">
+          <a-col :md="3" :sm="24">
             <span class="table-page-search-submitButtons">
               <a-button
                 type="primary"

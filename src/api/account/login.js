@@ -15,7 +15,7 @@ export function login(parameter) {
 
 export function logout() {
   return fetch({
-    url: "/auth/logout",
-    method: "post"
+    url: "/auth/token/logout",
+    method: "delete"
   });
 }

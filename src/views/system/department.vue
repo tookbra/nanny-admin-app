@@ -17,6 +17,7 @@
               class="btn"
               type="primary"
               icon="import"
+              @click="showImportFile"
               >导入</a-button
             >
             <a-button
@@ -162,6 +163,12 @@
         </a-card>
       </a-col>
     </a-row>
+    <import-file
+      :importVisiable="importFile.visiable"
+      :actionUrl="'http://localhost:20000/system/departments/importFile'"
+      :importData="importFile.data"
+      @close="handleImportClose"
+    ></import-file>
   </div>
 </template>
 
@@ -175,8 +182,12 @@ import {
   modifyDeparment
 } from "@/api/system/department";
 import { getAllTenant } from "@/api/system/tenant";
+import { importFile } from "@/components";
 export default {
   name: "department",
+  components: {
+    importFile
+  },
   data() {
     return {
       orgTree: [],
@@ -190,7 +201,11 @@ export default {
       dropTrigger: "",
       selectedKeys: [],
       checkedKeys: [],
-      rightClickSelected: ""
+      rightClickSelected: "",
+      importFile: {
+        visiable: false,
+        data: {}
+      }
     };
   },
   mounted() {
@@ -221,6 +236,12 @@ export default {
     deptTreeChange(value) {
       this.orgValue = value;
     },
+    showImportFile() {
+      this.importFile.visiable = true;
+    },
+    handleImportClose() {
+      this.importFile.visiable = false;
+    },
     showAdd() {
       this.departmentForm.resetFields();
       this.disabled = false;
@@ -234,6 +255,7 @@ export default {
     tenantChange(value) {
       if (value) {
         this.tenantId = value;
+        this.importFile.data = { tenantId: this.tenantId };
         this.loadTree();
       } else {
         this.tenantId = 0;

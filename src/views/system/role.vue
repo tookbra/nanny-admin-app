@@ -202,10 +202,12 @@
       v-model="permissionVisible"
       width="780px"
       @ok="handlePermissionOk"
+      :afterClose="perMissionModalClose"
     >
       <a-tree
         checkable
         @check="onMenuCheck"
+        v-model="menuCheckedKeys"
         :selectedKeys="menuCheckedKeys"
         :treeData="menuTree"
       />
@@ -223,7 +225,9 @@ import {
   batchRemoveRole,
   getRole,
   addRole,
-  modifyRole
+  modifyRole,
+  getRoleMenu,
+  addRoleMenu
 } from "@/api/system/role";
 import { getAllTenant } from "@/api/system/tenant";
 import AFormItem from "ant-design-vue/es/form/FormItem";
@@ -250,6 +254,7 @@ export default {
       menuCheckedKeys: [],
       menuTree: [],
       roleStatus: true,
+      roleId: 0,
       // 表头
       columns: [
         {
@@ -342,14 +347,41 @@ export default {
     updateShowSearch(showSearch) {
       this.showSearch = showSearch;
     },
-    showPermission() {
-      this.permissionVisible = true;
+    showPermission(row) {
+      this.$loading.show();
+      getRoleMenu(row.id)
+        .then(res => {
+          let roleMenus = [];
+          res.data.forEach(item => {
+            roleMenus.push(item.menuId);
+          });
+          this.menuCheckedKeys = roleMenus;
+          console.log(this.menuCheckedKeys);
+          this.permissionVisible = true;
+          this.roleId = row.id;
+        })
+        .finally(() => {
+          this.$loading.hide();
+        });
     },
     onMenuCheck(checkedKeys) {
       this.menuCheckedKeys = checkedKeys;
     },
     handlePermissionOk() {
-      console.log(111);
+      if (this.roleId == 0) {
+        this.$message.warning("请选择要操作的角色");
+        return;
+      }
+      this.$loading.show();
+      addRoleMenu(this.roleId, this.menuCheckedKeys)
+        .then(() => {
+          this.permissionVisible = false;
+          this.$message.success("操作成功");
+          this.$refs.table.refresh(true);
+        })
+        .finally(() => {
+          this.$loading.hide();
+        });
     },
     batchRemove() {
       if (!this.selectedRowKeys.length) {
@@ -387,18 +419,15 @@ export default {
         content: "确定删除该行记录?",
         centered: true,
         onOk() {
-          return new Promise(resolve => {
-            removeRole(row.id).then(res => {
-              if (res.success) {
-                vm.$message.success("删除成功");
-                vm.$refs.table.refresh(true);
-                resolve(res);
-              } else {
-                vm.$message.error(res.msg);
-                resolve("");
-              }
+          vm.$loading.show();
+          removeRole(row.id)
+            .then(() => {
+              vm.$message.success("删除成功");
+              vm.$refs.table.refresh(true);
+            })
+            .finally(() => {
+              vm.$loading.hide();
             });
-          });
         },
         onCancel() {}
       });
@@ -459,6 +488,10 @@ export default {
       this.okDisabled = false;
       this.roleForm.resetFields();
       this.roleStatus = true;
+    },
+    perMissionModalClose() {
+      this.roleId = 0;
+      this.menuCheckedKeys = [];
     },
     getRole(id) {
       const vm = this;

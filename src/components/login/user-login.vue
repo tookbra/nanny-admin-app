@@ -107,7 +107,6 @@ export default {
           const loginParams = { ...values };
           Login(loginParams)
             .then(() => this.loginSuccess())
-            .catch(err => this.requestFailed(err))
             .finally(() => {
               state.loginBtn = false;
             });
@@ -119,15 +118,7 @@ export default {
       });
     },
     loginSuccess() {
-      this.$router.push({ name: "home" });
-    },
-    requestFailed(err) {
-      console.log(err);
-      this.$notification["error"]({
-        message: "错误",
-        description: err,
-        duration: 4
-      });
+      this.$router.push({ path: "/home" });
     }
   }
 };

@@ -15,6 +15,21 @@ export function getRole(id) {
   });
 }
 
+export function getRoleMenu(id) {
+  return fetch({
+    url: "/system/roles/" + id + "/menus",
+    method: "get"
+  });
+}
+
+export function addRoleMenu(id, parameter) {
+  return fetch({
+    url: "/system/roles/" + id + "/menus",
+    method: "post",
+    data: parameter
+  });
+}
+
 export function getRoleByTenantId(id) {
   return fetch({
     url: "/system/roles/tenant/" + id,

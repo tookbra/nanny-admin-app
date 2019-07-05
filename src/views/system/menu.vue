@@ -45,13 +45,24 @@
         </a-row>
       </a-form>
     </div>
-    <table-menu
-      :showSearch="showSearch"
-      @updateShowSearch="updateShowSearch"
-      @refresh="refresh"
-      @remove="batchRemove"
-      @showAdd="showAdd"
-    />
+    <div class="table-menu">
+      <div class="table-menu-permission">
+        <a-button type="primary" class="btn" icon="plus" @click="showAdd"
+          >新增</a-button
+        >
+        <a-button
+          type="danger"
+          class="btn anger"
+          icon="delete"
+          @click="batchRemove"
+          >删除</a-button
+        >
+      </div>
+      <div class="table-menu-nav">
+        <a-button shape="circle" icon="sync" @click="refresh" />
+        <a-button shape="circle" icon="search" @click="updateShowSearch" />
+      </div>
+    </div>
     <s-table
       ref="table"
       size="default"
@@ -59,12 +70,11 @@
       :columns="columns"
       :data="loadData"
       :alert="false"
+      :showPagination="false"
       :rowSelection="{
         selectedRowKeys: selectedRowKeys,
         onChange: onSelectChange
       }"
-      :pagination="pagination"
-      :showSizeChanger="true"
     >
       <span slot="status" slot-scope="text">
         {{ text | statusFilter }}
@@ -360,7 +370,7 @@
 </template>
 
 <script>
-import { STable, tableMenu, IconSelector } from "@/components";
+import { STable, IconSelector } from "@/components";
 import {
   pageMenu,
   removeMenu,
@@ -379,7 +389,6 @@ export default {
     ACol,
     AFormItem,
     STable,
-    tableMenu,
     IconSelector
   },
   data() {
@@ -401,10 +410,6 @@ export default {
       components: [],
       permissions: [],
       category: 0,
-      pagination: {
-        defaultPageSize: 50,
-        hideOnSinglePage: true
-      },
       // 表头
       columns: [
         {
@@ -471,7 +476,7 @@ export default {
       optionAlertShow: false,
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        parameter.pageSize = 50;
+        parameter.size = 50;
         return pageMenu(Object.assign(parameter, this.queryParam)).then(res => {
           this.treeMenu = [];
           this.assemblyTree(res.data.records);

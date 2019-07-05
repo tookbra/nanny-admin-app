@@ -67,6 +67,7 @@ export default {
         commit("SET_ROLES", []);
         Vue.ls.remove(ACCESS_TOKEN);
         clearStore({ type: "session" });
+
         logout()
           .then(() => {
             resolve();
