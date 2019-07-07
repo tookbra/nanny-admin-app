@@ -58,3 +58,11 @@ export function getAllAccount(parameter) {
     method: "get"
   });
 }
+
+export function importConfirm(paramter) {
+  return fetch({
+    url: "/system/accounts/importConfirm",
+    method: "post",
+    data: paramter
+  });
+}

@@ -9,6 +9,7 @@
               class="btn"
               type="primary"
               icon="import"
+              @click="showImportFile"
               >导入</a-button
             >
             <a-dropdown>
@@ -55,6 +56,14 @@
                 <a-col :md="5" :sm="24">
                   <a-form-item label="用户名">
                     <a-input v-model="queryParam.name" placeholder="用户名" />
+                  </a-form-item>
+                </a-col>
+                <a-col :md="5" :sm="24">
+                  <a-form-item label="工号">
+                    <a-input
+                      v-model="queryParam.jobNumber"
+                      placeholder="工号"
+                    />
                   </a-form-item>
                 </a-col>
                 <a-col :md="5" :sm="24">
@@ -248,6 +257,21 @@
           />
         </a-form-item>
         <a-form-item
+          label="工号"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 14 }"
+        >
+          <a-input
+            placeholder="请输入用户工号"
+            v-decorator="[
+              'account',
+              {
+                rules: [{ min: 1, max: 10, message: '工号长度为[1, 10]' }]
+              }
+            ]"
+          />
+        </a-form-item>
+        <a-form-item
           label="手机号"
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 14 }"
@@ -355,6 +379,15 @@
       @dialogCancel="exportCancel"
       :params="exportData"
     ></export-csv>
+    <import-file
+      ref="importFile"
+      :importVisiable="importFile.visiable"
+      :actionUrl="'/system/accounts/importFile'"
+      :importData="importFile.data"
+      :columns="importFile.columns"
+      @close="handleImportClose"
+      @handleImport="handleImport"
+    ></import-file>
   </div>
 </template>
 
@@ -368,18 +401,20 @@ import {
   modifyAccount,
   addAccount,
   disable,
-  getAllAccount
+  getAllAccount,
+  importConfirm
 } from "@/api/system/account";
 import { getSwitchStatus } from "@/libs/util";
 import { getDepartmentByTenant } from "@/api/system/department";
-import { STable, exportCsv } from "@/components";
+import { STable, exportCsv, importFile } from "@/components";
 import { getAllTenant } from "@/api/system/tenant";
 import { getRoleByTenantId } from "@/api/system/role";
 export default {
   name: "account",
   components: {
     STable,
-    exportCsv
+    exportCsv,
+    importFile
   },
   computed: {
     ...mapGetters(["sex", "status"])
@@ -414,6 +449,48 @@ export default {
       exportVisible: false,
       accountForm: this.$form.createForm(this),
       sexMap: new Map(),
+      importFile: {
+        visiable: false,
+        data: {},
+        columns: [
+          {
+            title: "姓名",
+            dataIndex: "name"
+          },
+          {
+            title: "账号",
+            dataIndex: "account"
+          },
+          {
+            title: "工号",
+            dataIndex: "jobNumber"
+          },
+          {
+            title: "手机号",
+            dataIndex: "phone"
+          },
+          {
+            title: "性别",
+            dataIndex: "sex"
+          },
+          {
+            title: "部门",
+            dataIndex: "department"
+          },
+          {
+            title: "角色",
+            dataIndex: "role"
+          },
+          {
+            title: "状态",
+            dataIndex: "status"
+          },
+          {
+            title: "备注",
+            dataIndex: "remark"
+          }
+        ]
+      },
       exportData: {
         columns: [
           {
@@ -516,16 +593,29 @@ export default {
     switchUserStatus(checked) {
       this.userStatus = checked;
     },
-    async loadTree() {
-      this.$loading.show();
-      const _this = this;
-      await getDepartmentByTenant(this.tenantId)
-        .then(res => {
-          this.orgTree = res.data;
-        })
-        .then(() => {
-          _this.$loading.hide();
+    showImportFile() {
+      this.importFile.visiable = true;
+    },
+    handleImportClose() {
+      this.importFile.visiable = false;
+    },
+    handleImport(data) {
+      if (data.length == 0) {
+        this.$notification.error({
+          message: "错误提示",
+          description: "导入数据为空"
         });
+        return;
+      }
+      importConfirm({ tenantId: this.tenantId, list: data }).then(() => {
+        this.$refs.importFile.onClose();
+        this.loadTree();
+      });
+    },
+    async loadTree() {
+      await getDepartmentByTenant(this.tenantId).then(res => {
+        this.orgTree = res.data;
+      });
     },
     modalClose() {
       this.edit = false;
@@ -543,6 +633,7 @@ export default {
         let obj = {};
         obj["tenantId"] = this.tenantId;
         this.accountForm.setFieldsValue(obj);
+        this.importFile.data = { tenantId: this.tenantId };
       } else {
         this.userRoles = [];
       }
@@ -721,7 +812,8 @@ export default {
         "departmentId",
         "avatar",
         "status",
-        "remark"
+        "remark",
+        "jobNumber"
       ];
       Object.keys(account).forEach(key => {
         if (fields.indexOf(key) !== -1) {

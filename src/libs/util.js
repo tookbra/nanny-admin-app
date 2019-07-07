@@ -1,3 +1,5 @@
+import Vue from "vue";
+
 /**
  * 触发 window.resize
  */
@@ -68,4 +70,18 @@ export function serialize(data) {
  */
 export function getSwitchStatus(check) {
   return check ? 1 : 2;
+}
+
+/**
+ * 加载loading
+ */
+export function showLoading() {
+  Vue.prototype.$loading("show");
+}
+
+/**
+ * 隐藏loading
+ */
+export function hideLoading() {
+  Vue.prototype.$loading("hide");
 }

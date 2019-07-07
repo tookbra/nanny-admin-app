@@ -5,6 +5,7 @@
     width="960"
     :closable="false"
     :maskClosable="true"
+    :destroyOnClose="true"
     :visible="importVisiable"
     :wrapStyle="{
       height: 'calc(100% - 108px)',
@@ -19,6 +20,7 @@
       :beforeUpload="beforeUpload"
       :headers="headers"
       :data="importData"
+      @change="handleChange"
     >
       <a-button> <a-icon type="upload" />上传excel文件</a-button>
     </a-upload>
@@ -28,6 +30,13 @@
       type="warning"
       showIcon
     />
+    <a-table
+      :bordered="true"
+      :style="{ marginTop: '10px' }"
+      :columns="columns"
+      :dataSource="data"
+    >
+    </a-table>
     <div
       :style="{
         position: 'absolute',
@@ -50,7 +59,9 @@
       <a-button :style="{ marginRight: '8px' }" @click="onClose">
         关闭
       </a-button>
-      <a-button type="primary">确认导入</a-button>
+      <a-button type="primary" :disabled="disabled" @click="handleOk">{{
+        importText
+      }}</a-button>
     </div>
   </a-drawer>
 </template>
@@ -68,30 +79,64 @@ export default {
     },
     importData: {
       default: {}
+    },
+    columns: {
+      default: []
     }
   },
   data() {
     return {
       headers: {
         Authorization: "Bearer " + this.$ls.get(ACCESS_TOKEN)
-      }
+      },
+      disabled: true,
+      importText: "确认导入",
+      data: []
     };
   },
   methods: {
     onClose() {
+      this.data = [];
       this.$emit("close");
     },
     downloadFile() {
       console.log(123);
     },
     beforeUpload(file) {
-      const isJPG =
+      const isXls =
         file.type ===
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-      if (!isJPG) {
+      if (!isXls) {
         this.$message.error("请选择正确的文件格式");
       }
-      return isJPG;
+      return isXls;
+    },
+    handleChange(info) {
+      if (info.file.status === "error") {
+        this.$notification.error({
+          message: "错误提示",
+          description: info.file.response.msg
+        });
+        return;
+      }
+      if (info.file.status === "done") {
+        let res = info.file.response;
+        if (!res.success) {
+          this.$notification.error({
+            message: "错误提示",
+            description: res.msg
+          });
+          return;
+        }
+        if (res.data.length > 0) {
+          this.disabled = false;
+          this.importText = "确认导入" + res.data.length + "条数据";
+        }
+        this.data = info.file.response.data;
+      }
+    },
+    handleOk() {
+      this.$emit("handleImport", this.data);
     }
   }
 };

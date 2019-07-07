@@ -443,19 +443,14 @@ export default {
         content: "确定删除所选中的记录?",
         centered: true,
         onOk() {
-          vm.$loading.show();
-          batchRemoveTenant(vm.selectedRowKeys)
-            .then(res => {
-              if (res.success) {
-                vm.$message.success("批量删除成功");
-                vm.$refs.table.refresh(true);
-              } else {
-                vm.$message.error(res.msg);
-              }
-            })
-            .finally(() => {
-              vm.$loading.hide();
-            });
+          batchRemoveTenant(vm.selectedRowKeys).then(res => {
+            if (res.success) {
+              vm.$message.success("批量删除成功");
+              vm.$refs.table.refresh(true);
+            } else {
+              vm.$message.error(res.msg);
+            }
+          });
         },
         onCancel() {}
       });
@@ -467,19 +462,14 @@ export default {
         content: "确定删除该行记录?",
         centered: true,
         onOk() {
-          vm.$loading.show();
-          removeTenant(row.id)
-            .then(res => {
-              if (res.success) {
-                vm.$message.success("删除成功");
-                vm.$refs.table.refresh(true);
-              } else {
-                vm.$message.error(res.msg);
-              }
-            })
-            .finally(() => {
-              vm.$loading.hide();
-            });
+          removeTenant(row.id).then(res => {
+            if (res.success) {
+              vm.$message.success("删除成功");
+              vm.$refs.table.refresh(true);
+            } else {
+              vm.$message.error(res.msg);
+            }
+          });
         },
         onCancel() {}
       });
@@ -507,25 +497,20 @@ export default {
       const vm = this;
       this.tenantForm.validateFields(err => {
         if (!err) {
-          this.$loading.show();
           let tenant = this.tenantForm.getFieldsValue();
           tenant.id = this.tenant.id;
           tenant.status = getSwitchStatus(this.tenantStatus);
           tenant.startDate = this.startDate;
           tenant.endDate = this.endDate;
           if (this.edit) {
-            modifyTenant(tenant)
-              .then(res => {
-                if (!res.success) {
-                  vm.$message.error(res.msg);
-                } else {
-                  this.visible = false;
-                  this.$refs.table.refresh(true);
-                }
-              })
-              .finally(() => {
-                vm.$loading.hide();
-              });
+            modifyTenant(tenant).then(res => {
+              if (!res.success) {
+                vm.$message.error(res.msg);
+              } else {
+                this.visible = false;
+                this.$refs.table.refresh(true);
+              }
+            });
           } else {
             console.log(tenant);
             addTenant(tenant)
@@ -554,19 +539,14 @@ export default {
     },
     getTenant(id) {
       const vm = this;
-      this.$loading.show();
-      getTenant(id)
-        .then(res => {
-          if (res.success) {
-            this.visible = true;
-            vm.setFormValues(res.data);
-          } else {
-            vm.$message.error(res.msg);
-          }
-        })
-        .then(() => {
-          vm.$loading.hide();
-        });
+      getTenant(id).then(res => {
+        if (res.success) {
+          this.visible = true;
+          vm.setFormValues(res.data);
+        } else {
+          vm.$message.error(res.msg);
+        }
+      });
     },
     setFormValues({ ...tenant }) {
       let fields = [

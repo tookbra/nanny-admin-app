@@ -3,6 +3,7 @@ import Vue from "vue";
 import { ACCESS_TOKEN } from "@/store/mutation-types";
 import errorCode from "@/const/errorCode";
 import notification from "ant-design-vue/es/notification";
+import { showLoading, hideLoading } from "./util";
 
 export const fetch = axios.create({
   baseURL:
@@ -10,6 +11,7 @@ export const fetch = axios.create({
       ? process.env.VUE_APP_PROXY_URL
       : process.env.VUE_APP_URL,
   timeout: 5000,
+  withCredentials: true,
   validateStatus: function(status) {
     return status >= 200 && status <= 500;
   }
@@ -20,10 +22,17 @@ fetch.interceptors.request.use(config => {
   if (token) {
     config.headers.Authorization = "Bearer " + token;
   }
+  console.log(config);
+  if (config.showLoading) {
+    showLoading();
+  }
   return config;
 }, err);
 
 fetch.interceptors.response.use(res => {
+  if (res.config.showLoading) {
+    hideLoading();
+  }
   const status = Number(res.status) || 200;
   const message = res.data.msg || errorCode[status] || errorCode["default"];
   if (status !== 200 || (res.data.success && !res.data.success)) {

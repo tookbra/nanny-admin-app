@@ -18,6 +18,7 @@ export function modifyDeparment(parameter) {
 
 export function getDepartmentByTenant(tenantId) {
   return fetch({
+    showLoading: true,
     url: "/system/departments/tenant/" + tenantId + "/tree",
     method: "get"
   });
@@ -41,5 +42,13 @@ export function remove(id) {
   return fetch({
     url: "/system/departments/" + id,
     method: "delete"
+  });
+}
+
+export function importConfirm(paramter) {
+  return fetch({
+    url: "/system/departments/importConfirm",
+    method: "post",
+    data: paramter
   });
 }

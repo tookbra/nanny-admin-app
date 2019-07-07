@@ -164,10 +164,13 @@
       </a-col>
     </a-row>
     <import-file
+      ref="importFile"
       :importVisiable="importFile.visiable"
-      :actionUrl="'http://localhost:20000/system/departments/importFile'"
+      :actionUrl="'/system/departments/importFile'"
       :importData="importFile.data"
+      :columns="importFile.columns"
       @close="handleImportClose"
+      @handleImport="handleImport"
     ></import-file>
   </div>
 </template>
@@ -179,7 +182,8 @@ import {
   batchRemove,
   remove,
   addDepartment,
-  modifyDeparment
+  modifyDeparment,
+  importConfirm
 } from "@/api/system/department";
 import { getAllTenant } from "@/api/system/tenant";
 import { importFile } from "@/components";
@@ -204,7 +208,25 @@ export default {
       rightClickSelected: "",
       importFile: {
         visiable: false,
-        data: {}
+        data: {},
+        columns: [
+          {
+            title: "部门",
+            dataIndex: "name"
+          },
+          {
+            title: "排序",
+            dataIndex: "sort"
+          },
+          {
+            title: "地址",
+            dataIndex: "address"
+          },
+          {
+            title: "备注",
+            dataIndex: "remark"
+          }
+        ]
       }
     };
   },
@@ -326,6 +348,19 @@ export default {
     },
     handleDrop() {
       this.dropTrigger = "";
+    },
+    handleImport(data) {
+      if (data.length == 0) {
+        this.$notification.error({
+          message: "错误提示",
+          description: "导入数据为空"
+        });
+        return;
+      }
+      importConfirm({ tenantId: this.tenantId, list: data }).then(() => {
+        this.$refs.importFile.onClose();
+        this.loadTree();
+      });
     },
     getDepartment(value) {
       this.$loading.show();
