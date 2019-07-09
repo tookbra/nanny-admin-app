@@ -10,12 +10,13 @@ import "ant-design-vue/dist/antd.css";
 import "../styles/index.less";
 import Loading from "../components/loading";
 
-import action from "./directives/action";
+import { action, actionAdmin } from "./directives/action";
 // import PermissionHelper from "@/libs/helper/permission";
 
 Vue.use(Antd);
 
 Vue.use(action);
+Vue.use(actionAdmin);
 // Vue.use(PermissionHelper);
 
 Vue.use(VueStorage, config.localStorageOptions);

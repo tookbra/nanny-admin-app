@@ -6,12 +6,10 @@ import notification from "ant-design-vue/es/notification";
 import { showLoading, hideLoading } from "./util";
 
 export const fetch = axios.create({
-  baseURL:
-    process.env.VUE_APP_PROXY === "true"
-      ? process.env.VUE_APP_PROXY_URL
-      : process.env.VUE_APP_URL,
+  ssss: 111,
+  baseURL: "/",
   timeout: 5000,
-  withCredentials: true,
+  // withCredentials: true,
   validateStatus: function(status) {
     return status >= 200 && status <= 500;
   }
@@ -22,7 +20,6 @@ fetch.interceptors.request.use(config => {
   if (token) {
     config.headers.Authorization = "Bearer " + token;
   }
-  console.log(config);
   if (config.showLoading) {
     showLoading();
   }
@@ -55,6 +52,7 @@ const err = error => {
       });
     }
     if (error.response.status === 401) {
+      console.log(error);
       notification.error({
         message: "Unauthorized",
         description: "Authorization verification failed"

@@ -9,6 +9,7 @@
 <script>
 import zhCN from "ant-design-vue/lib/locale-provider/zh_CN";
 import { deviceEnquire, DEVICE_TYPE } from "@/libs/device";
+import dictUtil from "@/libs/dictUtil";
 export default {
   data() {
     return {
@@ -34,6 +35,7 @@ export default {
           break;
       }
     });
+    dictUtil.initDictData(this);
   }
 };
 </script>

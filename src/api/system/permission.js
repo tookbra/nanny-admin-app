@@ -41,7 +41,6 @@ export function removePermission(id) {
 }
 
 export function modifyPermission(parameter) {
-  console.log(parameter);
   return fetch({
     url: "/permissions/" + parameter.id,
     method: "put",

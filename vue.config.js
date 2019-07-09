@@ -24,6 +24,14 @@ module.exports = {
         pathRewrite: {
           "^/system": "/system"
         }
+      },
+      "/auth": {
+        target: "http://127.0.0.1:20000",
+        ws: false,
+        changeOrigin: true,
+        pathRewrite: {
+          "^/auth": "/auth"
+        }
       }
     }
   }

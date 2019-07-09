@@ -80,7 +80,6 @@ export default {
     },
     exportCsv(params) {
       params.fileName += ".csv";
-      console.log(params);
       let columns = [];
       let datas = [];
       if (params.columns && params.data) {

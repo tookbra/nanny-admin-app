@@ -15,7 +15,8 @@ export default {
   getters: {
     name: state => state.name,
     avatar: state => state.avatar,
-    roles: state => state.roles
+    roles: state => state.roles,
+    info: state => state.info
   },
   actions: {
     // 登录

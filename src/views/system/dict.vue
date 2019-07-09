@@ -99,7 +99,7 @@
                 type="primary"
                 class="btn"
                 icon="plus"
-                @click="showAdd"
+                @click="showDataAdd"
                 >新增</a-button
               >
               <a-button
@@ -193,7 +193,7 @@
               {
                 rules: [
                   { required: true, message: '请输入字典编码' },
-                  { min: 2, max: 15, message: '字典编码长度为[2,15]' }
+                  { min: 2, max: 15, message: '字典编码长度为[1,15]' }
                 ]
               }
             ]"
@@ -446,16 +446,11 @@ export default {
       this.dictStatus = checked;
     },
     loadDictTree() {
-      this.$loading.show();
-      dictTree()
-        .then(res => {
-          if (res.success) {
-            this.dictTree = res.data;
-          }
-        })
-        .finally(() => {
-          this.$loading.hide();
-        });
+      dictTree().then(res => {
+        if (res.success) {
+          this.dictTree = res.data;
+        }
+      });
     },
     onSelect(selectedKeys, info) {
       if (info.selected) {
@@ -475,17 +470,12 @@ export default {
       this.rightClickSelected = node.node;
     },
     handleEdit() {
-      this.$loading.show();
-      getDict(this.rightClickSelected.dataRef.key)
-        .then(res => {
-          if (res.success) {
-            this.dictVisible = true;
-            this.setDictFormValues(res.data);
-          }
-        })
-        .finally(() => {
-          this.$loading.hide();
-        });
+      getDict(this.rightClickSelected.dataRef.key).then(res => {
+        if (res.success) {
+          this.dictVisible = true;
+          this.setDictFormValues(res.data);
+        }
+      });
     },
     handleRemove() {
       this.removeDict(this.rightClickSelected.dataRef.key);
@@ -579,20 +569,15 @@ export default {
         title: "确认删除",
         content: "确定要删除所选中的数据?",
         onOk: function() {
-          _this.$loading.show();
-          removeDict(value)
-            .then(res => {
-              if (res.success) {
-                _this.$message.success(res.msg);
-                _this.loadDictTree();
-                _this.onClearSelected();
-              } else {
-                _this.$message.warning(res.msg);
-              }
-            })
-            .finally(() => {
-              _this.$loading.hide();
-            });
+          removeDict(value).then(res => {
+            if (res.success) {
+              _this.$message.success(res.msg);
+              _this.loadDictTree();
+              _this.onClearSelected();
+            } else {
+              _this.$message.warning(res.msg);
+            }
+          });
         }
       });
     },
@@ -631,19 +616,14 @@ export default {
         content: "确定删除所选中的记录?",
         centered: true,
         onOk() {
-          vm.$loading.show();
-          batchRemoveDictData(vm.selectedRowKeys)
-            .then(res => {
-              if (res.success) {
-                vm.$message.success("批量删除成功");
-                vm.$refs.table.refresh(true);
-              } else {
-                vm.$message.error(res.msg);
-              }
-            })
-            .finally(() => {
-              vm.$loading.hide();
-            });
+          batchRemoveDictData(vm.selectedRowKeys).then(res => {
+            if (res.success) {
+              vm.$message.success("批量删除成功");
+              vm.$refs.table.refresh(true);
+            } else {
+              vm.$message.error(res.msg);
+            }
+          });
         },
         onCancel() {}
       });
@@ -655,18 +635,13 @@ export default {
       this.getDictData(row.id);
     },
     getDictData(value) {
-      this.$loading.show();
-      getDictData(value)
-        .then(res => {
-          if (res.success) {
-            this.setDictDataFormValues(res.data);
-          } else {
-            this.$message.error(res.msg);
-          }
-        })
-        .then(() => {
-          this.$loading.hide();
-        });
+      getDictData(value).then(res => {
+        if (res.success) {
+          this.setDictDataFormValues(res.data);
+        } else {
+          this.$message.error(res.msg);
+        }
+      });
     },
     setDictFormValues({ ...dict }) {
       let fields = ["id", "name", "code", "sort", "remark", "status"];

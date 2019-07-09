@@ -10,6 +10,7 @@ export function pageRole(parameter) {
 
 export function getRole(id) {
   return fetch({
+    showLoading: true,
     url: "/system/roles/" + id,
     method: "get"
   });
@@ -17,6 +18,7 @@ export function getRole(id) {
 
 export function getRoleMenu(id) {
   return fetch({
+    showLoading: true,
     url: "/system/roles/" + id + "/menus",
     method: "get"
   });
@@ -24,6 +26,7 @@ export function getRoleMenu(id) {
 
 export function addRoleMenu(id, parameter) {
   return fetch({
+    showLoading: true,
     url: "/system/roles/" + id + "/menus",
     method: "post",
     data: parameter
@@ -39,6 +42,7 @@ export function getRoleByTenantId(id) {
 
 export function addRole(parameter) {
   return fetch({
+    showLoading: true,
     url: "/system/roles",
     method: "post",
     data: parameter,
@@ -50,6 +54,7 @@ export function addRole(parameter) {
 
 export function modifyRole(parameter) {
   return fetch({
+    showLoading: true,
     url: "/system/roles/" + parameter.id,
     method: "put",
     data: parameter,
@@ -61,6 +66,7 @@ export function modifyRole(parameter) {
 
 export function batchRemoveRole(parameter) {
   return fetch({
+    showLoading: true,
     url: "/system/roles/batch",
     method: "delete",
     data: parameter
@@ -69,6 +75,7 @@ export function batchRemoveRole(parameter) {
 
 export function removeRole(id) {
   return fetch({
+    showLoading: true,
     url: "/system/roles/" + id,
     method: "delete"
   });

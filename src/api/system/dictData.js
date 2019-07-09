@@ -18,6 +18,7 @@ export function pageDictData(parameter) {
 
 export function getDictData(id) {
   return fetch({
+    showLoading: true,
     url: "/system/dicts/data/" + id,
     method: "get"
   });
@@ -53,6 +54,7 @@ export function modifyDictData(parameter) {
 
 export function batchRemoveDictData(parameter) {
   return fetch({
+    showLoading: true,
     url: "/system/dicts/data/batch",
     method: "delete",
     data: parameter
@@ -61,6 +63,7 @@ export function batchRemoveDictData(parameter) {
 
 export function removeData(id) {
   return fetch({
+    showLoading: true,
     url: "/system/dicts/data/" + id,
     method: "delete"
   });

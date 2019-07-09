@@ -17,6 +17,7 @@ export function menuTree() {
 
 export function getMenu(id) {
   return fetch({
+    showLoading: true,
     url: "/system/menus/" + id,
     method: "get"
   });
@@ -24,6 +25,7 @@ export function getMenu(id) {
 
 export function batchRemoveMenu(parameter) {
   return fetch({
+    showLoading: true,
     url: "/system/menus/batch",
     method: "delete",
     data: parameter
@@ -31,6 +33,7 @@ export function batchRemoveMenu(parameter) {
 }
 export function removeMenu(id) {
   return fetch({
+    showLoading: true,
     url: "/system/menus/" + id,
     method: "delete"
   });
@@ -38,6 +41,7 @@ export function removeMenu(id) {
 
 export function addMenu(parameter) {
   return fetch({
+    showLoading: true,
     url: "/system/menus",
     method: "post",
     data: parameter
@@ -46,6 +50,7 @@ export function addMenu(parameter) {
 
 export function modifyMenu(parameter) {
   return fetch({
+    showLoading: true,
     url: "/system/menus/" + parameter.id,
     method: "put",
     data: parameter

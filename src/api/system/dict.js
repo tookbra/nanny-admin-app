@@ -2,6 +2,7 @@ import { fetch } from "@/libs/fetch";
 
 export function dictTree() {
   return fetch({
+    showLoading: true,
     url: "/system/dicts/tree",
     method: "get"
   });
@@ -17,6 +18,7 @@ export function pageDict(parameter) {
 
 export function getDict(id) {
   return fetch({
+    showLoading: true,
     url: "/system/dicts/" + id,
     method: "get"
   });
@@ -47,6 +49,7 @@ export function modifyDict(parameter) {
 
 export function batchRemoveDict(parameter) {
   return fetch({
+    showLoading: true,
     url: "/system/dicts/batch",
     method: "post",
     data: parameter
@@ -55,6 +58,7 @@ export function batchRemoveDict(parameter) {
 
 export function removeDict(id) {
   return fetch({
+    showLoading: true,
     url: "/system/dicts/" + id,
     method: "delete"
   });

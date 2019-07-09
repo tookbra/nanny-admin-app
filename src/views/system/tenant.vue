@@ -462,7 +462,7 @@ export default {
         content: "确定删除该行记录?",
         centered: true,
         onOk() {
-          removeTenant(row.id).then(res => {
+          removeTenant(row.tenantId).then(res => {
             if (res.success) {
               vm.$message.success("删除成功");
               vm.$refs.table.refresh(true);
@@ -482,12 +482,12 @@ export default {
       this.visible = true;
       this.title = "编辑";
       this.edit = true;
-      this.getTenant(row.id);
+      this.getTenant(row.tenantId);
     },
     showDetail(row) {
       this.title = "详情";
       this.okDisabled = true;
-      this.getTenant(row.id);
+      this.getTenant(row.tenantId);
     },
     rangePickerChange(dates, dataStr) {
       this.startDate = dataStr[0];
@@ -498,7 +498,7 @@ export default {
       this.tenantForm.validateFields(err => {
         if (!err) {
           let tenant = this.tenantForm.getFieldsValue();
-          tenant.id = this.tenant.id;
+          tenant.id = this.tenant.tenantId;
           tenant.status = getSwitchStatus(this.tenantStatus);
           tenant.startDate = this.startDate;
           tenant.endDate = this.endDate;
@@ -512,7 +512,6 @@ export default {
               }
             });
           } else {
-            console.log(tenant);
             addTenant(tenant)
               .then(res => {
                 if (!res.success) {
@@ -569,7 +568,6 @@ export default {
           this.tenantForm.setFieldsValue(obj);
         }
       });
-      console.log(this.tenantForm.getFieldsValue());
       setTimeout(() => {
         let dateFormat = "YYYY-MM-DD";
         this.tenantForm.setFieldsValue({

@@ -60,7 +60,6 @@ export default {
           that
             .Logout({})
             .then(() => {
-              console.log(2222);
               that.$router.push({ name: "login" });
             })
             .catch(err => {

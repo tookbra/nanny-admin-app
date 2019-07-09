@@ -103,8 +103,8 @@ export default {
       state.loginBtn = true;
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log("Received values of form: ", values);
           const loginParams = { ...values };
+          loginParams.username += "|" + loginParams.tenantCode;
           Login(loginParams)
             .then(() => this.loginSuccess())
             .finally(() => {

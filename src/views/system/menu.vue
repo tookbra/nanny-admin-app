@@ -489,25 +489,16 @@ export default {
     this.tableOption();
   },
   beforeMount() {
-    this.$loading.show();
-    getDictByType(dict.componentType)
-      .then(res => {
-        if (res.success) {
-          this.components = res.data;
-        }
-      })
-      .finally(() => {
-        this.$loading.hide();
-      });
-    getDictByType(dict.permissionType)
-      .then(res => {
-        if (res.success) {
-          this.permissions = res.data;
-        }
-      })
-      .finally(() => {
-        this.$loading.hide();
-      });
+    getDictByType(dict.componentType).then(res => {
+      if (res.success) {
+        this.components = res.data;
+      }
+    });
+    getDictByType(dict.permissionType).then(res => {
+      if (res.success) {
+        this.permissions = res.data;
+      }
+    });
   },
   methods: {
     tableOption() {
@@ -575,19 +566,14 @@ export default {
         content: "确定删除所选中的记录?",
         centered: true,
         onOk() {
-          vm.$loading.show();
-          batchRemoveMenu(vm.selectedRowKeys)
-            .then(res => {
-              if (res.success) {
-                vm.$message.success("批量删除成功");
-                vm.$refs.table.refresh(true);
-              } else {
-                vm.$message.error(res.msg);
-              }
-            })
-            .finally(() => {
-              vm.$loading.hide();
-            });
+          batchRemoveMenu(vm.selectedRowKeys).then(res => {
+            if (res.success) {
+              vm.$message.success("批量删除成功");
+              vm.$refs.table.refresh(true);
+            } else {
+              vm.$message.error(res.msg);
+            }
+          });
         },
         onCancel() {}
       });
@@ -599,19 +585,14 @@ export default {
         content: "确定删除该行记录?",
         centered: true,
         onOk() {
-          vm.$loading.show();
-          removeMenu(row.id)
-            .then(res => {
-              if (res.success) {
-                vm.$message.success("删除成功");
-                vm.$refs.table.refresh(true);
-              } else {
-                vm.$message.error(res.msg);
-              }
-            })
-            .finally(() => {
-              vm.$loading.hide();
-            });
+          removeMenu(row.id).then(res => {
+            if (res.success) {
+              vm.$message.success("删除成功");
+              vm.$refs.table.refresh(true);
+            } else {
+              vm.$message.error(res.msg);
+            }
+          });
         },
         onCancel() {}
       });
@@ -632,32 +613,22 @@ export default {
       this.getMenu(row.id);
     },
     handleOk() {
-      const vm = this;
       this.menuForm.validateFields(err => {
         if (!err) {
-          this.$loading.show();
           let menu = this.menuForm.getFieldsValue();
           menu.id = this.menu.id;
           if (this.edit) {
-            modifyMenu(menu)
-              .then(res => {
-                if (res.success) {
-                  this.visible = false;
-                  this.$refs.table.refresh(true);
-                }
-              })
-              .then(() => {
-                vm.$loading.hide();
-              });
-          } else {
-            addMenu(menu)
-              .then(() => {
+            modifyMenu(menu).then(res => {
+              if (res.success) {
                 this.visible = false;
                 this.$refs.table.refresh(true);
-              })
-              .then(() => {
-                vm.$loading.hide();
-              });
+              }
+            });
+          } else {
+            addMenu(menu).then(() => {
+              this.visible = false;
+              this.$refs.table.refresh(true);
+            });
           }
         }
       });
@@ -671,19 +642,14 @@ export default {
     },
     getMenu(id) {
       const vm = this;
-      this.$loading.show();
-      getMenu(id)
-        .then(res => {
-          if (res.success) {
-            this.visible = true;
-            vm.setFormValues(res.data);
-          } else {
-            vm.$message.error(res.msg);
-          }
-        })
-        .then(() => {
-          vm.$loading.hide();
-        });
+      getMenu(id).then(res => {
+        if (res.success) {
+          this.visible = true;
+          vm.setFormValues(res.data);
+        } else {
+          vm.$message.error(res.msg);
+        }
+      });
     },
     setFormValues({ ...menu }) {
       let fields = [
@@ -696,7 +662,8 @@ export default {
         "remark",
         "opened",
         "category",
-        "status"
+        "status",
+        "showed"
       ];
       Object.keys(menu).forEach(key => {
         if (fields.indexOf(key) !== -1) {

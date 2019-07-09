@@ -106,6 +106,7 @@
             <a-icon type="delete" />
             删除
           </a>
+          <a-divider type="vertical" />
           <a @click="() => showPermission(record)">
             <a-icon type="setting" />
             权限设置
@@ -134,7 +135,7 @@
               {
                 rules: [
                   { required: true, message: '请输入角色名称' },
-                  { min: 4, max: 10, message: '角色名称长度为[4,10]' }
+                  { min: 2, max: 10, message: '角色名称长度为[2,10]' }
                 ]
               }
             ]"
@@ -151,7 +152,7 @@
               {
                 rules: [
                   { required: true, message: '请输入角色编码' },
-                  { min: 4, max: 10, message: '角色编码长度为[4,10]' }
+                  { min: 2, max: 10, message: '角色编码长度为[2,10]' }
                 ]
               }
             ]"
@@ -252,6 +253,7 @@ export default {
       role: {},
       treeTenant: [],
       menuCheckedKeys: [],
+      checkedKeysResult: [],
       menuTree: [],
       roleStatus: true,
       roleId: 0,
@@ -279,7 +281,7 @@ export default {
         {
           title: "操作",
           dataIndex: "action",
-          width: "230px",
+          width: "320px",
           scopedSlots: { customRender: "action" }
         }
       ],
@@ -312,7 +314,7 @@ export default {
   mounted() {
     getAllTenant().then(res => {
       res.data.forEach(item => {
-        this.treeTenant.push({ name: item.name, value: item.id });
+        this.treeTenant.push({ name: item.name, value: item.tenantId });
       });
     });
     menuTree().then(res => {
@@ -348,40 +350,29 @@ export default {
       this.showSearch = showSearch;
     },
     showPermission(row) {
-      this.$loading.show();
-      getRoleMenu(row.id)
-        .then(res => {
-          let roleMenus = [];
-          res.data.forEach(item => {
-            roleMenus.push(item.menuId);
-          });
-          this.menuCheckedKeys = roleMenus;
-          console.log(this.menuCheckedKeys);
-          this.permissionVisible = true;
-          this.roleId = row.id;
-        })
-        .finally(() => {
-          this.$loading.hide();
+      getRoleMenu(row.id).then(res => {
+        let roleMenus = [];
+        res.data.forEach(item => {
+          roleMenus.push(item.menuId);
         });
+        this.menuCheckedKeys = roleMenus;
+        this.permissionVisible = true;
+        this.roleId = row.id;
+      });
     },
-    onMenuCheck(checkedKeys) {
-      this.menuCheckedKeys = checkedKeys;
+    onMenuCheck(checkedKeys, info) {
+      this.checkedKeysResult = [...checkedKeys, ...info.halfCheckedKeys];
     },
     handlePermissionOk() {
       if (this.roleId == 0) {
         this.$message.warning("请选择要操作的角色");
         return;
       }
-      this.$loading.show();
-      addRoleMenu(this.roleId, this.menuCheckedKeys)
-        .then(() => {
-          this.permissionVisible = false;
-          this.$message.success("操作成功");
-          this.$refs.table.refresh(true);
-        })
-        .finally(() => {
-          this.$loading.hide();
-        });
+      addRoleMenu(this.roleId, this.checkedKeysResult).then(() => {
+        this.permissionVisible = false;
+        this.$message.success("操作成功");
+        this.$refs.table.refresh(true);
+      });
     },
     batchRemove() {
       if (!this.selectedRowKeys.length) {
@@ -395,19 +386,14 @@ export default {
         content: "确定删除所选中的记录?",
         centered: true,
         onOk() {
-          vm.$loading.show();
-          batchRemoveRole(vm.selectedRowKeys)
-            .then(res => {
-              if (res.success) {
-                vm.$message.success("批量删除成功");
-                vm.$refs.table.refresh(true);
-              } else {
-                vm.$message.error(res.msg);
-              }
-            })
-            .finally(() => {
-              vm.$loading.hide();
-            });
+          batchRemoveRole(vm.selectedRowKeys).then(res => {
+            if (res.success) {
+              vm.$message.success("批量删除成功");
+              vm.$refs.table.refresh(true);
+            } else {
+              vm.$message.error(res.msg);
+            }
+          });
         },
         onCancel() {}
       });
@@ -419,15 +405,10 @@ export default {
         content: "确定删除该行记录?",
         centered: true,
         onOk() {
-          vm.$loading.show();
-          removeRole(row.id)
-            .then(() => {
-              vm.$message.success("删除成功");
-              vm.$refs.table.refresh(true);
-            })
-            .finally(() => {
-              vm.$loading.hide();
-            });
+          removeRole(row.id).then(() => {
+            vm.$message.success("删除成功");
+            vm.$refs.table.refresh(true);
+          });
         },
         onCancel() {}
       });
@@ -448,35 +429,25 @@ export default {
       this.getRole(row.id);
     },
     handleOk() {
-      const vm = this;
       this.roleForm.validateFields(err => {
         if (!err) {
-          this.$loading.show();
           let role = this.roleForm.getFieldsValue();
           role.id = this.role.id;
           role.status = getSwitchStatus(this.roleStatus);
           if (this.edit) {
-            modifyRole(role)
-              .then(res => {
-                if (res.success) {
-                  this.visible = false;
-                  this.$refs.table.refresh(true);
-                }
-              })
-              .finally(() => {
-                vm.$loading.hide();
-              });
+            modifyRole(role).then(res => {
+              if (res.success) {
+                this.visible = false;
+                this.$refs.table.refresh(true);
+              }
+            });
           } else {
-            addRole(role)
-              .then(res => {
-                if (res.success) {
-                  this.visible = false;
-                  this.$refs.table.refresh(true);
-                }
-              })
-              .finally(() => {
-                vm.$loading.hide();
-              });
+            addRole(role).then(res => {
+              if (res.success) {
+                this.visible = false;
+                this.$refs.table.refresh(true);
+              }
+            });
           }
         }
       });
@@ -495,19 +466,14 @@ export default {
     },
     getRole(id) {
       const vm = this;
-      this.$loading.show();
-      getRole(id)
-        .then(res => {
-          if (res.success) {
-            this.visible = true;
-            vm.setFormValues(res.data);
-          } else {
-            vm.$message.error(res.msg);
-          }
-        })
-        .then(() => {
-          vm.$loading.hide();
-        });
+      getRole(id).then(res => {
+        if (res.success) {
+          this.visible = true;
+          vm.setFormValues(res.data);
+        } else {
+          vm.$message.error(res.msg);
+        }
+      });
     },
     setFormValues({ ...role }) {
       let fields = ["code", "name", "tenantId", "status"];

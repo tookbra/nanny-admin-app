@@ -5,7 +5,6 @@ import store from "./store";
 
 import "./core/use";
 import "./permission";
-import dictUtil from "@/libs/dictUtil";
 
 import basicContainer from "./components/layout/page-layout";
 
@@ -17,7 +16,7 @@ import "moment/locale/zh-cn";
 
 moment.locale("zh-cn");
 
-if (process.env.NODE_ENV !== "production") require("@/mock");
+// if (process.env.NODE_ENV !== "production") require("@/mock");
 
 Vue.config.productionTip = false;
 //注册全局容器
@@ -27,8 +26,5 @@ Vue.component("curd", curd);
 new Vue({
   router,
   store,
-  render: h => h(App),
-  mounted() {
-    dictUtil.initDictData(this);
-  }
+  render: h => h(App)
 }).$mount("#app");

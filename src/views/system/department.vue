@@ -45,7 +45,7 @@
             <a-select-option
               v-for="(item, index) in tenants"
               :key="index"
-              :value="item.id"
+              :value="item.tenantId"
               >{{ item.name }}</a-select-option
             >
           </a-select>
@@ -285,19 +285,13 @@ export default {
       }
     },
     loadTree() {
-      this.$loading.show();
-      const _this = this;
-      getDepartmentByTenant(this.tenantId)
-        .then(res => {
-          if (res.success) {
-            this.orgTree = res.data;
-          } else {
-            this.$message.error("获取部门失败");
-          }
-        })
-        .finally(() => {
-          _this.$loading.hide();
-        });
+      getDepartmentByTenant(this.tenantId).then(res => {
+        if (res.success) {
+          this.orgTree = res.data;
+        } else {
+          this.$message.error("获取部门失败");
+        }
+      });
     },
     assemblyTree(data) {
       data.forEach(item => {
@@ -332,19 +326,14 @@ export default {
       this.getDepartment(this.rightClickSelected.dataRef.key);
     },
     handleRemove() {
-      this.$loading.show();
-      remove(this.rightClickSelected.dataRef.key)
-        .then(resp => {
-          if (resp.success) {
-            this.$message.success("删除成功!");
-            this.loadTree();
-          } else {
-            this.$message.warning("删除失败!");
-          }
-        })
-        .then(() => {
-          this.$loading.hide();
-        });
+      remove(this.rightClickSelected.dataRef.key).then(resp => {
+        if (resp.success) {
+          this.$message.success("删除成功!");
+          this.loadTree();
+        } else {
+          this.$message.warning("删除失败!");
+        }
+      });
     },
     handleDrop() {
       this.dropTrigger = "";
@@ -363,18 +352,13 @@ export default {
       });
     },
     getDepartment(value) {
-      this.$loading.show();
-      getDepartment(value)
-        .then(res => {
-          if (res.success) {
-            this.setFormValues(res.data);
-          } else {
-            this.$message.error(res.msg);
-          }
-        })
-        .finally(() => {
-          this.$loading.hide();
-        });
+      getDepartment(value).then(res => {
+        if (res.success) {
+          this.setFormValues(res.data);
+        } else {
+          this.$message.error(res.msg);
+        }
+      });
     },
     remove() {
       if (this.checkedKeys.length <= 0) {
@@ -385,20 +369,15 @@ export default {
           title: "确认删除",
           content: "确定要删除所选中的 " + this.checkedKeys.length + " 条数据?",
           onOk: function() {
-            _this.$loading.show();
-            batchRemove(_this.checkedKeys)
-              .then(res => {
-                if (res.success) {
-                  _this.$message.success(res.msg);
-                  _this.loadTree();
-                  _this.onClearSelected();
-                } else {
-                  _this.$message.warning(res.msg);
-                }
-              })
-              .finally(() => {
-                _this.$loading.hide();
-              });
+            batchRemove(_this.checkedKeys).then(res => {
+              if (res.success) {
+                _this.$message.success(res.msg);
+                _this.loadTree();
+                _this.onClearSelected();
+              } else {
+                _this.$message.warning(res.msg);
+              }
+            });
           }
         });
       }
@@ -413,36 +392,27 @@ export default {
       const vm = this;
       this.departmentForm.validateFields((err, values) => {
         if (!err) {
-          this.$loading.show();
           let department = values;
           department.tenantId = this.tenantId;
           department.id = this.department.id;
           if (this.edit) {
-            modifyDeparment(department)
-              .then(res => {
-                if (!res.success) {
-                  vm.$message.error(res.msg);
-                } else {
-                  this.loadTree();
-                  this.onClearSelected();
-                  this.disabled = true;
-                }
-              })
-              .finally(() => {
-                vm.$loading.hide();
-              });
+            modifyDeparment(department).then(res => {
+              if (!res.success) {
+                vm.$message.error(res.msg);
+              } else {
+                this.loadTree();
+                this.onClearSelected();
+                this.disabled = true;
+              }
+            });
           } else {
-            addDepartment(department)
-              .then(res => {
-                if (res.success) {
-                  this.loadTree();
-                  this.onClearSelected();
-                  this.disabled = true;
-                }
-              })
-              .finally(() => {
-                this.$loading.hide();
-              });
+            addDepartment(department).then(res => {
+              if (res.success) {
+                this.loadTree();
+                this.onClearSelected();
+                this.disabled = true;
+              }
+            });
           }
         }
       });

@@ -14,7 +14,7 @@ import store from "@/store";
  *
  *  @see https://github.com/sendya/ant-design-pro-vue/pull/53
  */
-const action = Vue.directive("action", {
+export const action = Vue.directive("action", {
   // eslint-disable-next-line no-unused-vars
   inserted: function(el, binding, vnode) {
     const actionName = binding.arg;
@@ -26,4 +26,13 @@ const action = Vue.directive("action", {
   }
 });
 
-export default action;
+export const actionAdmin = Vue.directive("admin", {
+  // eslint-disable-next-line no-unused-vars
+  inserted: function(el, binding, vnode) {
+    const tenantCode = store.getters.info.user.tenantCode;
+    if (tenantCode !== "admin") {
+      (el.parentNode && el.parentNode.removeChild(el)) ||
+        (el.style.display = "none");
+    }
+  }
+});

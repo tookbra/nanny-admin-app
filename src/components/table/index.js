@@ -177,7 +177,6 @@ export default {
       // eslint-disable-next-line
        if ((typeof result === 'object' || typeof result === 'function') && typeof result.then === 'function') {
         result.then(r => {
-          console.log(r);
           this.localPagination =
             this.showPagination &&
             Object.assign({}, this.localPagination, {

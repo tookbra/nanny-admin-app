@@ -23,6 +23,7 @@
             </a-dropdown>
           </div>
           <a-select
+            v-admin
             :allowClear="true"
             placeholder="请选择租户"
             style="width: 100%; margin-bottom: 0.4rem;"
@@ -31,7 +32,7 @@
             <a-select-option
               v-for="(item, index) in tenants"
               :key="index"
-              :value="item.id"
+              :value="item.tenantId"
               >{{ item.name }}</a-select-option
             >
           </a-select>
@@ -522,6 +523,10 @@ export default {
           dataIndex: "name"
         },
         {
+          title: "工号",
+          dataIndex: "jobNumber"
+        },
+        {
           title: "性别",
           dataIndex: "sex",
           scopedSlots: { customRender: "sex" }
@@ -554,9 +559,9 @@ export default {
         this.tenants = res.data;
         this.tenants.forEach(item => {
           this.userTenants.push({
-            id: item.id,
+            id: item.tenantId,
             label: item.name,
-            value: item.id
+            value: item.tenantId
           });
         });
       } else {
@@ -625,8 +630,6 @@ export default {
       this.accountForm.resetFields();
     },
     tenantChange(value) {
-      this.tenantId = value;
-      this.loadTree();
       if (value) {
         this.userTenantsChange(value);
         this.accountForm.getFieldDecorator("tenantId");
@@ -634,9 +637,16 @@ export default {
         obj["tenantId"] = this.tenantId;
         this.accountForm.setFieldsValue(obj);
         this.importFile.data = { tenantId: this.tenantId };
+        this.tenantId = value;
+        this.queryParam.tenantId = this.tenantId;
+        this.loadTree();
       } else {
+        this.tenantId = 0;
+        delete this.queryParam.tenantId;
         this.userRoles = [];
+        this.orgTree = [];
       }
+      this.$refs.table.refresh(true);
     },
     onSelectChange(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys;
@@ -666,16 +676,11 @@ export default {
         return;
       }
       if (e.key == "2") {
-        this.$loading.show();
-        getAllAccount(this.tenantId)
-          .then(res => {
-            this.exportData = Object.assign(this.exportData, {
-              data: res.data
-            });
-          })
-          .finally(() => {
-            this.$loading.hide();
+        getAllAccount(this.tenantId).then(res => {
+          this.exportData = Object.assign(this.exportData, {
+            data: res.data
           });
+        });
       }
       this.exportVisible = true;
     },
@@ -684,19 +689,14 @@ export default {
     },
     getAccount(id) {
       const vm = this;
-      this.$loading.show();
-      getAccount(id)
-        .then(res => {
-          if (res.success) {
-            this.visible = true;
-            vm.setFormValues(res.data);
-          } else {
-            vm.$message.error(res.msg);
-          }
-        })
-        .finally(() => {
-          vm.$loading.hide();
-        });
+      getAccount(id).then(res => {
+        if (res.success) {
+          this.visible = true;
+          vm.setFormValues(res.data);
+        } else {
+          vm.$message.error(res.msg);
+        }
+      });
     },
     batchRemove() {
       if (!this.selectedRowKeys.length) {
@@ -733,35 +733,25 @@ export default {
       });
     },
     handleOk() {
-      const vm = this;
       this.accountForm.validateFields(err => {
         if (!err) {
-          this.$loading.show();
           let account = this.accountForm.getFieldsValue();
           account.id = this.account.id;
           account.status = getSwitchStatus(this.userStatus);
           if (this.edit) {
-            modifyAccount(account)
-              .then(res => {
-                if (res.success) {
-                  this.visible = false;
-                  this.$refs.table.refresh(true);
-                }
-              })
-              .then(() => {
-                vm.$loading.hide();
-              });
+            modifyAccount(account).then(res => {
+              if (res.success) {
+                this.visible = false;
+                this.$refs.table.refresh(true);
+              }
+            });
           } else {
-            addAccount(account)
-              .then(res => {
-                if (res.success) {
-                  this.visible = false;
-                  this.$refs.table.refresh(true);
-                }
-              })
-              .then(() => {
-                vm.$loading.hide();
-              });
+            addAccount(account).then(res => {
+              if (res.success) {
+                this.visible = false;
+                this.$refs.table.refresh(true);
+              }
+            });
           }
         }
       });

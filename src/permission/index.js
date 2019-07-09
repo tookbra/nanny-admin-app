@@ -33,7 +33,6 @@ router.beforeEach((to, from, next) => {
               const redirect = decodeURIComponent(
                 from.query.redirect || to.path
               );
-              console.log(redirect);
               if (to.path === redirect) {
                 // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
                 next({ ...to, replace: true });

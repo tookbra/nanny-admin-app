@@ -68,7 +68,7 @@
         >
           保存
         </a-button>
-        <a-button type="default">
+        <a-button type="default" @click="handleCancel">
           取消
         </a-button>
       </a-form-item>
@@ -77,6 +77,7 @@
 </template>
 
 <script>
+import { changePassword } from "@/api/system/account";
 export default {
   name: "change_pwd",
   data() {
@@ -89,9 +90,14 @@ export default {
       e.preventDefault();
       this.form.validateFields(err => {
         if (!err) {
-          console.log(111);
+          changePassword(this.form.getFieldsValue()).then(() => {
+            this.$message.success("修改密码成功");
+          });
         }
       });
+    },
+    handleCancel() {
+      this.$store.commit("DEL_TAG", "/change_pwd");
     },
     handlePassword(rule, value, callback) {
       this.password = value;
