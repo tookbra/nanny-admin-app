@@ -4,6 +4,7 @@ const scope = "server";
 export function login(parameter) {
   const grant_type = "password";
   return fetch({
+    showLoading: true,
     url: "/auth/oauth/token",
     method: "post",
     headers: {
@@ -15,6 +16,7 @@ export function login(parameter) {
 
 export function logout() {
   return fetch({
+    showLoading: true,
     url: "/auth/token/logout",
     method: "delete"
   });

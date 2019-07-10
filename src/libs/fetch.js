@@ -8,7 +8,7 @@ import { showLoading, hideLoading } from "./util";
 export const fetch = axios.create({
   ssss: 111,
   baseURL: "/",
-  timeout: 5000,
+  timeout: 10000,
   // withCredentials: true,
   validateStatus: function(status) {
     return status >= 200 && status <= 500;
@@ -32,7 +32,7 @@ fetch.interceptors.response.use(res => {
   }
   const status = Number(res.status) || 200;
   const message = res.data.msg || errorCode[status] || errorCode["default"];
-  if (status !== 200 || (res.data.success && !res.data.success)) {
+  if (status !== 200 || (res.data.success != null && !res.data.success)) {
     notification.error({
       message: "操作失败",
       description: message
@@ -43,6 +43,7 @@ fetch.interceptors.response.use(res => {
 }, err);
 
 const err = error => {
+  console.log(error);
   if (error.response) {
     const data = error.response.data;
     if (error.response.status === 403) {

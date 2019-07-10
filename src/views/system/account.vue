@@ -265,7 +265,7 @@
           <a-input
             placeholder="请输入用户工号"
             v-decorator="[
-              'account',
+              'jobNumber',
               {
                 rules: [{ min: 1, max: 10, message: '工号长度为[1, 10]' }]
               }
@@ -433,7 +433,7 @@ export default {
       tenants: [],
       userTenants: [],
       userRoles: [],
-      tenantId: 0,
+      tenantId: "",
       disabled: true,
       dropTrigger: "",
       selectedKeys: [],
@@ -568,6 +568,17 @@ export default {
         this.$message.error("获取租户失败");
       }
     });
+    if (this.$store.getters.tenantCode !== "admin") {
+      this.tenantId = this.$store.getters.tenantId;
+      setTimeout(() => {
+        this.accountForm.getFieldDecorator("tenantId");
+        let obj = {};
+        obj["tenantId"] = this.tenantId;
+        this.accountForm.setFieldsValue(obj);
+      });
+      this.userTenantsChange(this.tenantId);
+      this.loadTree();
+    }
   },
   methods: {
     refresh() {
@@ -577,7 +588,7 @@ export default {
       this.showSearch = showSearch;
     },
     showAdd() {
-      if (this.tenantId == 0) {
+      if (this.tenantId == "") {
         this.$message.error("请选择租户");
         return;
       }
@@ -641,7 +652,7 @@ export default {
         this.queryParam.tenantId = this.tenantId;
         this.loadTree();
       } else {
-        this.tenantId = 0;
+        this.tenantId = "";
         delete this.queryParam.tenantId;
         this.userRoles = [];
         this.orgTree = [];
@@ -671,7 +682,7 @@ export default {
         });
     },
     handleExportClick(e) {
-      if (this.tenantId == 0) {
+      if (this.tenantId == "") {
         this.$message.error("请选择租户");
         return;
       }

@@ -37,6 +37,7 @@
             >
           </div>
           <a-select
+            v-admin
             :allowClear="true"
             placeholder="请选择租户"
             style="width: 100%; margin-bottom: 0.4rem;"
@@ -234,6 +235,12 @@ export default {
     getAllTenant().then(res => {
       this.tenants = res.data;
     });
+
+    if (this.$store.getters.tenantCode !== "admin") {
+      this.tenantId = this.$store.getters.tenantId;
+      this.importFile.data = { tenantId: this.tenantId };
+      this.loadTree();
+    }
   },
   methods: {
     // 右键点击下拉框改变事件

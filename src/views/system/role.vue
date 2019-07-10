@@ -3,7 +3,7 @@
     <div v-action:role_search class="search-wrapper" v-if="showSearch">
       <a-form layout="inline">
         <a-row :gutter="25">
-          <a-col :md="5" :sm="24">
+          <a-col :md="5" :sm="24" v-admin>
             <a-form-item label="所属租户">
               <a-input v-model="queryParam.tenantName" placeholder="所属租户" />
             </a-form-item>
@@ -320,6 +320,16 @@ export default {
     menuTree().then(res => {
       this.menuTree = res.data;
     });
+
+    if (this.$store.getters.tenantCode !== "admin") {
+      this.tenantId = this.$store.getters.tenantId;
+      setTimeout(() => {
+        this.roleForm.getFieldDecorator("tenantId");
+        let obj = {};
+        obj["tenantId"] = this.tenantId;
+        this.roleForm.setFieldsValue(obj);
+      });
+    }
   },
   methods: {
     tableOption() {

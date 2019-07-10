@@ -21,7 +21,6 @@ export function getTenant(id) {
 // 获取所有租户
 export function getAllTenant() {
   return fetch({
-    showLoading: true,
     url: "/system/tenants/all",
     method: "get"
   });

@@ -5,8 +5,9 @@ import { ACCESS_TOKEN } from "@/store/mutation-types";
 import { clearStore } from "@/libs/store";
 export default {
   state: {
-    userName: "",
     token: "",
+    tenantId: "",
+    tenantCode: "",
     name: "",
     avatar: "",
     info: "",
@@ -16,7 +17,9 @@ export default {
     name: state => state.name,
     avatar: state => state.avatar,
     roles: state => state.roles,
-    info: state => state.info
+    info: state => state.info,
+    tenantId: state => state.tenantId,
+    tenantCode: state => state.tenantCode
   },
   actions: {
     // 登录
@@ -91,6 +94,9 @@ export default {
     },
     SET_INFO: (state, info) => {
       state.info = info;
+      state.name = info.user.name;
+      state.tenantId = info.user.tenantId;
+      state.tenantCode = info.user.tenantCode;
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles;

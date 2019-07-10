@@ -8,7 +8,6 @@ import "./permission";
 
 import basicContainer from "./components/layout/page-layout";
 
-import curd from "./components/curd/main";
 import "./libs/filters";
 
 import moment from "moment";
@@ -21,7 +20,6 @@ moment.locale("zh-cn");
 Vue.config.productionTip = false;
 //注册全局容器
 Vue.component("basicContainer", basicContainer);
-Vue.component("curd", curd);
 
 new Vue({
   router,
