@@ -663,7 +663,8 @@ export default {
         "opened",
         "category",
         "status",
-        "showed"
+        "showed",
+        "component"
       ];
       Object.keys(menu).forEach(key => {
         if (fields.indexOf(key) !== -1) {

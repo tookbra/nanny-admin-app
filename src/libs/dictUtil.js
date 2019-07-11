@@ -23,6 +23,11 @@ dictUtil.initDictData = function(vm) {
         vm.$store.commit("SET_SEX", res.data);
       }
     });
+    getDictByType("product_type").then(res => {
+      if (res.success) {
+        vm.$store.commit("SET_PRODUCT_TYPE", res.data);
+      }
+    });
   }
 };
 

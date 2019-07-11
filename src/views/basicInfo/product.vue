@@ -9,11 +9,28 @@
             </a-form-item>
           </a-col>
           <a-col :md="5" :sm="24">
+            <a-form-item label="产品类型">
+              <a-select placeholder="请选择" default-value="">
+                <a-select-option value="">全部</a-select-option>
+                <a-select-option
+                  v-for="(item, index) in productType"
+                  :key="index"
+                  :value="item.data"
+                  >{{ item.name }}</a-select-option
+                >
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="5" :sm="24">
             <a-form-item label="状态">
               <a-select placeholder="请选择" default-value="">
                 <a-select-option value="">全部</a-select-option>
-                <a-select-option value="1">禁用</a-select-option>
-                <a-select-option value="2">启用</a-select-option>
+                <a-select-option
+                  v-for="(item, index) in status"
+                  :key="index"
+                  :value="item.data"
+                  >{{ item.name }}</a-select-option
+                >
               </a-select>
             </a-form-item>
           </a-col>
@@ -36,13 +53,17 @@
         </a-row>
       </a-form>
     </div>
-    <table-menu
-      :showSearch="showSearch"
-      @updateShowSearch="updateShowSearch"
-      @refresh="refresh"
-      @remove="batchRemove"
-      @showAdd="showAdd"
-    />
+    <div class="table-menu">
+      <div class="table-menu-permission">
+        <a-button type="primary" class="btn" icon="plus" @click="showAdd"
+          >新增</a-button
+        >
+      </div>
+      <div class="table-menu-nav">
+        <a-button shape="circle" icon="sync" @click="refresh" />
+        <a-button shape="circle" icon="search" @click="updateShowSearch" />
+      </div>
+    </div>
     <s-table
       ref="table"
       size="default"
@@ -88,94 +109,75 @@
     <a-modal
       :title="title"
       v-model="visible"
-      width="1080px"
+      width="880px"
       :afterClose="modalClose"
       @ok="handleOk"
       :okButtonProps="{ props: { disabled: okDisabled } }"
     >
       <a-form :form="productForm">
         <a-form-item
-          label="产品编码"
-          :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 18 }"
-        >
-          <a-input
-            placeholder="请输入产品编码"
-            v-decorator="[
-              'code',
-              {
-                rules: [{ required: true, message: '请输入产品编码' }]
-              }
-            ]"
-          />
-        </a-form-item>
-        <a-form-item
           label="产品名称"
           :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 18 }"
+          :wrapper-col="{ span: 10 }"
         >
           <a-input
             placeholder="请输入产品名称"
             v-decorator="[
               'name',
               {
-                rules: [{ required: true, message: '请输入产品名称' }]
+                rules: [
+                  { required: true, message: '请输入产品名称' },
+                  { min: 2, max: 10, message: '产品名称长度为[2,10]' }
+                ]
               }
             ]"
           />
         </a-form-item>
         <a-form-item
-          label="产品尺寸"
+          label="产品类型"
           :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 18 }"
+          :wrapper-col="{ span: 10 }"
         >
           <a-select
-            placeholder="请选择产品尺寸"
+            placeholder="请选择产品类型"
+            default-value=""
             v-decorator="[
-              'attr',
+              'typeId',
               {
-                rules: [{ required: false, message: '请选择产品尺寸' }]
+                rules: [{ required: true, message: '请选择产品类型' }]
               }
             ]"
           >
-            <a-select-option value="1">XL</a-select-option>
-            <a-select-option value="2">L</a-select-option>
-            <a-select-option value="3">M</a-select-option>
-            <a-select-option value="4">S</a-select-option>
+            <a-select-option value="">全部</a-select-option>
+            <a-select-option
+              v-for="(item, index) in productType"
+              :key="index"
+              :value="item.data"
+              >{{ item.name }}</a-select-option
+            >
           </a-select>
         </a-form-item>
         <a-form-item
-          label="产品颜色"
+          label="状态"
           :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 18 }"
+          :wrapper-col="{ span: 10 }"
         >
-          <a-input
-            placeholder="请输入产品颜色"
-            v-decorator="[
-              'color',
-              {
-                rules: [{ required: false, message: '请输入产品颜色' }]
-              }
-            ]"
+          <a-switch
+            checkedChildren="启用"
+            unCheckedChildren="禁用"
+            defaultChecked
+            :checked="productStatus"
+            @change="switchProductStatus"
           />
         </a-form-item>
       </a-form>
-    </a-modal>
-
-    <a-modal
-      v-model="showIcon"
-      :width="900"
-      :mask="false"
-      :footer="null"
-      :afterClose="handleIconCancel"
-    >
-      <icon-selector @change="handleIconChange" />
     </a-modal>
   </basicContainer>
 </template>
 
 <script>
-import { STable, tableMenu, IconSelector } from "@/components";
+import { mapGetters } from "vuex";
+import { STable } from "@/components";
 import {
   pageProduct,
   removeProduct,
@@ -191,22 +193,22 @@ export default {
   components: {
     ACol,
     AFormItem,
-    STable,
-    tableMenu,
-    IconSelector
+    STable
+  },
+  computed: {
+    ...mapGetters(["productType", "status"])
   },
   data() {
     return {
       // 查询参数
       queryParam: {},
       showSearch: true,
-      showIcon: false,
       visible: false,
       loading: false,
       okDisabled: false,
       title: "",
-      iconType: "",
       edit: false,
+      productStatus: true,
       productForm: this.$form.createForm(this),
       product: {},
       pagination: {
@@ -216,20 +218,12 @@ export default {
       // 表头
       columns: [
         {
-          title: "编码",
-          dataIndex: "code"
-        },
-        {
-          title: "名称",
+          title: "产品名称",
           dataIndex: "name"
         },
         {
-          title: "尺寸",
-          dataIndex: "attr"
-        },
-        {
-          title: "颜色",
-          dataIndex: "color"
+          title: "产品类型",
+          dataIndex: "typeId"
         },
         {
           title: "状态",
@@ -357,6 +351,9 @@ export default {
       this.title = "编辑";
       this.edit = true;
       this.getProduct(row.id);
+    },
+    switchProductStatus(checked) {
+      this.productStatus = checked;
     },
     showDetail(row) {
       this.title = "详情";

@@ -83,6 +83,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import md5 from "md5";
 export default {
   name: "UserLogin",
   data() {
@@ -105,6 +106,7 @@ export default {
         if (!err) {
           const loginParams = { ...values };
           loginParams.username += "|" + loginParams.tenantCode;
+          loginParams.password = md5(loginParams.password);
           Login(loginParams)
             .then(() => this.loginSuccess())
             .finally(() => {

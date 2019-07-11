@@ -2,12 +2,14 @@ export default {
   state: {
     tenantTypes: [],
     status: [],
-    sex: []
+    sex: [],
+    productType: []
   },
   getters: {
     tenantTypes: state => state.tenantTypes,
     status: state => state.status,
-    sex: state => state.sex
+    sex: state => state.sex,
+    productType: state => state.productType
   },
   mutations: {
     SET_TENANT_TYPE(state, tenantTypes) {
@@ -18,6 +20,9 @@ export default {
     },
     SET_SEX(state, sex) {
       state.sex = sex;
+    },
+    SET_PRODUCT_TYPE(state, productType) {
+      state.productType = productType;
     }
   }
 };

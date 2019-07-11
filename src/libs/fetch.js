@@ -5,8 +5,12 @@ import errorCode from "@/const/errorCode";
 import notification from "ant-design-vue/es/notification";
 import { showLoading, hideLoading } from "./util";
 
+const notNotfiy = [
+  "/system/dicts/type/status",
+  "/system/dicts/type/sex",
+  "/system/dicts/type/tenant_type"
+];
 export const fetch = axios.create({
-  ssss: 111,
   baseURL: "/",
   timeout: 10000,
   // withCredentials: true,
@@ -30,13 +34,16 @@ fetch.interceptors.response.use(res => {
   if (res.config.showLoading) {
     hideLoading();
   }
+  console.log(res);
   const status = Number(res.status) || 200;
   const message = res.data.msg || errorCode[status] || errorCode["default"];
   if (status !== 200 || (res.data.success != null && !res.data.success)) {
-    notification.error({
-      message: "操作失败",
-      description: message
-    });
+    if (!notNotfiy.includes(res.config.url)) {
+      notification.error({
+        message: "操作失败",
+        description: message
+      });
+    }
     return Promise.reject(res.data);
   }
   return res.data;

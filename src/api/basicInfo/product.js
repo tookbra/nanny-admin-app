@@ -2,51 +2,50 @@ import { fetch } from "@/libs/fetch";
 
 export function pageProduct(parameter) {
   return fetch({
-    url: "/products",
+    url: "/system/products",
     method: "get",
-    data: parameter
+    params: parameter
   });
 }
 
 export function getProduct(id) {
   return fetch({
-    url: "/products/" + id,
+    showLoading: true,
+    url: "/system/products/" + id,
     method: "get"
   });
 }
 
 export function batchRemoveProduct(parameter) {
   return fetch({
-    url: "/products/batch",
+    showLoading: true,
+    url: "/system/products/batch",
     method: "post",
     data: parameter
   });
 }
 export function removeProduct(id) {
   return fetch({
-    url: "/products/" + id,
+    showLoading: true,
+    url: "/system/products/" + id,
     method: "delete"
   });
 }
 
 export function addProduct(parameter) {
   return fetch({
-    url: "/products",
+    showLoading: true,
+    url: "/system/products",
     method: "post",
-    data: parameter,
-    headers: {
-      "Content-Type": "application/json;charset=UTF-8"
-    }
+    data: parameter
   });
 }
 
 export function modifyProduct(parameter) {
   return fetch({
-    url: "/products/" + parameter.id,
+    showLoading: true,
+    url: "/system/products/" + parameter.id,
     method: "put",
-    data: parameter,
-    headers: {
-      "Content-Type": "application/json;charset=UTF-8"
-    }
+    data: parameter
   });
 }

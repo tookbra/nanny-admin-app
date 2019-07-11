@@ -69,11 +69,10 @@ export default {
       return new Promise(resolve => {
         commit("SET_TOKEN", "");
         commit("SET_ROLES", []);
-        Vue.ls.remove(ACCESS_TOKEN);
         clearStore({ type: "session" });
-
         logout()
           .then(() => {
+            Vue.ls.remove(ACCESS_TOKEN);
             resolve();
           })
           .catch(() => {
