@@ -32,6 +32,14 @@ module.exports = {
         pathRewrite: {
           "^/auth": "/auth"
         }
+      },
+      "/oss": {
+        target: "http://127.0.0.1:20000",
+        ws: false,
+        changeOrigin: true,
+        pathRewrite: {
+          "^/oss": "/oss"
+        }
       }
     }
   }

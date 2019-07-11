@@ -303,22 +303,7 @@
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 14 }"
         >
-          <a-row :gutter="8">
-            <a-col :span="12">
-              <a-input placeholder="请输入头像地址" v-decorator="['avatar']" />
-            </a-col>
-            <a-col :span="12">
-              <a-upload
-                name="file"
-                :showUploadList="false"
-                :multiple="false"
-                accept="image/*"
-                action="localhost:20000/oss/upload/file"
-              >
-                <a-button> <a-icon type="upload" /> Click to Upload </a-button>
-              </a-upload>
-            </a-col>
-          </a-row>
+          <upload-pic-input :upload="avatarData" />
         </a-form-item>
         <a-form-item
           label="所属部门"
@@ -407,7 +392,7 @@ import {
 } from "@/api/system/account";
 import { getSwitchStatus } from "@/libs/util";
 import { getDepartmentByTenant } from "@/api/system/department";
-import { STable, exportCsv, importFile } from "@/components";
+import { STable, exportCsv, importFile, uploadPicInput } from "@/components";
 import { getAllTenant } from "@/api/system/tenant";
 import { getRoleByTenantId } from "@/api/system/role";
 export default {
@@ -415,7 +400,8 @@ export default {
   components: {
     STable,
     exportCsv,
-    importFile
+    importFile,
+    uploadPicInput
   },
   computed: {
     ...mapGetters(["sex", "status"])
@@ -450,6 +436,10 @@ export default {
       exportVisible: false,
       accountForm: this.$form.createForm(this),
       sexMap: new Map(),
+      avatarData: {
+        path: "avatar",
+        tenantCode: this.$store.getters.tenantCode
+      },
       importFile: {
         visiable: false,
         data: {},
@@ -662,6 +652,29 @@ export default {
     onSelectChange(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys;
       this.selectedRows = selectedRows;
+    },
+    handleChange(info) {
+      if (info.file.status === "error") {
+        this.$notification.error({
+          message: "错误提示",
+          description: info.file.response.msg
+        });
+        return;
+      }
+
+      if (info.file.status === "done") {
+        console.log(info);
+        let res = info.file.response;
+        if (!res.success) {
+          this.$notification.error({
+            message: "错误提示",
+            description: res.msg
+          });
+          return;
+        } else {
+          this.accountForm.setFieldsValue({ ["avatar"]: res.data.url });
+        }
+      }
     },
     async userTenantsChange(value) {
       const _this = this;
