@@ -10,7 +10,11 @@
           </a-col>
           <a-col :md="5" :sm="24">
             <a-form-item label="产品类型">
-              <a-select placeholder="请选择" default-value="">
+              <a-select
+                placeholder="请选择"
+                v-model="queryParam.productTypeId"
+                default-value=""
+              >
                 <a-select-option value="">全部</a-select-option>
                 <a-select-option
                   v-for="(item, index) in productType"
@@ -23,7 +27,11 @@
           </a-col>
           <a-col :md="5" :sm="24">
             <a-form-item label="状态">
-              <a-select placeholder="请选择" default-value="">
+              <a-select
+                placeholder="请选择"
+                v-model="queryParam.status"
+                default-value=""
+              >
                 <a-select-option value="">全部</a-select-option>
                 <a-select-option
                   v-for="(item, index) in status"
@@ -78,6 +86,9 @@
       :pagination="pagination"
       :showSizeChanger="true"
     >
+      <span slot="type" slot-scope="text">
+        {{ text | typeFilter(typeMap) }}
+      </span>
       <span slot="status" slot-scope="text">
         {{ text | statusFilter }}
       </span>
@@ -140,7 +151,7 @@
         >
           <a-select
             placeholder="请选择产品类型"
-            default-value=""
+            allowClear
             v-decorator="[
               'typeId',
               {
@@ -148,7 +159,6 @@
               }
             ]"
           >
-            <a-select-option value="">全部</a-select-option>
             <a-select-option
               v-for="(item, index) in productType"
               :key="index"
@@ -156,6 +166,18 @@
               >{{ item.name }}</a-select-option
             >
           </a-select>
+        </a-form-item>
+        <a-form-item
+          label="图标"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 10 }"
+        >
+          <upload-pic-input
+            v-decorator="['icon']"
+            :upload="iconData"
+            :actionUrl="actionUrl"
+            :disabled="okDisabled"
+          />
         </a-form-item>
         <a-form-item
           label="状态"
@@ -177,7 +199,8 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { STable } from "@/components";
+import { STable, uploadPicInput } from "@/components";
+import { getSwitchStatus } from "@/libs/util";
 import {
   pageProduct,
   removeProduct,
@@ -186,14 +209,11 @@ import {
   addProduct,
   modifyProduct
 } from "@/api/basicInfo/product";
-import AFormItem from "ant-design-vue/es/form/FormItem";
-import ACol from "ant-design-vue/es/grid/Col";
 export default {
   name: "product",
   components: {
-    ACol,
-    AFormItem,
-    STable
+    STable,
+    uploadPicInput
   },
   computed: {
     ...mapGetters(["productType", "status"])
@@ -211,6 +231,11 @@ export default {
       productStatus: true,
       productForm: this.$form.createForm(this),
       product: {},
+      typeMap: new Map(),
+      iconData: {
+        path: "product"
+      },
+      actionUrl: "/oss/upload/file",
       pagination: {
         defaultPageSize: 50,
         hideOnSinglePage: true
@@ -223,7 +248,8 @@ export default {
         },
         {
           title: "产品类型",
-          dataIndex: "typeId"
+          dataIndex: "typeId",
+          scopedSlots: { customRender: "type" }
         },
         {
           title: "状态",
@@ -262,6 +288,11 @@ export default {
         );
       }
     };
+  },
+  beforeMount() {
+    this.productType.forEach(item => {
+      this.typeMap.set(item.data, item.name);
+    });
   },
   created() {
     this.tableOption();
@@ -326,17 +357,13 @@ export default {
         content: "确定删除该行记录?",
         centered: true,
         onOk() {
-          return new Promise(resolve => {
-            removeProduct(row.id).then(res => {
-              if (res.success) {
-                vm.$message.success("删除成功");
-                vm.$refs.table.refresh(true);
-                resolve(res);
-              } else {
-                vm.$message.error(res.msg);
-                resolve("");
-              }
-            });
+          removeProduct(row.id).then(res => {
+            if (res.success) {
+              vm.$message.success("删除成功");
+              vm.$refs.table.refresh(true);
+            } else {
+              vm.$message.error(res.msg);
+            }
           });
         },
         onCancel() {}
@@ -367,6 +394,7 @@ export default {
           this.$loading.show();
           let product = this.productForm.getFieldsValue();
           product.id = this.product.id;
+          product.status = getSwitchStatus(this.productStatus);
           if (this.edit) {
             modifyProduct(product)
               .then(res => {
@@ -417,7 +445,7 @@ export default {
         });
     },
     setFormValues({ ...product }) {
-      let fields = ["code", "name", "attr", "color", "status"];
+      let fields = ["name", "status", "typeId", "icon"];
       Object.keys(product).forEach(key => {
         if (fields.indexOf(key) !== -1) {
           this.productForm.getFieldDecorator(key);

@@ -21,3 +21,12 @@ export function logout() {
     method: "delete"
   });
 }
+
+export function refreshToken(refresh_token) {
+  const grant_type = "refresh_token";
+  return fetch({
+    url: "/auth/oauth/token",
+    method: "post",
+    params: { refresh_token, grant_type, scope }
+  });
+};

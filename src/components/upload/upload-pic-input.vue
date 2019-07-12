@@ -5,7 +5,8 @@
         v-model="currentValue"
         :placeholder="placeholder"
         :disabled="disabled"
-        :readonly="readonly"
+        :readOnly="readonly"
+        @change="handleChange"
         clearable
       />
       <template slot="content">
@@ -24,12 +25,14 @@
       :multiple="false"
       :headers="headers"
       accept="image/*"
-      :action="'/oss/upload/file'"
+      :action="actionUrl"
       :data="data"
       :beforeUpload="beforeUpload"
-      @change="handleChange"
+      @change="handleUploadChange"
     >
-      <a-button :loading="loading"> <a-icon type="upload" />上传图片</a-button>
+      <a-button :loading="loading" :disable="disabled">
+        <a-icon type="upload" />上传图片</a-button
+      >
     </a-upload>
   </div>
 </template>
@@ -52,7 +55,8 @@ export default {
       type: Boolean,
       default: false
     },
-    data: {}
+    data: {},
+    actionUrl: String
   },
   data() {
     return {
@@ -74,7 +78,11 @@ export default {
       this.loading = true;
       return true;
     },
-    handleChange(info) {
+    handleChange() {
+      this.$emit("input", this.currentValue);
+      this.$emit("change", this.currentValue);
+    },
+    handleUploadChange(info) {
       this.loading = false;
       if (info.file.status === "error") {
         this.$notification.error({
@@ -95,6 +103,7 @@ export default {
         } else {
           this.currentValue = res.data.url;
           this.$emit("input", this.currentValue);
+          this.$emit("change", this.currentValue);
         }
       }
     },

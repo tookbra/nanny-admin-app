@@ -4,10 +4,15 @@
       class="header-collapse"
       :class="[{ 'header-collapse-active': collapsed }]"
     >
-      <IconFont type="iconnavicon" @click="setCollapse" />
+      <IconFont type="iconnavicon" @click="setCollapse" class="trigger" />
     </div>
     <div class="header-bread"></div>
     <div class="header-features">
+      <a href="https://www.baidu.com" target="_blank">
+        <span class="action">
+          <a-icon type="question-circle-o"></a-icon>
+        </span>
+      </a>
       <a-dropdown>
         <span class="action ant-dropdown-link user-dropdown-menu">
           <a-avatar class="avatar" size="small" :src="avatar()" />
@@ -97,7 +102,7 @@ export default {
     height: 64px;
     position: absolute;
     top: 0;
-    i {
+    .trigger {
       line-height: 70px;
       font-size: 30px;
     }
@@ -115,9 +120,22 @@ export default {
     align-items: center;
     color: #fff;
 
+    .action {
+      cursor: pointer;
+      padding: 0 12px;
+      display: inline-block;
+      transition: all 0.3s;
+      height: 100%;
+      color: rgba(255, 255, 255);
+
+      .icon {
+        font-size: 16px;
+        padding: 4px;
+      }
+    }
+
     .avatar {
       margin: 0 8px 0 5px;
-      padding: 2px;
       width: 30px;
       height: 30px;
       border-radius: 100%;

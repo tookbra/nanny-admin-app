@@ -96,6 +96,7 @@ export default {
       state.name = info.user.name;
       state.tenantId = info.user.tenantId;
       state.tenantCode = info.user.tenantCode;
+      state.avatar = info.user.avatar;
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles;

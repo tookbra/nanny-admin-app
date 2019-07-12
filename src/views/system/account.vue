@@ -303,7 +303,11 @@
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 14 }"
         >
-          <upload-pic-input :upload="avatarData" />
+          <upload-pic-input
+            v-decorator="['avatar']"
+            :upload="avatarData"
+            :actionUrl="avatarActionUrl"
+          />
         </a-form-item>
         <a-form-item
           label="所属部门"
@@ -437,9 +441,10 @@ export default {
       accountForm: this.$form.createForm(this),
       sexMap: new Map(),
       avatarData: {
-        path: "avatar",
-        tenantCode: this.$store.getters.tenantCode
+        path: "avatar"
       },
+      avatarActionUrl:
+        "/oss/upload/tenant/" + this.$store.getters.tenantCode + "/file",
       importFile: {
         visiable: false,
         data: {},
@@ -591,6 +596,10 @@ export default {
       this.getAccount(row.id);
     },
     showModify(row) {
+      if (this.tenantId == "") {
+        this.$message.error("请选择租户");
+        return;
+      }
       this.visible = true;
       this.title = "编辑";
       this.edit = true;
@@ -652,29 +661,6 @@ export default {
     onSelectChange(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys;
       this.selectedRows = selectedRows;
-    },
-    handleChange(info) {
-      if (info.file.status === "error") {
-        this.$notification.error({
-          message: "错误提示",
-          description: info.file.response.msg
-        });
-        return;
-      }
-
-      if (info.file.status === "done") {
-        console.log(info);
-        let res = info.file.response;
-        if (!res.success) {
-          this.$notification.error({
-            message: "错误提示",
-            description: res.msg
-          });
-          return;
-        } else {
-          this.accountForm.setFieldsValue({ ["avatar"]: res.data.url });
-        }
-      }
     },
     async userTenantsChange(value) {
       const _this = this;
