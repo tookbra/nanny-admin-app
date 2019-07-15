@@ -1,11 +1,27 @@
 <template>
   <basicContainer>
-    <div v-action:washCompany_search class="search-wrapper" v-if="showSearch">
+    <div v-action:washPerson_search class="search-wrapper" v-if="showSearch">
       <a-form layout="inline">
         <a-row :gutter="16">
           <a-col :md="5" :sm="24">
-            <a-form-item label="公司名称">
-              <a-input v-model="queryParam.name" placeholder="公司名称" />
+            <a-form-item label="洗涤公司">
+              <a-select
+                allowClear
+                v-model="queryParam.washCompanyId"
+                placeholder="请选择洗涤公司"
+              >
+                <a-select-option
+                  v-for="(item, index) in washCompanies"
+                  :key="index"
+                  :value="item.id"
+                  >{{ item.name }}</a-select-option
+                >
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="5" :sm="24">
+            <a-form-item label="姓名">
+              <a-input v-model="queryParam.name" placeholder="姓名" />
             </a-form-item>
           </a-col>
           <a-col :md="3" :sm="24">
@@ -30,7 +46,7 @@
     <div class="table-menu">
       <div class="table-menu-permission">
         <a-button
-          v-action:washCompany_add
+          v-action:washPerson_add
           type="primary"
           class="btn"
           icon="plus"
@@ -38,7 +54,7 @@
           >新增</a-button
         >
         <a-button
-          v-action:washCompany_delete
+          v-action:washPerson_delete
           type="danger"
           class="btn anger"
           icon="delete"
@@ -48,12 +64,7 @@
       </div>
       <div class="table-menu-nav">
         <a-button shape="circle" icon="sync" @click="refresh" />
-        <a-button
-          v-action:washCompany_search
-          shape="circle"
-          icon="search"
-          @click="updateShowSearch"
-        />
+        <a-button shape="circle" icon="search" @click="updateShowSearch" />
       </div>
     </div>
     <s-table
@@ -69,19 +80,22 @@
       }"
       :showSizeChanger="true"
     >
+      <span slot="washCompany" slot-scope="text">
+        {{ text | typeFilter(companiesMap) }}
+      </span>
       <span slot="action" class="table-nav" slot-scope="text, record">
         <template>
-          <a v-action:washCompany_view @click="() => showDetail(record)">
+          <a v-action:washPerson_view @click="() => showDetail(record)">
             <a-icon type="eye" />
             详情
           </a>
-          <a-divider v-action:washCompany_view type="vertical" />
-          <a v-action:washCompany_edit @click="() => showModify(record)">
+          <a-divider v-action:washPerson_view type="vertical" />
+          <a v-action:washPerson_edit @click="() => showModify(record)">
             <a-icon type="edit" />
             编辑
           </a>
-          <a-divider v-action:washCompany_edit type="vertical" />
-          <a v-action:washCompany_delete @click="() => remove(record)">
+          <a-divider v-action:washPerson_edit type="vertical" />
+          <a v-action:washPerson_delete @click="() => remove(record)">
             <a-icon type="delete" />
             删除
           </a>
@@ -97,20 +111,43 @@
       @ok="handleOk"
       :okButtonProps="{ props: { disabled: okDisabled } }"
     >
-      <a-form :form="washCompanyForm">
+      <a-form :form="washPersonForm">
         <a-form-item
-          label="公司名称"
+          label="洗涤公司"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 14 }"
+        >
+          <a-select
+            placeholder="请选择洗涤公司"
+            v-decorator="[
+              'washCompanyId',
+              {
+                rules: [{ required: true, message: '请选择洗涤公司' }]
+              }
+            ]"
+          >
+            <a-select-option value="">全部</a-select-option>
+            <a-select-option
+              v-for="(item, index) in washCompanies"
+              :key="index"
+              :value="item.id"
+              >{{ item.name }}</a-select-option
+            >
+          </a-select>
+        </a-form-item>
+        <a-form-item
+          label="姓名"
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 14 }"
         >
           <a-input
-            placeholder="请输入公司名称"
+            placeholder="请输入姓名"
             v-decorator="[
               'name',
               {
                 rules: [
-                  { required: true, message: '请输入公司名称' },
-                  { min: 2, max: 15, message: '公司名称长度为[4,10]' }
+                  { required: true, message: '请输入姓名' },
+                  { min: 2, max: 10, message: '姓名长度为[2,10]' }
                 ]
               }
             ]"
@@ -122,35 +159,16 @@
           :wrapper-col="{ span: 14 }"
         >
           <a-input
-            placeholder="请输入联系方式"
+            placeholder="联系方式"
             v-decorator="[
               'phone',
               {
                 rules: [
-                  { required: true, message: '请输入联系方式' },
-                  { min: 0, max: 15, message: '联系方式长度为[0,15]' }
+                  { min: 0, max: 15, message: '联系方式最大长度为15个字符' }
                 ]
               }
             ]"
           />
-        </a-form-item>
-        <a-form-item
-          label="联系地址"
-          :label-col="{ span: 5 }"
-          :wrapper-col="{ span: 14 }"
-        >
-          <a-textarea
-            placeholder="请输入联系地址"
-            :autosize="{ minRows: 4, maxRows: 6 }"
-            v-decorator="[
-              'address',
-              {
-                rules: [
-                  { min: 0, max: 256, message: '联系地址最大长度为256个字符' }
-                ]
-              }
-            ]"
-          ></a-textarea>
         </a-form-item>
         <a-form-item
           label="备注"
@@ -175,17 +193,18 @@
 
 <script>
 import { STable } from "@/components";
+import { getAllWashComapany } from "@/api/system/washCompany";
 import {
-  pageCompany,
-  removeCompany,
-  batchRemoveCompany,
-  getCompany,
-  addCompany,
-  modifyCompany
-} from "@/api/system/washCompany";
+  pageWashPerson,
+  removeWashPerson,
+  batchRemoveWashPerson,
+  getWashPerson,
+  addWashPerson,
+  modifyWashPerson
+} from "@/api/system/washPerson";
 import AFormItem from "ant-design-vue/es/form/FormItem";
 export default {
-  name: "washCompany",
+  name: "washPerson",
   components: {
     AFormItem,
     STable
@@ -199,21 +218,24 @@ export default {
       okDisabled: false,
       title: "",
       edit: false,
-      washCompanyForm: this.$form.createForm(this),
-      washCompany: {},
+      washPersonForm: this.$form.createForm(this),
+      washPerson: {},
+      washCompanies: [],
+      companiesMap: new Map(),
       // 表头
       columns: [
         {
-          title: "公司名称",
+          title: "洗涤公司",
+          dataIndex: "washCompanyId",
+          scopedSlots: { customRender: "washCompany" }
+        },
+        {
+          title: "员工姓名",
           dataIndex: "name"
         },
         {
           title: "联系方式",
           dataIndex: "phone"
-        },
-        {
-          title: "备注",
-          dataIndex: "remark"
         },
         {
           title: "操作",
@@ -239,7 +261,7 @@ export default {
       optionAlertShow: false,
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        return pageCompany(Object.assign(parameter, this.queryParam)).then(
+        return pageWashPerson(Object.assign(parameter, this.queryParam)).then(
           res => {
             return res.data;
           }
@@ -249,6 +271,14 @@ export default {
   },
   created() {
     this.tableOption();
+  },
+  beforeMount() {
+    getAllWashComapany().then(res => {
+      this.washCompanies = res.data;
+      res.data.forEach(item => {
+        this.companiesMap.set(item.id + "", item.name);
+      });
+    });
   },
   methods: {
     tableOption() {
@@ -287,7 +317,7 @@ export default {
         content: "确定删除所选中的记录?",
         centered: true,
         onOk() {
-          batchRemoveCompany(vm.selectedRowKeys).then(res => {
+          batchRemoveWashPerson(vm.selectedRowKeys).then(res => {
             if (res.success) {
               vm.$message.success("批量删除成功");
               vm.$refs.table.refresh(true);
@@ -306,7 +336,7 @@ export default {
         content: "确定删除该行记录?",
         centered: true,
         onOk() {
-          removeCompany(row.id).then(res => {
+          removeWashPerson(row.id).then(res => {
             if (res.success) {
               vm.$message.success("删除成功");
               vm.$refs.table.refresh(true);
@@ -326,21 +356,25 @@ export default {
       this.visible = true;
       this.title = "编辑";
       this.edit = true;
-      this.getCompany(row.id);
+      this.getWashPerson(row.id);
     },
     showDetail(row) {
       this.title = "详情";
       this.okDisabled = true;
-      this.getCompany(row.id);
+      this.getWashPerson(row.id);
+    },
+    rangePickerChange(dates, dataStr) {
+      this.startDate = dataStr[0];
+      this.endDate = dataStr[1];
     },
     handleOk() {
       const vm = this;
-      this.washCompanyForm.validateFields(err => {
+      this.washPersonForm.validateFields(err => {
         if (!err) {
-          let washCompany = this.washCompanyForm.getFieldsValue();
-          washCompany.id = this.washCompany.id;
+          let washPerson = this.washPersonForm.getFieldsValue();
+          washPerson.id = this.washPerson.id;
           if (this.edit) {
-            modifyCompany(washCompany).then(res => {
+            modifyWashPerson(washPerson).then(res => {
               if (!res.success) {
                 vm.$message.error(res.msg);
               } else {
@@ -349,7 +383,7 @@ export default {
               }
             });
           } else {
-            addCompany(washCompany)
+            addWashPerson(washPerson)
               .then(res => {
                 if (!res.success) {
                   vm.$message.error(res.msg);
@@ -370,11 +404,11 @@ export default {
       this.visible = false;
       this.title = "";
       this.okDisabled = false;
-      this.washCompanyForm.resetFields();
+      this.washPersonForm.resetFields();
     },
-    getCompany(id) {
+    getWashPerson(id) {
       const vm = this;
-      getCompany(id).then(res => {
+      getWashPerson(id).then(res => {
         if (res.success) {
           this.visible = true;
           vm.setFormValues(res.data);
@@ -383,19 +417,19 @@ export default {
         }
       });
     },
-    setFormValues({ ...washCompany }) {
-      let fields = ["name", "phone", "address", "remark"];
+    setFormValues({ ...washPerson }) {
+      let fields = ["id", "washCompanyId", "name", "phone", "remark"];
 
-      Object.keys(washCompany).forEach(key => {
+      Object.keys(washPerson).forEach(key => {
         if (fields.indexOf(key) !== -1) {
-          this.washCompanyForm.getFieldDecorator(key);
+          this.washPersonForm.getFieldDecorator(key);
           let obj = {};
-          obj[key] = washCompany[key];
-          this.washCompanyForm.setFieldsValue(obj);
+          obj[key] = washPerson[key];
+          this.washPersonForm.setFieldsValue(obj);
         }
       });
 
-      this.washCompany = washCompany;
+      this.washPerson = washPerson;
     }
   }
 };
