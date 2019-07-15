@@ -147,7 +147,7 @@
                   {
                     rules: [
                       { required: true, message: '请输入菜单编码' },
-                      { min: 2, max: 15, message: '菜单编码长度为[2, 10]' }
+                      { min: 2, max: 20, message: '菜单编码长度为[2, 20]' }
                     ]
                   }
                 ]"
@@ -160,15 +160,7 @@
               :label-col="{ span: 5 }"
               :wrapper-col="{ span: 18 }"
             >
-              <a-input
-                placeholder="请输入路由地址"
-                v-decorator="[
-                  'path',
-                  {
-                    rules: [{ required: true, message: '请输入路由地址' }]
-                  }
-                ]"
-              />
+              <a-input placeholder="请输入路由地址" v-decorator="['path']" />
             </a-form-item>
           </a-col>
           <a-col :md="12" :sm="24">
@@ -340,6 +332,43 @@
               </a-radio-group>
             </a-form-item>
           </a-col>
+          <a-col :md="12" :sm="24">
+            <a-form-item
+              label="隐藏子菜单"
+              :label-col="{ span: 5 }"
+              :wrapper-col="{ span: 18 }"
+            >
+              <a-radio-group
+                v-decorator="[
+                  'hiddenChildren',
+                  {
+                    initialValue: false,
+                    rules: [{ required: true, message: '请选择是否隐藏子菜单' }]
+                  }
+                ]"
+                name="hideChildren"
+              >
+                <a-radio :value="true">
+                  是
+                </a-radio>
+                <a-radio :value="false">
+                  否
+                </a-radio>
+              </a-radio-group>
+            </a-form-item>
+          </a-col>
+          <a-col :md="12" :sm="24">
+            <a-form-item
+              label="重定向地址"
+              :label-col="{ span: 5 }"
+              :wrapper-col="{ span: 18 }"
+            >
+              <a-input
+                placeholder="请输入重定向地址"
+                v-decorator="['redirect']"
+              />
+            </a-form-item>
+          </a-col>
           <a-col :md="12" :sm="424">
             <a-form-item
               label="菜单备注"
@@ -476,7 +505,7 @@ export default {
       optionAlertShow: false,
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        parameter.size = 50;
+        parameter.size = 100;
         return pageMenu(Object.assign(parameter, this.queryParam)).then(res => {
           this.treeMenu = [];
           this.assemblyTree(res.data.records);
@@ -664,7 +693,9 @@ export default {
         "category",
         "status",
         "showed",
-        "component"
+        "component",
+        "hiddenChildren",
+        "redirect"
       ];
       Object.keys(menu).forEach(key => {
         if (fields.indexOf(key) !== -1) {

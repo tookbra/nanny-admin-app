@@ -168,16 +168,59 @@
           </a-select>
         </a-form-item>
         <a-form-item
-          label="图标"
+          label="洗涤次数"
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 10 }"
         >
-          <upload-pic-input
-            v-decorator="['icon']"
-            :upload="iconData"
-            :actionUrl="actionUrl"
-            :disabled="okDisabled"
+          <a-input-number
+            v-decorator="['washedNum', { initialValue: 0 }]"
+            :min="0"
           />
+        </a-form-item>
+        <a-form-item
+          label="使用天数"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 10 }"
+        >
+          <a-input-number
+            v-decorator="['usedDay', { initialValue: 0 }]"
+            :min="0"
+          />
+        </a-form-item>
+        <a-form-item
+          label="规格"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 10 }"
+        >
+          <a-input
+            placeholder="请输入规格"
+            v-decorator="[
+              'specification',
+              {
+                rules: [{ min: 1, max: 10, message: '规格长度为[1,10]' }]
+              }
+            ]"
+          />
+        </a-form-item>
+        <a-form-item
+          label="产品季节"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 10 }"
+        >
+          <a-select
+            placeholder="请选择产品季节"
+            allowClear
+            v-decorator="['season']"
+            default-value="0"
+          >
+            <a-select-option value="0">请选择</a-select-option>
+            <a-select-option
+              v-for="(item, index) in season"
+              :key="index"
+              :value="item.data"
+              >{{ item.name }}</a-select-option
+            >
+          </a-select>
         </a-form-item>
         <a-form-item
           label="状态"
@@ -199,7 +242,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { STable, uploadPicInput } from "@/components";
+import { STable } from "@/components";
 import { getSwitchStatus } from "@/libs/util";
 import {
   pageProduct,
@@ -212,11 +255,10 @@ import {
 export default {
   name: "product",
   components: {
-    STable,
-    uploadPicInput
+    STable
   },
   computed: {
-    ...mapGetters(["productType", "status"])
+    ...mapGetters(["productType", "status", "season"])
   },
   data() {
     return {
@@ -232,10 +274,6 @@ export default {
       productForm: this.$form.createForm(this),
       product: {},
       typeMap: new Map(),
-      iconData: {
-        path: "product"
-      },
-      actionUrl: "/oss/upload/file",
       pagination: {
         defaultPageSize: 50,
         hideOnSinglePage: true
@@ -250,6 +288,14 @@ export default {
           title: "产品类型",
           dataIndex: "typeId",
           scopedSlots: { customRender: "type" }
+        },
+        {
+          title: "洗涤次数",
+          dataIndex: "washedNum"
+        },
+        {
+          title: "使用天数",
+          dataIndex: "usedDay"
         },
         {
           title: "状态",
@@ -445,7 +491,15 @@ export default {
         });
     },
     setFormValues({ ...product }) {
-      let fields = ["name", "status", "typeId", "icon"];
+      let fields = [
+        "name",
+        "status",
+        "typeId",
+        "washedNum",
+        "usedDay",
+        "specification",
+        "season"
+      ];
       Object.keys(product).forEach(key => {
         if (fields.indexOf(key) !== -1) {
           this.productForm.getFieldDecorator(key);

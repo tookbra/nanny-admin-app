@@ -90,9 +90,6 @@ export default {
     i {
       font-size: 16px;
     }
-    span {
-      font-size: 16px;
-    }
   }
   .ant-menu-inline-collapsed {
     width: 80px;

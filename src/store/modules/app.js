@@ -1,13 +1,14 @@
-// import Vue from "vue";
-// import { SIDEBAR_TYPE } from "@/store/mutation-types";
+import Vue from "vue";
+import { SIDEBAR_TYPE } from "@/store/mutation-types";
 export default {
   state: {
     collapsed: false,
     device: "desktop"
   },
   mutations: {
-    SET_COLLAPSE(state) {
+    SET_COLLAPSE(state, type) {
       state.collapsed = !state.collapsed;
+      Vue.ls.set(SIDEBAR_TYPE, type);
     },
     TOGGLE_DEVICE: (state, device) => {
       state.device = device;

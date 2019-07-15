@@ -3,13 +3,15 @@ export default {
     tenantTypes: [],
     status: [],
     sex: [],
-    productType: []
+    productType: [],
+    season: []
   },
   getters: {
     tenantTypes: state => state.tenantTypes,
     status: state => state.status,
     sex: state => state.sex,
-    productType: state => state.productType
+    productType: state => state.productType,
+    season: state => state.season
   },
   mutations: {
     SET_TENANT_TYPE(state, tenantTypes) {
@@ -23,6 +25,9 @@ export default {
     },
     SET_PRODUCT_TYPE(state, productType) {
       state.productType = productType;
+    },
+    SET_SEASON(state, season) {
+      state.season = season;
     }
   }
 };

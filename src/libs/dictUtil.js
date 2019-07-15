@@ -28,6 +28,11 @@ dictUtil.initDictData = function(vm) {
         vm.$store.commit("SET_PRODUCT_TYPE", res.data);
       }
     });
+    getDictByType("season").then(res => {
+      if (res.success) {
+        vm.$store.commit("SET_SEASON", res.data);
+      }
+    });
   }
 };
 

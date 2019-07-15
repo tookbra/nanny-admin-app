@@ -52,7 +52,7 @@ export const generator = (routerMap, parent) => {
       // 路由地址 动态拼接生成如 /dashboard/workplace
       path: `${(parent && parent.path) || ""}/${item.path}`,
       // 路由名称，建议唯一
-      name: item.name || item.key || "",
+      name: item.code || item.key || "",
       // 该路由对应页面的 组件
       component: item.component
         ? constantRouterComponents[item.component || item.path]
@@ -69,7 +69,8 @@ export const generator = (routerMap, parent) => {
         icon: item.icon || undefined,
         permission: (item.path && [item.path]) || null,
         closeable: true
-      }
+      },
+      hiddenChildren: item.hiddenChildren
     };
     // 为了防止出现后端返回结果不规范，处理有可能出现拼接出两个 反斜杠
     currentRouter.path = currentRouter.path.replace("//", "/");

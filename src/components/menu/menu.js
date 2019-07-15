@@ -97,7 +97,7 @@ export default {
     // render
     renderItem(menu) {
       if (!menu.hidden) {
-        return menu.children && !menu.hideChildrenInMenu
+        return menu.children && !menu.hiddenChildren
           ? this.renderSubMenu(menu)
           : this.renderMenuItem(menu);
       }
@@ -108,6 +108,16 @@ export default {
       const tag = (target && "a") || "router-link";
       const props = { to: { name: menu.name } };
       const attrs = { href: menu.path, target: menu.meta.target };
+
+      if (menu.children && menu.hideChildren) {
+        // 把有子菜单的 并且 父菜单是要隐藏子菜单的
+        // 都给子菜单增加一个 hidden 属性
+        // 用来给刷新页面时， selectedKeys 做控制用
+        menu.children.forEach(item => {
+          item.meta = Object.assign(item.meta, { hidden: true });
+        });
+      }
+
       return (
         <Item {...{ key: menu.path }}>
           <tag {...{ props, attrs }}>
@@ -119,7 +129,7 @@ export default {
     },
     renderSubMenu(menu) {
       const itemArr = [];
-      if (!menu.hideChildrenInMenu) {
+      if (!menu.hiddenChildren) {
         menu.children.forEach(item => itemArr.push(this.renderItem(item)));
       }
       return (
@@ -156,6 +166,7 @@ export default {
       openChange: this.onOpenChange
     };
 
+    console.log(menu);
     const menuTree = menu.map(item => {
       if (item.hidden) {
         return null;
