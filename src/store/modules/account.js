@@ -1,17 +1,24 @@
 import Vue from "vue";
-import { login, logout } from "@/api/account/login";
+import { login, logout, refreshToken } from "@/api/account/login";
 import { getAccountInfo } from "@/api/account/account";
-import { ACCESS_TOKEN } from "@/store/mutation-types";
+import { getStore } from "@/libs/store";
+import {
+  ACCESS_TOKEN,
+  REFRESH_ACCESS_TOKEN,
+  EXPIRES_IN
+} from "@/store/mutation-types";
 import { clearStore } from "@/libs/store";
 export default {
   state: {
-    token: "",
+    token: getStore({ name: ACCESS_TOKEN }) || "",
     tenantId: "",
     tenantCode: "",
     name: "",
     avatar: "",
     info: "",
-    roles: []
+    roles: [],
+    refreshToken: getStore({ name: REFRESH_ACCESS_TOKEN }) || "",
+    expiresIn: getStore({ name: EXPIRES_IN }) || ""
   },
   getters: {
     name: state => state.name,
@@ -19,7 +26,9 @@ export default {
     roles: state => state.roles,
     info: state => state.info,
     tenantId: state => state.tenantId,
-    tenantCode: state => state.tenantCode
+    tenantCode: state => state.tenantCode,
+    refreshToken: state => state.refreshToken,
+    expiresIn: state => state.expiresIn
   },
   actions: {
     // 登录
@@ -27,12 +36,9 @@ export default {
       return new Promise((resolve, reject) => {
         login(userInfo)
           .then(response => {
-            Vue.ls.set(
-              ACCESS_TOKEN,
-              response.access_token,
-              7 * 24 * 60 * 60 * 1000
-            );
             commit("SET_TOKEN", response.access_token);
+            commit("SET_REFRESH_TOKEN", response.refresh_token);
+            commit("SET_EXPIRES_IN", response.expires_in);
             resolve();
           })
           .catch(error => {
@@ -67,16 +73,32 @@ export default {
     // 登出
     Logout({ commit }) {
       return new Promise(resolve => {
-        commit("SET_TOKEN", "");
         commit("SET_ROLES", []);
+        commit("SET_REFRESH_TOKEN", "");
         clearStore({ type: "session" });
         logout()
           .then(() => {
-            Vue.ls.remove(ACCESS_TOKEN);
+            commit("SET_TOKEN", "");
             resolve();
           })
           .catch(() => {
+            Vue.ls.remove(ACCESS_TOKEN);
             resolve();
+          });
+      });
+    },
+    // 刷新token
+    RefreshToken({ commit, state }) {
+      return new Promise((resolve, reject) => {
+        refreshToken(state.refreshToken)
+          .then(response => {
+            commit("SET_TOKEN", response.access_token);
+            commit("SET_REFRESH_TOKEN", response.refresh_token);
+            commit("SET_EXPIRES_IN", response.expires_in);
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
           });
       });
     }
@@ -84,6 +106,15 @@ export default {
   mutations: {
     SET_TOKEN(state, token) {
       state.token = token;
+      Vue.ls.set(ACCESS_TOKEN, token);
+    },
+    SET_REFRESH_TOKEN(state, token) {
+      state.refreshToken = token;
+      Vue.ls.set(REFRESH_ACCESS_TOKEN, token);
+    },
+    SET_EXPIRES_IN: (state, expires_in) => {
+      state.expiresIn = expires_in;
+      Vue.ls.set(EXPIRES_IN, expires_in);
     },
     SET_NAME: (state, { name }) => {
       state.name = name;

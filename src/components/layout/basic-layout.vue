@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import { ACCESS_TOKEN } from "@/store/mutation-types";
 import { mapGetters, mapState } from "vuex";
 import { mixin, mixinDevice } from "@/libs/mixin";
 import sidebar from "@/components/menu/side-menu";
@@ -60,11 +61,12 @@ export default {
   },
   data() {
     return {
-      menus: []
+      menus: [],
+      refreshLock: false
     };
   },
   computed: {
-    ...mapGetters(["collapsed"]),
+    ...mapGetters(["collapsed", "expiresIn"]),
     ...mapState({
       // 动态主路由
       mainMenu: state => state.permission.addRouters
@@ -77,10 +79,29 @@ export default {
   },
   created() {
     this.menus = this.mainMenu;
+    // 实时检测刷新token
+    this.refreshToken();
   },
   methods: {
     drawerClose() {
       this.$store.commit("SET_COLLAPSE");
+    },
+    refreshToken() {
+      this.refreshTime = setInterval(() => {
+        let token = this.$ls.get(ACCESS_TOKEN);
+        if (token == undefined || token == "") {
+          return;
+        }
+
+        if (this.expiresIn <= 1000 && !this.refreshLock) {
+          this.refreshLock = true;
+          this.$store.dispatch("RefreshToken").catch(() => {
+            clearInterval(this.refreshTime);
+          });
+          this.refreshLock = false;
+        }
+        this.$store.commit("SET_EXPIRES_IN", this.expiresIn - 10);
+      }, 10000);
     }
   }
 };

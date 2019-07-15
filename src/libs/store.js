@@ -10,7 +10,7 @@ export const setStore = (params = {}) => {
   name = keyName + name;
   let obj = {
     dataType: typeof content,
-    content: content,
+    value: content,
     type: type,
     datetime: new Date().getTime()
   };
@@ -20,7 +20,6 @@ export const setStore = (params = {}) => {
 /**
  * 获取localStorage
  */
-
 export const getStore = (params = {}) => {
   let { name, debug } = params;
   name = keyName + name;
@@ -37,15 +36,8 @@ export const getStore = (params = {}) => {
   if (debug) {
     return obj;
   }
-  if (obj.dataType == "string") {
-    content = obj.content;
-  } else if (obj.dataType == "number") {
-    content = Number(obj.content);
-  } else if (obj.dataType == "boolean") {
-    content = eval(obj.content);
-  } else if (obj.dataType == "object") {
-    content = obj.content;
-  }
+  content = obj.value;
+
   return content;
 };
 /**

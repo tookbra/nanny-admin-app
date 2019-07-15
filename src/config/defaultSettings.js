@@ -21,7 +21,7 @@ export default {
     storage: "local" // storage name session, local, memory
   },
   sessionStorageOptions: {
-    namespace: "nanny-", // key prefix
+    namespace: "nanny_", // key prefix
     name: "st", // name variable Vue.[ls] or this.[$ls],
     storage: "session" // storage name session, local, memory
   }

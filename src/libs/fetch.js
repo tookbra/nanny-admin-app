@@ -21,7 +21,8 @@ export const fetch = axios.create({
 
 fetch.interceptors.request.use(config => {
   const token = Vue.ls.get(ACCESS_TOKEN);
-  if (token) {
+  const isToken = (config.headers || {}).isToken === false;
+  if (token && !isToken) {
     config.headers.Authorization = "Bearer " + token;
   }
   if (config.showLoading) {

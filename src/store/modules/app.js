@@ -1,5 +1,5 @@
-import Vue from "vue";
-import { SIDEBAR_TYPE } from "@/store/mutation-types";
+// import Vue from "vue";
+// import { SIDEBAR_TYPE } from "@/store/mutation-types";
 export default {
   state: {
     collapsed: false,
@@ -11,10 +11,6 @@ export default {
     },
     TOGGLE_DEVICE: (state, device) => {
       state.device = device;
-    },
-    SET_SIDEBAR_TYPE: (state, type) => {
-      state.sidebar = type;
-      Vue.ls.set(SIDEBAR_TYPE, type);
     }
   },
   getters: {
@@ -23,7 +19,7 @@ export default {
   },
   actions: {
     setSidebar({ commit }, type) {
-      commit("SET_SIDEBAR_TYPE", type);
+      commit("SET_COLLAPSE", type);
     }
   }
 };
