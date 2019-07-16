@@ -188,6 +188,7 @@ export default {
 
 <style lang="less">
 .nav-tab {
+  margin-top: 2px;
   .ant-tabs-tab {
     border: 0px !important;
     background-color: #fff !important;

@@ -18,6 +18,15 @@ export function getAccount(id) {
   });
 }
 
+// 获取部门员工
+export function getAccountByDepartmentId(id) {
+  return fetch({
+    showLoading: true,
+    url: "/system/accounts/department/" + id,
+    method: "get"
+  });
+}
+
 // 批量删除员工
 export function batchRemoveAccount(parameter) {
   return fetch({

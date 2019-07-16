@@ -215,7 +215,7 @@
               {
                 rules: [
                   { required: true, message: '请输入用户账号' },
-                  { min: 4, max: 12, message: '用户姓名长度为[4, 12]' }
+                  { min: 4, max: 12, message: '用户账号长度为[4, 12]' }
                 ]
               }
             ]"
@@ -371,7 +371,7 @@
     ></export-csv>
     <import-file
       ref="importFile"
-      :importVisiable="importFile.visiable"
+      :importVisiable="importFile.visible"
       :actionUrl="'/system/accounts/importFile'"
       :importData="importFile.data"
       :columns="importFile.columns"
@@ -446,7 +446,7 @@ export default {
       avatarActionUrl:
         "/oss/upload/tenant/" + this.$store.getters.tenantCode + "/file",
       importFile: {
-        visiable: false,
+        visible: false,
         data: {},
         columns: [
           {
@@ -609,10 +609,10 @@ export default {
       this.userStatus = checked;
     },
     showImportFile() {
-      this.importFile.visiable = true;
+      this.importFile.visible = true;
     },
     handleImportClose() {
-      this.importFile.visiable = false;
+      this.importFile.visible = false;
     },
     handleImport(data) {
       if (data.length == 0) {

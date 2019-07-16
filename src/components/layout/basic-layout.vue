@@ -16,6 +16,7 @@
           <sidebar
             mode="inline"
             :menus="menus"
+            :theme="navTheme"
             :collapsed="false"
             :collapsible="true"
           ></sidebar>
@@ -23,6 +24,7 @@
         <sidebar
           v-else-if="!isMobile()"
           mode="inline"
+          :theme="navTheme"
           :menus="menus"
           :collapsed="collapsed"
           :collapsible="true"
