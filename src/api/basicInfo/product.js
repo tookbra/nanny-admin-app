@@ -1,5 +1,6 @@
 import { fetch } from "@/libs/fetch";
 
+// 分页查询
 export function pageProduct(parameter) {
   return fetch({
     url: "/system/products",
@@ -8,6 +9,7 @@ export function pageProduct(parameter) {
   });
 }
 
+// 产品详情
 export function getProduct(id) {
   return fetch({
     showLoading: true,
@@ -16,6 +18,16 @@ export function getProduct(id) {
   });
 }
 
+// 查询所有生效的产品
+export function getProductAll() {
+  return fetch({
+    showLoading: true,
+    url: "/system/products/all",
+    method: "get"
+  });
+}
+
+// 批量删除
 export function batchRemoveProduct(parameter) {
   return fetch({
     showLoading: true,
@@ -24,6 +36,8 @@ export function batchRemoveProduct(parameter) {
     data: parameter
   });
 }
+
+// 删除
 export function removeProduct(id) {
   return fetch({
     showLoading: true,
@@ -32,6 +46,7 @@ export function removeProduct(id) {
   });
 }
 
+// 新增产品
 export function addProduct(parameter) {
   return fetch({
     showLoading: true,
@@ -41,6 +56,7 @@ export function addProduct(parameter) {
   });
 }
 
+// 修改产品
 export function modifyProduct(parameter) {
   return fetch({
     showLoading: true,
