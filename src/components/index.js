@@ -1,5 +1,8 @@
+// chart
+import Bar from '@/components/Charts/Bar'
 import ExceptionPage from "@/components/exception";
 import BasicLayout from "@/components/layout/basic-layout";
+import RouteView from "@/components/layout/RouteView";
 import STable from "@/components/table";
 import tableMenu from "@/components/tableMenu/index";
 import PageLoading from "@/components/PageLoading";
@@ -10,6 +13,7 @@ import importFile from "@/components/importFile/index";
 import uploadPicInput from "@/components/upload/upload-pic-input.vue";
 
 export {
+  Bar,
   ExceptionPage,
   BasicLayout,
   STable,
@@ -19,5 +23,6 @@ export {
   Tree,
   exportCsv,
   importFile,
-  uploadPicInput
+  uploadPicInput,
+  RouteView
 };

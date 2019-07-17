@@ -166,7 +166,6 @@ export default {
       openChange: this.onOpenChange
     };
 
-    console.log(menu);
     const menuTree = menu.map(item => {
       if (item.hidden) {
         return null;

@@ -78,7 +78,7 @@ export default {
     }
   },
   created() {
-    this.menus = this.mainMenu;
+    this.menus = this.mainMenu.find(item => item.path === "/").children;
     // 实时检测刷新token
     this.refreshToken();
   },
