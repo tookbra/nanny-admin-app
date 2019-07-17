@@ -33,6 +33,11 @@ dictUtil.initDictData = function(vm) {
         vm.$store.commit("SET_SEASON", res.data);
       }
     });
+    getDictByType("rfid_current_status").then(res => {
+      if (res.success) {
+        vm.$store.commit("SET_RFID_CURRENT_STATUS", res.data);
+      }
+    });
   }
 };
 

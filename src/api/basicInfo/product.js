@@ -18,6 +18,15 @@ export function getProduct(id) {
   });
 }
 
+// 根据产品类型查询产品
+export function getProductByType(id) {
+  return fetch({
+    showLoading: true,
+    url: "/system/products/type/" + id,
+    method: "get"
+  });
+}
+
 // 查询所有生效的产品
 export function getProductAll() {
   return fetch({

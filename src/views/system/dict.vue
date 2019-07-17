@@ -193,7 +193,7 @@
               {
                 rules: [
                   { required: true, message: '请输入字典编码' },
-                  { min: 2, max: 15, message: '字典编码长度为[1,15]' }
+                  { min: 2, max: 20, message: '字典编码长度为[1,20]' }
                 ]
               }
             ]"
