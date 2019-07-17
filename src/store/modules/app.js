@@ -3,7 +3,8 @@ import { SIDEBAR_TYPE } from "@/store/mutation-types";
 export default {
   state: {
     collapsed: false,
-    device: "desktop"
+    device: "desktop",
+    theme: "dark"
   },
   mutations: {
     SET_COLLAPSE(state, type) {

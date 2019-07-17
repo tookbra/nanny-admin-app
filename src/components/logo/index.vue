@@ -16,7 +16,7 @@ export default {
   width: 240px;
   height: 64px;
   line-height: 64px;
-  background-color: #20222a;
+  background: #002140;
   font-size: 20px;
   overflow: hidden;
   -webkit-box-sizing: border-box;

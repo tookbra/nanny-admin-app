@@ -56,3 +56,13 @@ export function removeRfid(id) {
     method: "delete"
   });
 }
+
+// 导入确认
+export function importConfirm(paramter) {
+  return fetch({
+    showLoading: true,
+    url: "/system/rfids/importConfirm",
+    method: "post",
+    data: paramter
+  });
+}

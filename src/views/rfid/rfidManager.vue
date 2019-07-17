@@ -59,6 +59,20 @@
           @click="batchRemove"
           >删除</a-button
         >
+        <a-button
+          class="btn"
+          type="primary"
+          icon="import"
+          @click="showImportFile"
+          >导入</a-button
+        >
+        <a-dropdown>
+          <a-menu slot="overlay" @click="handleExportClick">
+            <a-menu-item key="1">导出所选数据</a-menu-item>
+            <a-menu-item key="2">导出全部数据</a-menu-item>
+          </a-menu>
+          <a-button icon="export">导出 <a-icon type="down" /> </a-button>
+        </a-dropdown>
       </div>
       <div class="table-menu-nav">
         <a-button shape="circle" icon="sync" @click="refresh" />
@@ -156,6 +170,7 @@
             :treeData="orgTree"
             placeholder="所属科室"
             treeDefaultExpandAll
+            @change="handleOrgChange"
             v-decorator="[
               'departmentId',
               {
@@ -169,15 +184,7 @@
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 14 }"
         >
-          <a-select
-            placeholder="请选择员工"
-            v-decorator="[
-              'departmentId',
-              {
-                rules: [{ required: true, message: '请选择员工' }]
-              }
-            ]"
-          >
+          <a-select placeholder="请选择员工" v-decorator="['userId']">
             <a-select-option
               v-for="(item, index) in users"
               :key="index"
@@ -188,27 +195,39 @@
         </a-form-item>
       </a-form>
     </a-modal>
+    <import-file
+      ref="importFile"
+      :importVisiable="importFile.visible"
+      :actionUrl="'/system/rfids/importFile'"
+      :importData="importFile.data"
+      :columns="importFile.columns"
+      @close="handleImportClose"
+      @handleImport="handleImport"
+    ></import-file>
   </basicContainer>
 </template>
 
 <script>
-import { STable } from "@/components";
+import { STable, importFile } from "@/components";
 import {
   pageRfid,
   removeRfid,
   batchRemoveRfid,
   getRfid,
   addRfid,
-  modifyRfid
+  modifyRfid,
+  importConfirm
 } from "@/api/system/rfid";
 import { getDepartmentByTenant } from "@/api/system/department";
+import { getAccountByDepartmentId } from "@/api/system/account";
 import { getProductAll } from "@/api/basicInfo/product";
 import AFormItem from "ant-design-vue/es/form/FormItem";
 export default {
   name: "rfid",
   components: {
     AFormItem,
-    STable
+    STable,
+    importFile
   },
   data() {
     return {
@@ -226,6 +245,24 @@ export default {
       products: [],
       users: [],
       tenantId: "",
+      importFile: {
+        visible: false,
+        data: {},
+        columns: [
+          {
+            title: "产品名称",
+            dataIndex: "productName"
+          },
+          {
+            title: "科室",
+            dataIndex: "departmentName"
+          },
+          {
+            title: "员工姓名",
+            dataIndex: "userName"
+          }
+        ]
+      },
       // 表头
       columns: [
         {
@@ -237,7 +274,7 @@ export default {
           dataIndex: "productName"
         },
         {
-          title: "部门",
+          title: "科室",
           dataIndex: "departmentName"
         },
         {
@@ -258,11 +295,32 @@ export default {
         },
         {
           title: "状态",
-          dataIndex: "status"
+          dataIndex: "status",
+          customRender: value => {
+            if (value === 1) {
+              return "损坏";
+            } else {
+              return "正常";
+            }
+          }
         },
         {
           title: "当前位置",
-          dataIndex: "currentStatus"
+          dataIndex: "currentStatus",
+          customRender: value => {
+            switch (value) {
+              case 0:
+                return "使用中";
+              case 1:
+                return "仓库";
+              case 2:
+                return "洗涤中";
+              case 3:
+                return "反洗中";
+              case 4:
+                return "维修中";
+            }
+          }
         },
         {
           title: "操作",
@@ -335,6 +393,38 @@ export default {
     loadProduct() {
       getProductAll().then(res => {
         this.products = res.data;
+      });
+    },
+    handleOrgChange(value) {
+      if (value !== undefined) {
+        this.loadDepartmentUser(value);
+      }
+    },
+    loadDepartmentUser(departmentId) {
+      getAccountByDepartmentId(departmentId).then(res => {
+        this.users = res.data;
+      });
+    },
+    showImportFile() {
+      this.importFile.visible = true;
+    },
+    handleImportClose() {
+      this.importFile.visible = false;
+    },
+    handleExportClick(e) {
+      console.log(e);
+    },
+    handleImport(data) {
+      if (data.length == 0) {
+        this.$notification.error({
+          message: "错误提示",
+          description: "导入数据为空"
+        });
+        return;
+      }
+      importConfirm({ list: data }).then(() => {
+        this.$refs.importFile.onClose();
+        this.$refs.table.refresh(true);
       });
     },
     batchRemove() {
@@ -439,6 +529,7 @@ export default {
       getRfid(id).then(res => {
         if (res.success) {
           this.visible = true;
+          this.loadDepartmentUser(res.data.departmentId);
           vm.setFormValues(res.data);
         } else {
           vm.$message.error(res.msg);

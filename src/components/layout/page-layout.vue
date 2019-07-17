@@ -14,7 +14,7 @@ export default {
 
 <style lang="less">
 .basic-container {
-  padding: 10px 6px;
+  padding: 20px;
   border-radius: 10px;
   box-sizing: border-box;
   height: 100%;

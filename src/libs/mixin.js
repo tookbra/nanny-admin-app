@@ -8,7 +8,8 @@ import { mapState } from "vuex";
 const mixin = {
   computed: {
     ...mapState({
-      sidebarOpened: state => state.app.sidebar
+      sidebarOpened: state => state.app.sidebar,
+      navTheme: state => state.app.theme
     })
   }
 };
