@@ -8,14 +8,17 @@ import { showLoading, hideLoading } from "./util";
 const notNotfiy = [
   "/system/dicts/type/status",
   "/system/dicts/type/sex",
-  "/system/dicts/type/tenant_type"
+  "/system/dicts/type/tenant_type",
+  "/system/dicts/type/product_type",
+  "/system/dicts/type/season",
+  "/system/dicts/type/rfid_current_status"
 ];
 export const fetch = axios.create({
   baseURL: "/",
   timeout: 10000,
-  // withCredentials: true,
+  withCredentials: true,
   validateStatus: function(status) {
-    return status >= 200 && status <= 500;
+    return status >= 200 && status <= 6000;
   }
 });
 

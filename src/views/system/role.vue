@@ -356,8 +356,8 @@ export default {
     switchRoleType(checked) {
       this.roleStatus = checked;
     },
-    updateShowSearch(showSearch) {
-      this.showSearch = showSearch;
+    updateShowSearch() {
+      this.showSearch = !this.showSearch;
     },
     showPermission(row) {
       getRoleMenu(row.id).then(res => {

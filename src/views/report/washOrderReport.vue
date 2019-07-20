@@ -48,6 +48,11 @@
               </a-select>
             </a-form-item>
           </a-col>
+          <a-col :md="5" :sm="24">
+            <a-form-item label="订单日期">
+              <a-range-picker v-model="picker" @change="rangePickerChange" />
+            </a-form-item>
+          </a-col>
           <a-col :md="3" :sm="24">
             <span class="table-page-search-submitButtons">
               <a-button type="primary" icon="search" @click="loadReport"
@@ -64,13 +69,11 @@
         </a-row>
       </a-form>
     </div>
-    <a-row :gutter="36">
-      <a-col :md="36" :sm="24">
-        <bar :data="barData" @handleClick="handleBarClick" />
+    <a-row :gutter="16">
+      <a-col :md="24" :sm="24">
+        <bar :data="barData" @handleClick="handlePieClick" />
       </a-col>
-    </a-row>
-    <a-row>
-      <a-col :md="36" :sm="24">
+      <a-col :md="24" :sm="24">
         <s-table
           ref="table"
           size="default"
@@ -86,15 +89,17 @@
 </template>
 
 <script>
+import moment from "moment";
 import { Bar, STable } from "@/components";
 import { getDepartmentByTenant } from "@/api/system/department";
 import { getProductByType } from "@/api/basicInfo/product";
 import { pageRfid } from "@/api/system/rfid";
-import { allocate } from "@/api/report/report";
+import { washReport } from "@/api/report/report";
 import { mapGetters } from "vuex";
 import ACol from "ant-design-vue/es/grid/Col";
+const DataSet = require("@antv/data-set");
 export default {
-  name: "allocate",
+  name: "washOrderReport",
   components: {
     ACol,
     Bar,
@@ -107,6 +112,7 @@ export default {
       orgTree: [],
       products: [],
       barData: [],
+      picker: [],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         return pageRfid(Object.assign(parameter, this.queryParam)).then(res => {
@@ -127,18 +133,22 @@ export default {
           dataIndex: "departmentName"
         },
         {
-          title: "洗涤次数",
+          title: "员工",
           dataIndex: "washNum"
         }
       ]
     };
   },
   computed: {
-    ...mapGetters(["productType", "currentStatus"])
+    ...mapGetters(["productType"])
   },
   beforeMount() {
     this.tenantId = this.$store.getters.tenantId;
     this.loadTree();
+    let now = moment();
+    this.picker = [now, now];
+    this.queryParam.beginDate = now.format("YYYY-MM-DD");
+    this.queryParam.endDate = now.format("YYYY-MM-DD");
   },
   mounted() {
     this.loadReport();
@@ -156,20 +166,25 @@ export default {
         });
       }
     },
+    rangePickerChange(dates, dataStr) {
+      this.queryParam.beginDate = dataStr[0];
+      this.queryParam.endDate = dataStr[1];
+    },
     loadReport() {
-      allocate(this.queryParam).then(res => {
-        res.data.forEach(item => {
-          this.barData.push({
-            x: item.item,
-            y: item.num,
-            key: item.departmentId
-          });
+      washReport(this.queryParam).then(res => {
+        const dv = new DataSet.View().source(res.data);
+        dv.transform({
+          type: "percent",
+          field: "num",
+          dimension: "item",
+          as: "percent"
         });
+        this.barData = dv.rows;
       });
       this.$refs.table.refresh(true);
     },
-    handleBarClick(v) {
-      this.queryParam.departmentId = v;
+    handlePieClick(v) {
+      console.log(v);
       this.$refs.table.refresh(true);
     }
   }

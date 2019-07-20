@@ -579,8 +579,8 @@ export default {
     refresh() {
       this.$refs.table.refresh(true);
     },
-    updateShowSearch(showSearch) {
-      this.showSearch = showSearch;
+    updateShowSearch() {
+      this.showSearch = !this.showSearch;
     },
     showAdd() {
       if (this.tenantId == "") {

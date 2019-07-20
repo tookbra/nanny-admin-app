@@ -12,13 +12,27 @@ module.exports = {
     config.resolve.alias
       .set("@", resolve("src")) // key,value自行定义，比如.set('@@', resolve('src/components'))
       .set("components", resolve("src/components"));
+    const svgRule = config.module.rule("svg");
+    svgRule.uses.clear();
+    svgRule
+      .oneOf("inline")
+      .resourceQuery(/inline/)
+      .use("vue-svg-icon-loader")
+      .loader("vue-svg-icon-loader")
+      .end()
+      .end()
+      .oneOf("external")
+      .use("file-loader")
+      .loader("file-loader")
+      .options({
+        name: "assets/[name].[hash:8].[ext]"
+      });
   },
   css: {
     loaderOptions: {
       less: {
         modifyVars: {
           /* less 变量覆盖，用于自定义 ant design 主题 */
-
           /*
           'primary-color': '#F5222D',
           'link-color': '#F5222D',

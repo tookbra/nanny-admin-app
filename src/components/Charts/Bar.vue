@@ -1,14 +1,23 @@
+<!--suppress ALL -->
 <template>
   <div :style="{ padding: '0 0 32px 32px' }">
-    <h4 :style="{ marginBottom: '20px' }">{{ title }}</h4>
     <v-chart
-      height="254"
+      height="280"
       :data="data"
       :forceFit="true"
-      :padding="['auto', 'auto', '40', '50']"
+      padding="auto"
+      :scale="scale"
+      :onClick="handleClick"
     >
-      <v-tooltip />
-      <v-axis />
+      <v-tooltip :shared="true" />
+      <v-interval
+        position="x*y"
+        :label="labelInterval"
+        :opcaity="1"
+      ></v-interval>
+      <v-axis dataKey="x" />
+      <v-axis dataKey="y" />
+      <v-legend dataKey="item" />
       <v-bar position="x*y" />
     </v-chart>
   </div>
@@ -33,14 +42,9 @@ export default {
       default: () => {
         return [
           {
-            dataKey: "x",
-            min: 2
-          },
-          {
             dataKey: "y",
-            title: "时间",
-            min: 1,
-            max: 22
+            tickInterval: 10,
+            alias: "数量"
           }
         ];
       }
@@ -59,7 +63,23 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      labelInterval: [
+        "value",
+        {
+          useHtml: true,
+          htmlTemplate: function htmlTemplate(text, item) {
+            return item.point.y;
+          }
+        }
+      ]
+    };
+  },
+  methods: {
+    handleClick(v) {
+      console.log(v);
+      this.$emit("handleClick", v.data._origin.key);
+    }
   }
 };
 </script>

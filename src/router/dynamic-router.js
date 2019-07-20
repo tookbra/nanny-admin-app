@@ -109,7 +109,7 @@ export const generator = (routerMap, parent) => {
         title: item.name,
         icon: item.icon || undefined,
         permission: (item.path && [item.path]) || null,
-        closeable: true
+        closeable: item.closeable
       },
       hidden: item.hidden,
       hiddenChildren: item.hiddenChildren

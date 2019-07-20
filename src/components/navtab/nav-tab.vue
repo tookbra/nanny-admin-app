@@ -117,7 +117,6 @@ export default {
     // render
     renderTabPane(label, keyPath) {
       const menu = this.renderTabPaneMenu(keyPath);
-
       return (
         <a-dropdown overlay={menu} trigger={["contextmenu"]}>
           <span style={{ userSelect: "none" }}>{label}</span>
@@ -190,15 +189,15 @@ export default {
 .nav-tab {
   margin-top: 2px;
   .ant-tabs-tab {
-    border: 0px !important;
+    border: 0 !important;
     background-color: #fff !important;
     color: #ccc;
     padding: 0 20px !important;
   }
   .ant-tabs-card-bar .ant-tabs-tab-active {
-    border: 0px !important;
+    border: 0 !important;
     border-bottom: 3px solid #1973d2 !important;
-    padding-bottom: 0px !important;
+    padding-bottom: 0 !important;
     .anticon-close {
       color: #1973d2 !important;
     }
@@ -211,6 +210,12 @@ export default {
     background-color: #1973d2;
     font-size: 12px;
     height: 28px;
+  }
+  .anticon-close {
+    &:hover {
+      border-radius: 20%;
+      background-color: #ccc;
+    }
   }
 }
 </style>

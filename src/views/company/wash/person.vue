@@ -302,8 +302,8 @@ export default {
     refresh() {
       this.$refs.table.refresh(true);
     },
-    updateShowSearch(showSearch) {
-      this.showSearch = showSearch;
+    updateShowSearch() {
+      this.showSearch = !this.showSearch;
     },
     batchRemove() {
       if (!this.selectedRowKeys.length) {
