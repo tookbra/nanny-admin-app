@@ -60,6 +60,9 @@ export default {
     },
     closeThat(e) {
       this.fullPaths.forEach(item => {
+        if (item === "/home") {
+          return;
+        }
         if (item !== e) {
           this.remove(item);
         }

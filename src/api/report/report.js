@@ -26,3 +26,12 @@ export function washReport(parameter) {
     params: parameter
   });
 }
+
+// 产品新增汇总
+export function rfidAddReport(parameter) {
+  return fetch({
+    url: "/system/reports/order/rfid/add",
+    method: "get",
+    params: parameter
+  });
+}

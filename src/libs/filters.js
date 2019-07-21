@@ -1,12 +1,20 @@
-import Vue from "vue";
+import moment from "moment";
+import "moment/locale/zh-cn";
+moment.locale("zh-cn");
+
 const statusMap = {
   1: "正常",
   2: "禁用"
 };
-Vue.filter("statusFilter", function(status) {
-  return statusMap[status];
-});
 
-Vue.filter("typeFilter", function(type, typeMap) {
+export function statusFilter(status) {
+  return statusMap[status];
+}
+
+export function typeFilter(type, typeMap) {
   return typeMap.get(type + "");
-});
+}
+
+export function dateFormat(date, pattern = "YYYY-MM-DD") {
+  return moment(date).format(pattern);
+}

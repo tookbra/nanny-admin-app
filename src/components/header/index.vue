@@ -9,11 +9,11 @@
       </div>
       <div class="header-bread"></div>
       <div class="header-features">
-        <a href="https://www.baidu.com" target="_blank">
-          <span class="action">
-            <a-icon type="question-circle-o"></a-icon>
-          </span>
-        </a>
+        <!--        <a href="https://www.baidu.com" target="_blank">-->
+        <!--          <span class="action">-->
+        <!--            <a-icon type="question-circle-o"></a-icon>-->
+        <!--          </span>-->
+        <!--        </a>-->
         <a-dropdown>
           <span class="action ant-dropdown-link user-dropdown-menu">
             <a-avatar class="avatar" size="small" :src="avatar()" />

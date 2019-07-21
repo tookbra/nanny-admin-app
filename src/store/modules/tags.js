@@ -8,7 +8,9 @@ export default {
   },
   mutations: {
     SET_TAGS(state, page) {
-      console.log(page);
+      if (page.name === undefined) {
+        return;
+      }
       if (state.fullPaths.indexOf(page.fullPath) < 0) {
         const pageDetail = {
           fullPath: page.fullPath,

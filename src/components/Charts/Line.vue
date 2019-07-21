@@ -2,29 +2,24 @@
 <template>
   <div :style="{ padding: '0 0 32px 32px' }">
     <v-chart
-      :height="height"
+      height="280"
       :data="data"
       :forceFit="true"
       padding="auto"
+      :scale="scale"
       :onClick="handleClick"
     >
-      <v-tooltip :showTitle="false" dataKey="item*percent" />
+      <v-tooltip />
       <v-axis />
-      <v-legend dataKey="item" />
-      <v-pie
-        position="percent"
-        color="item"
-        :v-style="pieStyle"
-        :label="labelConfig"
-      />
-      <v-coord type="theta" />
+      <v-line position="item*num" />
+      <v-point position="item*num" shape="circle" />
     </v-chart>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Pie",
+  name: "Line",
   props: {
     title: {
       type: String,
@@ -39,7 +34,13 @@ export default {
     scale: {
       type: Array,
       default: () => {
-        return [];
+        return [
+          {
+            dataKey: "num",
+            tickInterval: 10,
+            alias: "数量"
+          }
+        ];
       }
     },
     tooltip: {
@@ -57,16 +58,12 @@ export default {
   },
   data() {
     return {
-      height: 280,
-      pieStyle: {
-        stroke: "#fff",
-        lineWidth: 1
-      },
-      labelConfig: [
-        "percent",
+      labelInterval: [
+        "value",
         {
-          formatter: (val, item) => {
-            return item.point.item + ": " + item.point.num + "(" + val + ")";
+          useHtml: true,
+          htmlTemplate: function htmlTemplate(text, item) {
+            return item.point.y;
           }
         }
       ]
@@ -74,10 +71,8 @@ export default {
   },
   methods: {
     handleClick(v) {
-      this.$emit("handleClick", v.data.point.currentStatus);
+      this.$emit("handleClick", v.data._origin.key);
     }
   }
 };
 </script>
-
-<style scoped></style>

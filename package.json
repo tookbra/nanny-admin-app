@@ -1,11 +1,14 @@
 {
   "name": "nanny-admin-app",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --mode daliy",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "lint:nofix": "vue-cli-service lint --no-fix",
+    "test:unit": "vue-cli-service test:unit",
+    "postinstall": "opencollective-postinstall"
   },
   "dependencies": {
     "@antv/data-set": "^0.10.2",

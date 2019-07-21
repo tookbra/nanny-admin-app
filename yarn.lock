@@ -748,6 +748,11 @@
     error-stack-parser "^2.0.0"
     string-width "^2.0.0"
 
+"@types/anymatch@*":
+  version "1.3.1"
+  resolved "https://registry.npm.taobao.org/@types/anymatch/download/@types/anymatch-1.3.1.tgz?cache=0&sync_timestamp=1563089138491&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fanymatch%2Fdownload%2F%40types%2Fanymatch-1.3.1.tgz#336badc1beecb9dacc38bea2cf32adf627a8421a"
+  integrity sha1-M2utwb7sudrMOL6izzKt9ieoQho=
+
 "@types/d3-format@*":
   version "1.3.1"
   resolved "https://registry.npm.taobao.org/@types/d3-format/download/@types/d3-format-1.3.1.tgz#35bf88264bd6bcda39251165bb827f67879c4384"
@@ -765,6 +770,14 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
+"@types/loader-utils@1.1.3":
+  version "1.1.3"
+  resolved "https://registry.npm.taobao.org/@types/loader-utils/download/@types/loader-utils-1.1.3.tgz#82b9163f2ead596c68a8c03e450fbd6e089df401"
+  integrity sha1-grkWPy6tWWxoqMA+RQ+9bgid9AE=
+  dependencies:
+    "@types/node" "*"
+    "@types/webpack" "*"
+
 "@types/lodash@*":
   version "4.14.136"
   resolved "https://registry.npm.taobao.org/@types/lodash/download/@types/lodash-4.14.136.tgz#413e85089046b865d960c9ff1d400e04c31ab60f"
@@ -778,6 +791,11 @@
   version "12.0.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.0.0.tgz#d11813b9c0ff8aaca29f04cbc12817f4c7d656e5"
 
+"@types/node@8.9":
+  version "8.9.5"
+  resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-8.9.5.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-8.9.5.tgz#162b864bc70be077e6db212b322754917929e976"
+  integrity sha1-FiuGS8cL4Hfm2yErMidUkXkp6XY=
+
 "@types/node@^8.0.53":
   version "8.10.50"
   resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-8.10.50.tgz?cache=0&sync_timestamp=1563323059673&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-8.10.50.tgz#f3d68482b1f54b5f4fba8daaac385db12bb6a706"
@@ -790,6 +808,29 @@
 "@types/q@^1.5.1":
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.2.tgz#690a1475b84f2a884fd07cd797c00f5f31356ea8"
+
+"@types/tapable@*":
+  version "1.0.4"
+  resolved "https://registry.npm.taobao.org/@types/tapable/download/@types/tapable-1.0.4.tgz#b4ffc7dc97b498c969b360a41eee247f82616370"
+  integrity sha1-tP/H3Je0mMlps2CkHu4kf4JhY3A=
+
+"@types/uglify-js@*":
+  version "3.0.4"
+  resolved "https://registry.npm.taobao.org/@types/uglify-js/download/@types/uglify-js-3.0.4.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fuglify-js%2Fdownload%2F%40types%2Fuglify-js-3.0.4.tgz#96beae23df6f561862a830b4288a49e86baac082"
+  integrity sha1-lr6uI99vVhhiqDC0KIpJ6GuqwII=
+  dependencies:
+    source-map "^0.6.1"
+
+"@types/webpack@*":
+  version "4.32.0"
+  resolved "https://registry.npm.taobao.org/@types/webpack/download/@types/webpack-4.32.0.tgz#bd4a149964cd471538f2781f2be5f9815175463b"
+  integrity sha1-vUoUmWTNRxU48ngfK+X5gVF1Rjs=
+  dependencies:
+    "@types/anymatch" "*"
+    "@types/node" "*"
+    "@types/tapable" "*"
+    "@types/uglify-js" "*"
+    source-map "^0.6.0"
 
 "@vue/babel-helper-vue-jsx-merge-props@^1.0.0-beta.3":
   version "1.0.0-beta.3"
@@ -4718,6 +4759,15 @@ loader-runner@^2.3.0, loader-runner@^2.3.1:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/loader-runner/-/loader-runner-2.4.0.tgz#ed47066bfe534d7e84c4c7b9998c2a75607d9357"
 
+loader-utils@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npm.taobao.org/loader-utils/download/loader-utils-1.1.0.tgz#c98aef488bcceda2ffb5e2de646d6a754429f5cd"
+  integrity sha1-yYrvSIvM7aL/teLeZG1qdUQp9c0=
+  dependencies:
+    big.js "^3.1.3"
+    emojis-list "^2.0.0"
+    json5 "^0.5.0"
+
 loader-utils@^0.2.16:
   version "0.2.17"
   resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-0.2.17.tgz#f86e6374d43205a6e6c60e9196f17c0299bfb348"
@@ -7647,6 +7697,26 @@ vue-style-loader@^4.1.0:
   dependencies:
     hash-sum "^1.0.2"
     loader-utils "^1.0.2"
+
+vue-svg-component-builder@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.npm.taobao.org/vue-svg-component-builder/download/vue-svg-component-builder-2.0.3.tgz#c4e0a19073587ab882fd6f72bb7b3b63b4396801"
+  integrity sha1-xOChkHNYeriC/W9yu3s7Y7Q5aAE=
+
+vue-svg-component-runtime@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npm.taobao.org/vue-svg-component-runtime/download/vue-svg-component-runtime-1.0.1.tgz#c4c241cdf92fead742ef33133b997ff42d8b9ee6"
+  integrity sha1-xMJBzfkv6tdC7zMTO5l/9C2LnuY=
+
+vue-svg-icon-loader@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.npm.taobao.org/vue-svg-icon-loader/download/vue-svg-icon-loader-2.1.1.tgz#7b999ccb0647ce3b3903bfbf535fe247e11b032a"
+  integrity sha1-e5mcywZHzjs5A7+/U1/iR+EbAyo=
+  dependencies:
+    "@types/loader-utils" "1.1.3"
+    "@types/node" "8.9"
+    loader-utils "1.1.0"
+    vue-svg-component-builder "2.0.3"
 
 vue-template-compiler@^2.5.21:
   version "2.6.10"

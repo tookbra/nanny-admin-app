@@ -158,6 +158,7 @@ export default {
     },
     loadReport() {
       allocate(this.queryParam).then(res => {
+        this.barData = [];
         res.data.forEach(item => {
           this.barData.push({
             x: item.item,

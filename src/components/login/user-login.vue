@@ -68,14 +68,12 @@
     <a-form-item>
       <a-button
         block
-        ghost
         type="primary"
         html-type="submit"
-        class="login-form-button"
         :loading="state.loginBtn"
         :disabled="state.loginBtn"
       >
-        登陆
+        立即登陆
       </a-button>
     </a-form-item>
   </a-form>

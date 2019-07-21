@@ -50,7 +50,7 @@
           </a-col>
           <a-col :md="6" :sm="24">
             <a-form-item label="订单日期">
-              <a-range-picker @change="rangePickerChange" />
+              <a-range-picker v-model="picker" @change="rangePickerChange" />
             </a-form-item>
           </a-col>
           <a-col :md="3" :sm="24">
@@ -119,6 +119,7 @@ export default {
       showSearch: true,
       orgTree: [],
       products: [],
+      picker: [],
       // 表头
       columns: [
         {

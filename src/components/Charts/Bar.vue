@@ -77,7 +77,6 @@ export default {
   },
   methods: {
     handleClick(v) {
-      console.log(v);
       this.$emit("handleClick", v.data._origin.key);
     }
   }

@@ -38,7 +38,6 @@ fetch.interceptors.response.use(res => {
   if (res.config.showLoading) {
     hideLoading();
   }
-  console.log(res);
   const status = Number(res.status) || 200;
   const message = res.data.msg || errorCode[status] || errorCode["default"];
   if (status !== 200 || (res.data.success != null && !res.data.success)) {
@@ -54,7 +53,6 @@ fetch.interceptors.response.use(res => {
 }, err);
 
 const err = error => {
-  console.log(error);
   if (error.response) {
     const data = error.response.data;
     if (error.response.status === 403) {
@@ -64,7 +62,6 @@ const err = error => {
       });
     }
     if (error.response.status === 401) {
-      console.log(error);
       notification.error({
         message: "Unauthorized",
         description: "Authorization verification failed"

@@ -9,7 +9,11 @@ import "./permission";
 
 import basicContainer from "./components/layout/page-layout";
 
-import "./libs/filters";
+import * as filters from "./libs/filters";
+
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key]);
+});
 
 import moment from "moment";
 import "moment/locale/zh-cn";

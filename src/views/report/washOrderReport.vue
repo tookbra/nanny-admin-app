@@ -4,18 +4,6 @@
       <a-form layout="inline">
         <a-row :gutter="16">
           <a-col :md="5" :sm="24">
-            <a-form-item label="科室">
-              <a-tree-select
-                showSearch
-                allowClear
-                v-model="queryParam.departmentId"
-                :treeData="orgTree"
-                placeholder="请选择所属科室"
-                treeDefaultExpandAll
-              />
-            </a-form-item>
-          </a-col>
-          <a-col :md="5" :sm="24">
             <a-form-item label="产品类型">
               <a-select
                 allowClear
@@ -69,11 +57,11 @@
         </a-row>
       </a-form>
     </div>
-    <a-row :gutter="16">
-      <a-col :md="24" :sm="24">
-        <bar :data="barData" @handleClick="handlePieClick" />
+    <a-row :gutter="36">
+      <a-col :md="36" :sm="24">
+        <bar :data="barData" :scale="scale" @handleClick="handleBarClick" />
       </a-col>
-      <a-col :md="24" :sm="24">
+      <a-col :md="36" :sm="24">
         <s-table
           ref="table"
           size="default"
@@ -89,15 +77,12 @@
 </template>
 
 <script>
-import moment from "moment";
 import { Bar, STable } from "@/components";
-import { getDepartmentByTenant } from "@/api/system/department";
 import { getProductByType } from "@/api/basicInfo/product";
-import { pageRfid } from "@/api/system/rfid";
+import { pageOrder } from "@/api/system/order";
 import { washReport } from "@/api/report/report";
 import { mapGetters } from "vuex";
 import ACol from "ant-design-vue/es/grid/Col";
-const DataSet = require("@antv/data-set");
 export default {
   name: "washOrderReport",
   components: {
@@ -109,15 +94,27 @@ export default {
     return {
       queryParam: {},
       tenantId: "",
-      orgTree: [],
       products: [],
       barData: [],
       picker: [],
+      scale: [
+        {
+          dataKey: "y",
+          tickInterval: 10,
+          alias: "数量"
+        },
+        {
+          dataKey: "x",
+          type: "timeCat"
+        }
+      ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        return pageRfid(Object.assign(parameter, this.queryParam)).then(res => {
-          return res.data;
-        });
+        return pageOrder(Object.assign(parameter, this.queryParam)).then(
+          res => {
+            return res.data;
+          }
+        );
       },
       columns: [
         {
@@ -134,7 +131,7 @@ export default {
         },
         {
           title: "员工",
-          dataIndex: "washNum"
+          dataIndex: "userName"
         }
       ]
     };
@@ -144,21 +141,12 @@ export default {
   },
   beforeMount() {
     this.tenantId = this.$store.getters.tenantId;
-    this.loadTree();
-    let now = moment();
-    this.picker = [now, now];
-    this.queryParam.beginDate = now.format("YYYY-MM-DD");
-    this.queryParam.endDate = now.format("YYYY-MM-DD");
+    this.queryParam.orderType = 1;
   },
   mounted() {
     this.loadReport();
   },
   methods: {
-    loadTree() {
-      getDepartmentByTenant(this.tenantId).then(res => {
-        this.orgTree = res.data;
-      });
-    },
     handleProductType(value) {
       if (value) {
         getProductByType(value).then(res => {
@@ -171,20 +159,21 @@ export default {
       this.queryParam.endDate = dataStr[1];
     },
     loadReport() {
+      this.barData = [];
       washReport(this.queryParam).then(res => {
-        const dv = new DataSet.View().source(res.data);
-        dv.transform({
-          type: "percent",
-          field: "num",
-          dimension: "item",
-          as: "percent"
+        res.data.forEach(item => {
+          this.barData.push({
+            x: item.item,
+            y: item.num,
+            key: item.item
+          });
         });
-        this.barData = dv.rows;
       });
       this.$refs.table.refresh(true);
     },
-    handlePieClick(v) {
-      console.log(v);
+    handleBarClick(v) {
+      this.queryParam.beginDate = v;
+      this.queryParam.endDate = v;
       this.$refs.table.refresh(true);
     }
   }

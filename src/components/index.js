@@ -1,6 +1,7 @@
 // chart
 import Bar from "@/components/Charts/Bar";
 import Pie from "@/components/Charts/Pie";
+import Line from "@/components/Charts/Line";
 import ExceptionPage from "@/components/exception";
 import BasicLayout from "@/components/layout/basic-layout";
 import RouteView from "@/components/layout/RouteView";
@@ -16,6 +17,7 @@ import uploadPicInput from "@/components/upload/upload-pic-input.vue";
 export {
   Bar,
   Pie,
+  Line,
   ExceptionPage,
   BasicLayout,
   STable,
