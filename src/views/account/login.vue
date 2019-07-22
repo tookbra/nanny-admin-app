@@ -1,18 +1,17 @@
 <template>
   <div class="login-container">
-    <div class="login-wrapper">
-      <div class="login-right">
-        <div class="login-main">
-          <h4 class="login-title">登陆</h4>
-          <user-login></user-login>
-          <footer class="copyright">
-            <p>
-              杭州宝亿健@<a href="http://baoyijian.cn" target="_blank"
-                >baoyijian.cn</a
-              >
-            </p>
-          </footer>
-        </div>
+    <div></div>
+    <div class="login-right">
+      <div class="login-main">
+        <h4 class="login-title">登陆</h4>
+        <user-login></user-login>
+        <footer class="copyright">
+          <p>
+            杭州宝亿健@<a href="http://baoyijian.cn" target="_blank"
+              >baoyijian.cn</a
+            >
+          </p>
+        </footer>
       </div>
     </div>
   </div>
@@ -35,6 +34,7 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
+  justify-content: space-between;
   background: url("http://www.17sucai.com/preview/242158/2015-01-10/%E7%99%BB%E5%BD%95/images/cloud.jpg")
     0 bottom repeat-x #049ec4;
   animation: animate-cloud 20s linear infinite;
@@ -65,6 +65,7 @@ export default {
   }
 
   .login-right {
+    max-width: 500px;
     height: 100%;
     border-left: none;
     border-top-right-radius: 5px;

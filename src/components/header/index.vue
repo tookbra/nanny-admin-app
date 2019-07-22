@@ -1,9 +1,14 @@
 <template>
-  <div class="ant-header-fixedHeader ant-header-side-opened">
+  <div
+    class="ant-header-fixedHeader"
+    :class="[
+      sidebarOpened ? 'ant-header-side-opened' : 'ant-header-side-closed'
+    ]"
+  >
     <div class="header">
       <div
         class="header-collapse"
-        :class="[{ 'header-collapse-active': collapsed }]"
+        :class="[{ 'header-collapse-active': !sidebarOpened }]"
       >
         <IconFont type="iconnavicon" @click="setCollapse" class="trigger" />
       </div>
@@ -49,11 +54,13 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import IconFont from "components/icon";
+import { mixin } from "@/libs/mixin";
 export default {
   name: "navigation",
   components: {
     IconFont
   },
+  mixins: [mixin],
   methods: {
     ...mapActions(["Logout"]),
     ...mapGetters(["name", "avatar"]),
@@ -80,15 +87,27 @@ export default {
       });
     },
     setCollapse() {
+      this.$emit("toggle");
       this.$store.commit("SET_COLLAPSE");
     }
-  },
-  computed: {
-    ...mapGetters(["collapsed"])
   }
 };
 </script>
 <style lang="less">
+.layout-header {
+  .ant-header-fixedHeader {
+    top: 0;
+    right: 0;
+    z-index: 9;
+    position: fixed;
+    &.ant-header-side-opened {
+      width: calc(100% - 240px);
+    }
+    &.ant-header-side-closed {
+      width: calc(100% - 80px);
+    }
+  }
+}
 .header {
   padding: 0 20px;
   position: relative;

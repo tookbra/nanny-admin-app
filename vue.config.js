@@ -12,6 +12,10 @@ module.exports = {
     config.resolve.alias
       .set("@", resolve("src")) // key,value自行定义，比如.set('@@', resolve('src/components'))
       .set("components", resolve("src/components"));
+    // 忽略的打包文件
+    // config.externals({
+    //   "v-track": "v-track"
+    // });
     const svgRule = config.module.rule("svg");
     svgRule.uses.clear();
     svgRule

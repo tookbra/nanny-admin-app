@@ -32,10 +32,10 @@
       </div>
       <a-layout class="layout-right">
         <a-layout-header class="layout-header">
-          <navigation />
+          <navigation @toggle="toggle" />
         </a-layout-header>
         <a-layout-content class="layout-content">
-          <navtab class="nav-tab" v-if="!isMobile()" />
+          <navtab class="nav-tab" />
           <keep-alive>
             <router-view class="layout-main" v-if="$route.meta.keepAlive" />
           </keep-alive>
@@ -48,7 +48,7 @@
 
 <script>
 import { ACCESS_TOKEN } from "@/store/mutation-types";
-import { mapGetters, mapState } from "vuex";
+import { mapGetters, mapState, mapActions } from "vuex";
 import { mixin, mixinDevice } from "@/libs/mixin";
 import sidebar from "@/components/menu/side-menu";
 import navigation from "@/components/header";
@@ -64,11 +64,12 @@ export default {
   data() {
     return {
       menus: [],
-      refreshLock: false
+      refreshLock: false,
+      collapsed: false
     };
   },
   computed: {
-    ...mapGetters(["collapsed", "expiresIn"]),
+    ...mapGetters(["expiresIn"]),
     ...mapState({
       // 动态主路由
       mainMenu: state => state.permission.addRouters
@@ -85,6 +86,11 @@ export default {
     this.refreshToken();
   },
   methods: {
+    ...mapActions(["setSidebar"]),
+    toggle() {
+      this.collapsed = !this.collapsed;
+      this.setSidebar(!this.collapsed);
+    },
     drawerClose() {
       this.$store.commit("SET_COLLAPSE");
     },
