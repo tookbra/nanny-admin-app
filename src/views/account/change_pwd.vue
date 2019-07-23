@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { changePassword } from "@/api/system/account";
+import { changePassword } from "@/api/system/employee";
 export default {
   name: "change_pwd",
   data() {

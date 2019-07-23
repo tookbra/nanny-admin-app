@@ -1,5 +1,10 @@
+/**
+ * 增加新的图标时，请遵循以下数据结构
+ * Adding new icon please follow the data structure below
+ */
 export default [
   {
+    key: "directional",
     title: "方向性图标",
     icons: [
       "step-backward",
@@ -63,6 +68,7 @@ export default [
     ]
   },
   {
+    key: "suggested",
     title: "提示建议性图标",
     icons: [
       "question",
@@ -92,6 +98,7 @@ export default [
     ]
   },
   {
+    key: "editor",
     title: "编辑类图标",
     icons: [
       "edit",
@@ -128,6 +135,7 @@ export default [
     ]
   },
   {
+    key: "data",
     title: "数据类图标",
     icons: [
       "area-chart",
@@ -146,6 +154,7 @@ export default [
     ]
   },
   {
+    key: "brand_logo",
     title: "网站通用图标",
     icons: [
       "lock",
@@ -311,6 +320,7 @@ export default [
     ]
   },
   {
+    key: "application",
     title: "品牌和标识",
     icons: [
       "android",

@@ -2,7 +2,10 @@
   <div class="page-header-index-wide page-header-wrapper-grid-content-main">
     <a-row :gutter="24">
       <a-col :md="24" :lg="7">
-        <a-card :bordered="false">
+        <a-card
+          :bordered="false"
+          :style="{ maxHeight: '780px', overflow: 'auto' }"
+        >
           <div class="table-operator">
             <a-button
               v-action:department_add
@@ -172,6 +175,7 @@
       :columns="importFile.columns"
       @close="handleImportClose"
       @handleImport="handleImport"
+      @downloadFile="downloadFile"
     ></import-file>
   </div>
 </template>
@@ -238,9 +242,9 @@ export default {
 
     if (this.$store.getters.tenantCode !== "admin") {
       this.tenantId = this.$store.getters.tenantId;
-      this.importFile.data = { tenantId: this.tenantId };
       this.loadTree();
     }
+    this.importFile.data = { tenantId: this.tenantId };
   },
   methods: {
     // 右键点击下拉框改变事件
@@ -284,12 +288,20 @@ export default {
     tenantChange(value) {
       if (value) {
         this.tenantId = value;
-        this.importFile.data = { tenantId: this.tenantId };
         this.loadTree();
       } else {
         this.tenantId = 0;
         this.orgTree = [];
       }
+      this.importFile.data = { tenantId: this.tenantId };
+    },
+    downloadFile() {
+      const link = document.createElement("a");
+      link.href =
+        "https://img-tookbra.oss-cn-hangzhou.aliyuncs.com/%E9%83%A8%E9%97%A8%E6%A8%A1%E7%89%88.xlsx";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     },
     loadTree() {
       getDepartmentByTenant(this.tenantId).then(res => {

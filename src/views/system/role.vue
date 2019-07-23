@@ -5,7 +5,19 @@
         <a-row :gutter="25">
           <a-col :md="5" :sm="24" v-admin>
             <a-form-item label="所属租户">
-              <a-input v-model="queryParam.tenantName" placeholder="所属租户" />
+              <a-select
+                :allowClear="true"
+                placeholder="请选择租户"
+                style="width: 100%; margin-bottom: 0.4rem;"
+                @change="handleTenantChange"
+              >
+                <a-select-option
+                  v-for="(item, index) in treeTenant"
+                  :key="index"
+                  :value="item.value"
+                  >{{ item.name }}</a-select-option
+                >
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :md="5" :sm="24">
@@ -159,6 +171,7 @@
           />
         </a-form-item>
         <a-form-item
+          v-admin
           label="所属租户"
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 12 }"
@@ -281,6 +294,7 @@ export default {
         {
           title: "操作",
           dataIndex: "action",
+          fixed: "right",
           width: "320px",
           scopedSlots: { customRender: "action" }
         }
@@ -369,6 +383,9 @@ export default {
         this.permissionVisible = true;
         this.roleId = row.id;
       });
+    },
+    handleTenantChange(value) {
+      this.queryParam.tenantId = value;
     },
     onMenuCheck(checkedKeys, info) {
       this.checkedKeysResult = [...checkedKeys, ...info.halfCheckedKeys];

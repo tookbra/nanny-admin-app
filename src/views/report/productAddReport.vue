@@ -129,7 +129,7 @@ export default {
         },
         {
           title: "员工",
-          dataIndex: "userName"
+          dataIndex: "employeeName"
         }
       ]
     };

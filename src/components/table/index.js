@@ -78,6 +78,13 @@ export default {
     pageURI: {
       type: Boolean,
       default: false
+    },
+    scroll: {
+      type: Object,
+      required: false,
+      default: function() {
+        return { x: 1300 };
+      }
     }
   }),
   watch: {
@@ -358,7 +365,7 @@ export default {
         {...{
           props,
           scopedSlots: { ...this.$scopedSlots },
-          scroll: { x: 1300 }
+          scroll: { ...this.scroll }
         }}
         onChange={this.loadData}
       >

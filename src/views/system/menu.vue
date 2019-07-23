@@ -485,6 +485,7 @@ export default {
           title: "操作",
           dataIndex: "action",
           width: "230px",
+          fixed: "right",
           scopedSlots: { customRender: "action" }
         }
       ],
@@ -505,7 +506,7 @@ export default {
       optionAlertShow: false,
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        parameter.size = 100;
+        parameter.size = 200;
         return pageMenu(Object.assign(parameter, this.queryParam)).then(res => {
           this.treeMenu = [];
           this.assemblyTree(res.data.records);

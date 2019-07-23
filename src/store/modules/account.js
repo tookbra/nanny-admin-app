@@ -13,6 +13,7 @@ export default {
     token: getStore({ name: ACCESS_TOKEN }) || "",
     tenantId: "",
     tenantCode: "",
+    isAdmin: false,
     name: "",
     avatar: "",
     info: "",
@@ -28,7 +29,8 @@ export default {
     tenantId: state => state.tenantId,
     tenantCode: state => state.tenantCode,
     refreshToken: state => state.refreshToken,
-    expiresIn: state => state.expiresIn
+    expiresIn: state => state.expiresIn,
+    isAdmin: state => state.isAdmin
   },
   actions: {
     // 登录
@@ -127,6 +129,9 @@ export default {
       state.name = info.user.name;
       state.tenantId = info.user.tenantId;
       state.tenantCode = info.user.tenantCode;
+      if (info.user.tenantCode === "admin") {
+        state.isAdmin = true;
+      }
       state.avatar = info.user.avatar;
     },
     SET_ROLES: (state, roles) => {

@@ -92,6 +92,7 @@ export default {
       this.setSidebar(!this.collapsed);
     },
     drawerClose() {
+      this.collapsed = false;
       this.$store.commit("SET_COLLAPSE");
     },
     refreshToken() {

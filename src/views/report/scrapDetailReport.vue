@@ -115,6 +115,7 @@ export default {
       columns: [
         {
           title: "RFID编码",
+          fixed: "left",
           dataIndex: "rfid"
         },
         {

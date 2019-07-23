@@ -12,6 +12,7 @@
       overflow: 'auto',
       paddingBottom: '108px'
     }"
+    @close="close"
   >
     <a-upload
       name="file"
@@ -77,6 +78,9 @@ export default {
     actionUrl: {
       default: ""
     },
+    downloadUrl: {
+      default: ""
+    },
     importData: {
       default: {}
     },
@@ -95,12 +99,16 @@ export default {
     };
   },
   methods: {
+    close() {
+      this.data = [];
+      this.$emit("close");
+    },
     onClose() {
       this.data = [];
       this.$emit("close");
     },
     downloadFile() {
-      console.log(123);
+      this.$emit("downloadFile");
     },
     beforeUpload(file) {
       const isXls =

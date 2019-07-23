@@ -123,10 +123,12 @@ export default {
       columns: [
         {
           title: "订单编号",
+          fixed: "left",
           dataIndex: "orderNo"
         },
         {
           title: "RFID编码",
+          fixed: "left",
           dataIndex: "rfid"
         },
         {

@@ -18,15 +18,6 @@ export function getAccount(id) {
   });
 }
 
-// 获取部门员工
-export function getAccountByDepartmentId(id) {
-  return fetch({
-    showLoading: true,
-    url: "/system/accounts/department/" + id,
-    method: "get"
-  });
-}
-
 // 批量删除员工
 export function batchRemoveAccount(parameter) {
   return fetch({
@@ -69,15 +60,6 @@ export function disable(parameter) {
   return fetch({
     url: "/system/accounts/disable/" + parameter,
     method: "put"
-  });
-}
-
-// 获取所有员工
-export function getAllAccount(parameter) {
-  return fetch({
-    showLoading: true,
-    url: "/system/accounts/tenant/" + parameter + "/all",
-    method: "get"
   });
 }
 

@@ -203,6 +203,7 @@
       :columns="importFile.columns"
       @close="handleImportClose"
       @handleImport="handleImport"
+      @downloadFile="downloadFile"
     ></import-file>
   </basicContainer>
 </template>
@@ -219,7 +220,7 @@ import {
   importConfirm
 } from "@/api/system/rfid";
 import { getDepartmentByTenant } from "@/api/system/department";
-import { getAccountByDepartmentId } from "@/api/system/account";
+import { getEmployeeByDepartmentId } from "@/api/system/employee";
 import { getProductAll } from "@/api/basicInfo/product";
 import AFormItem from "ant-design-vue/es/form/FormItem";
 export default {
@@ -250,6 +251,10 @@ export default {
         data: {},
         columns: [
           {
+            title: "RFID编码",
+            dataIndex: "rfid"
+          },
+          {
             title: "产品名称",
             dataIndex: "productName"
           },
@@ -259,7 +264,7 @@ export default {
           },
           {
             title: "员工姓名",
-            dataIndex: "userName"
+            dataIndex: "employeeName"
           }
         ]
       },
@@ -267,7 +272,7 @@ export default {
       columns: [
         {
           title: "RFID编码",
-          dataIndex: "code"
+          dataIndex: "rfid"
         },
         {
           title: "产品名称",
@@ -279,7 +284,7 @@ export default {
         },
         {
           title: "人员",
-          dataIndex: "userName"
+          dataIndex: "employeeName"
         },
         {
           title: "洗涤次数",
@@ -326,6 +331,7 @@ export default {
           title: "操作",
           dataIndex: "action",
           width: "230px",
+          fixed: "right",
           scopedSlots: { customRender: "action" }
         }
       ],
@@ -385,6 +391,14 @@ export default {
     updateShowSearch() {
       this.showSearch = !this.showSearch;
     },
+    downloadFile() {
+      const link = document.createElement("a");
+      link.href =
+        "https://img-tookbra.oss-cn-hangzhou.aliyuncs.com/RFID%E6%A8%A1%E6%9D%BF.xlsx";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
     async loadTree() {
       await getDepartmentByTenant(this.tenantId).then(res => {
         this.orgTree = res.data;
@@ -401,7 +415,7 @@ export default {
       }
     },
     loadDepartmentUser(departmentId) {
-      getAccountByDepartmentId(departmentId).then(res => {
+      getEmployeeByDepartmentId(departmentId).then(res => {
         this.users = res.data;
       });
     },
@@ -537,7 +551,7 @@ export default {
       });
     },
     setFormValues({ ...rfid }) {
-      let fields = ["id", "productId", "departmentId", "rfid", "userId"];
+      let fields = ["id", "productId", "departmentId", "rfid", "employeeId"];
 
       Object.keys(rfid).forEach(key => {
         if (fields.indexOf(key) !== -1) {
