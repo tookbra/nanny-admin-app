@@ -14,7 +14,10 @@ const notNotfiy = [
   "/system/dicts/type/rfid_current_status"
 ];
 export const fetch = axios.create({
-  baseURL: "/",
+  baseURL:
+    process.env.VUE_APP_PROXY === "true"
+      ? process.env.VUE_APP_PROXY_URL
+      : process.env.VUE_APP_URL,
   timeout: 10000,
   withCredentials: true,
   validateStatus: function(status) {
