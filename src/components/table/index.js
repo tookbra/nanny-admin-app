@@ -83,7 +83,7 @@ export default {
       type: Object,
       required: false,
       default: function() {
-        return { x: 1300 };
+        return { x: 780 };
       }
     }
   }),

@@ -100,7 +100,6 @@ export default {
       scale: [
         {
           dataKey: "y",
-          tickInterval: 10,
           alias: "数量"
         },
         {

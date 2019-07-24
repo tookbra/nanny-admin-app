@@ -12,6 +12,7 @@
                 :treeData="orgTree"
                 placeholder="请选择所属科室"
                 treeDefaultExpandAll
+                :treeNodeFilterProp="'title'"
               />
             </a-form-item>
           </a-col>
@@ -66,7 +67,12 @@
     </div>
     <a-row :gutter="36">
       <a-col :md="36" :sm="24">
-        <bar :data="barData" @handleClick="handleBarClick" />
+        <bar
+          :data="barData"
+          :height="580"
+          :xLabel="xLabel"
+          @handleClick="handleBarClick"
+        />
       </a-col>
     </a-row>
     <a-row>
@@ -107,6 +113,12 @@ export default {
       orgTree: [],
       products: [],
       barData: [],
+      xLabel: {
+        textStyle: {
+          opacity: 10,
+          rotate: 50
+        }
+      },
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         return pageRfid(Object.assign(parameter, this.queryParam)).then(res => {
@@ -117,6 +129,7 @@ export default {
         {
           title: "RFID编码",
           fixed: "left",
+          width: "280px",
           dataIndex: "rfid"
         },
         {

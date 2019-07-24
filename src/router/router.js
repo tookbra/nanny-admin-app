@@ -8,8 +8,7 @@ export const constantRouterMap = [
   {
     path: "/login",
     name: "login",
-    component: () =>
-      import(/* webpackChunkName: "fail" */ "@/views/account/login.vue")
+    component: resolve => require(["@/views/account/login.vue"], resolve)
   },
   // {
   //   path: "/",
@@ -38,7 +37,6 @@ export const constantRouterMap = [
   // },
   {
     path: "/404",
-    component: () =>
-      import(/* webpackChunkName: "fail" */ "@/views/exception/404.vue")
+    component: resolve => require(["@/views/exception/404.vue"], resolve)
   }
 ];

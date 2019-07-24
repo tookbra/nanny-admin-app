@@ -1,4 +1,8 @@
 const path = require("path");
+const CompressionWebpackPlugin = require("compression-webpack-plugin");
+const productionGzipExtensions = ["js", "css"];
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
+
 const resolve = dir => {
   return path.join(__dirname, dir);
 };
@@ -8,14 +12,29 @@ const BASE_URL = process.env.NODE_ENV === "production" ? "/" : "/";
 module.exports = {
   publicPath: BASE_URL,
   lintOnSave: true,
+  configureWebpack: config => {
+    if (IS_PRODUCTION) {
+      config.plugins.push(
+        new CompressionWebpackPlugin({
+          algorithm: "gzip",
+          test: new RegExp("\\.(" + productionGzipExtensions.join("|") + ")$"),
+          threshold: 10240,
+          minRatio: 0.8
+        })
+      );
+      config.externals = {
+        "vue": "Vue",
+        "vuex": "Vuex",
+        "vue-router": "VueRouter",
+        "moment": "moment",
+        "axios": "axios"
+      };
+    }
+  },
   chainWebpack: config => {
     config.resolve.alias
       .set("@", resolve("src")) // key,value自行定义，比如.set('@@', resolve('src/components'))
       .set("components", resolve("src/components"));
-    // 忽略的打包文件
-    // config.externals({
-    //   "v-track": "v-track"
-    // });
     const svgRule = config.module.rule("svg");
     svgRule.uses.clear();
     svgRule

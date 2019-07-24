@@ -2,7 +2,7 @@
 <template>
   <div :style="{ padding: '0 0 32px 32px' }">
     <v-chart
-      height="280"
+      :height="height"
       :data="data"
       :forceFit="true"
       padding="auto"
@@ -15,7 +15,7 @@
         :label="labelInterval"
         :opcaity="1"
       ></v-interval>
-      <v-axis dataKey="x" />
+      <v-axis dataKey="x" :label="xLabel" />
       <v-axis dataKey="y" />
       <v-legend dataKey="item" />
       <v-bar position="x*y" />
@@ -31,10 +31,20 @@ export default {
       type: String,
       default: ""
     },
+    height: {
+      type: Number,
+      default: 380
+    },
     data: {
       type: Array,
       default: () => {
         return [];
+      }
+    },
+    xLabel: {
+      type: Object,
+      default: () => {
+        return {};
       }
     },
     scale: {

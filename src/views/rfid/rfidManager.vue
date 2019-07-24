@@ -12,6 +12,7 @@
                 :treeData="orgTree"
                 placeholder="所属科室"
                 treeDefaultExpandAll
+                :treeNodeFilterProp="'title'"
               />
             </a-form-item>
           </a-col>
@@ -171,6 +172,7 @@
             placeholder="所属科室"
             treeDefaultExpandAll
             @change="handleOrgChange"
+            :treeNodeFilterProp="'title'"
             v-decorator="[
               'departmentId',
               {

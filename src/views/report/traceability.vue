@@ -11,6 +11,7 @@
                 v-model="queryParam.departmentId"
                 :treeData="orgTree"
                 placeholder="请选择所属科室"
+                :treeNodeFilterProp="'title'"
                 treeDefaultExpandAll
               />
             </a-form-item>
@@ -132,6 +133,7 @@ export default {
         {
           title: "RFID编码",
           fixed: "left",
+          width: "280px",
           dataIndex: "rfid"
         },
         {

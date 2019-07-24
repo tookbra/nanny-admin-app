@@ -11,6 +11,7 @@
                 v-model="queryParam.departmentId"
                 :treeData="orgTree"
                 placeholder="请选择所属科室"
+                :treeNodeFilterProp="'title'"
                 treeDefaultExpandAll
               />
             </a-form-item>
