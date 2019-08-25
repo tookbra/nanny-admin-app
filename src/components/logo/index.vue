@@ -1,16 +1,17 @@
 <template>
   <div class="layout-logo">
-    <LogoSvg alt="logo" />
-    <h1>91wash</h1>
+    <!--    <img src="img/logo.jpg" width="30" />-->
+    <!--    <LogoSvg alt="logo" />-->
+    <h1>宝忆健&nbsp;&nbsp;V2.0</h1>
   </div>
 </template>
 
 <script>
-import LogoSvg from "@/assets/logo.svg?inline";
+// import LogoSvg from "@/assets/logo.svg?inline";
 export default {
   name: "index",
   components: {
-    LogoSvg
+    // LogoSvg
   }
 };
 </script>

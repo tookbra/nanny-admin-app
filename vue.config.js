@@ -22,13 +22,6 @@ module.exports = {
           minRatio: 0.8
         })
       );
-      config.externals = {
-        "vue": "Vue",
-        "vuex": "Vuex",
-        "vue-router": "VueRouter",
-        "moment": "moment",
-        "axios": "axios"
-      };
     }
   },
   chainWebpack: config => {

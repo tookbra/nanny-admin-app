@@ -13,6 +13,8 @@ import Tree from "@/components/Tree/Tree";
 import exportCsv from "@/components/table/export-csv";
 import importFile from "@/components/importFile/index";
 import uploadPicInput from "@/components/upload/upload-pic-input.vue";
+import DataBox from "@/components/data/box";
+import DataTabs from "@/components/data/tabs";
 
 export {
   Bar,
@@ -28,5 +30,7 @@ export {
   exportCsv,
   importFile,
   uploadPicInput,
-  RouteView
+  RouteView,
+  DataBox,
+  DataTabs
 };

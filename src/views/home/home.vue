@@ -1,79 +1,46 @@
 <template>
   <div class="page-header-index-wide">
-    <a-card :bordered="false" :body-style="{ padding: '0' }">
-      <div class="salesCard">
-        <a-tabs
-          default-active-key="1"
-          size="large"
-          :tab-bar-style="{ marginBottom: '24px', paddingLeft: '16px' }"
-        >
-          <a-tab-pane loading="true" tab="洗涤订单7日汇总" key="1">
-            <a-row>
-              <a-col :xl="36" :lg="36" :md="36" :sm="24" :xs="24">
-                <bar
-                  title="洗涤订单7日汇总"
-                  :data="washOrderData"
-                  :scale="washOrderScale"
-                />
-              </a-col>
-            </a-row>
-          </a-tab-pane>
-        </a-tabs>
-      </div>
-    </a-card>
-    <a-row :gutter="12">
-      <a-col :xl="12" :lg="24" :md="24" :sm="24" :xs="24">
-        <a-card
-          :bordered="false"
-          title="今日送洗订单"
-          :style="{ marginTop: '24px', height: '500px' }"
-        >
-          <div class="ant-table-wrapper">
-            <s-table
-              ref="washTable"
-              rowKey="index"
-              size="small"
-              :columns="washColumns"
-              :data="loadWashData"
-              :alert="false"
-              :pagination="{ pageSize: 5 }"
-            />
-          </div>
-        </a-card>
-      </a-col>
-      <a-col :xl="12" :lg="24" :md="24" :sm="24" :xs="24">
-        <a-card
-          :bordered="false"
-          title="今日收货订单"
-          :style="{ marginTop: '24px', height: '500px' }"
-        >
-          <div class="ant-table-wrapper">
-            <s-table
-              ref="acceptTable"
-              rowKey="index"
-              size="small"
-              :columns="acceptColumns"
-              :data="loadAcceptData"
-              :alert="false"
-              :pagination="{ pageSize: 5 }"
-            />
-          </div>
-        </a-card>
-      </a-col>
+    <a-row>
+      <a-card :bordered="false" :body-style="{ padding: '0' }">
+        <data-tabs :option="option"></data-tabs>
+      </a-card>
+    </a-row>
+    <a-row style="margin-top: 10px">
+      <a-card :bordered="false" :body-style="{ padding: '0' }">
+        <div class="salesCard">
+          <a-tabs
+            default-active-key="1"
+            size="large"
+            :tab-bar-style="{ marginBottom: '24px', paddingLeft: '16px' }"
+          >
+            <a-tab-pane loading="true" tab="洗涤订单7日汇总" key="1">
+              <a-row>
+                <a-col :xl="36" :lg="36" :md="36" :sm="24" :xs="24">
+                  <bar
+                    title="洗涤订单7日汇总"
+                    :data="washOrderData"
+                    :scale="washOrderScale"
+                  />
+                </a-col>
+              </a-row>
+            </a-tab-pane>
+          </a-tabs>
+        </div>
+      </a-card>
     </a-row>
   </div>
 </template>
 
 <script>
-import { STable, Bar } from "@/components";
+import { Bar, DataTabs } from "@/components";
 import { pageOrder } from "@/api/system/order";
 import { washReport } from "@/api/report/report";
 import moment from "moment";
 export default {
   name: "home",
   components: {
-    STable,
-    Bar
+    Bar,
+    DataTabs
   },
   data() {
     return {
@@ -169,6 +136,47 @@ export default {
   },
   mounted() {
     this.loadWashOrderReport();
+  },
+  computed: {
+    option() {
+      return {
+        span: 6,
+        data: [
+          {
+            title: "送洗单",
+            subtitle: "实时",
+            count: 0,
+            allcount: 0,
+            text: "当日送洗单",
+            color: "rgb(27, 201, 142)"
+          },
+          {
+            title: "收货单",
+            subtitle: "实时",
+            count: 0,
+            allcount: 0,
+            text: "当日收货单",
+            color: "rgb(230, 71, 88)"
+          },
+          {
+            title: "反洗单",
+            subtitle: "实时",
+            count: 0,
+            allcount: 0,
+            text: "当日反洗单",
+            color: "rgb(56, 161, 242)"
+          },
+          {
+            title: "维修单",
+            subtitle: "实时",
+            count: 0,
+            allcount: 0,
+            text: "当日维修单",
+            color: "rgb(56, 161, 242)"
+          }
+        ]
+      };
+    }
   },
   methods: {
     loadWashOrderReport() {

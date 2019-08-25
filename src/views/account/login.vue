@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <div></div>
+    <div class="login-left"></div>
     <div class="login-right">
       <div class="login-main">
         <h4 class="login-title">登陆</h4>
@@ -35,9 +35,9 @@ export default {
   width: 100%;
   height: 100%;
   justify-content: space-between;
-  background: url("http://www.17sucai.com/preview/242158/2015-01-10/%E7%99%BB%E5%BD%95/images/cloud.jpg")
-    0 bottom repeat-x #049ec4;
-  animation: animate-cloud 20s linear infinite;
+  /*background: url("http://www.17sucai.com/preview/242158/2015-01-10/%E7%99%BB%E5%BD%95/images/cloud.jpg")*/
+  /*  0 bottom repeat-x #049ec4;*/
+  /*animation: animate-cloud 20s linear infinite;*/
 
   .login-wrapper {
     position: absolute;
@@ -48,19 +48,12 @@ export default {
   }
 
   .login-left {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    background-color: #409eff;
+    background: url("http://img-tookbra.oss-cn-hangzhou.aliyuncs.com/20190825221215.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
     color: #fff;
-    float: left;
-    width: 50%;
+    height: 100%;
+    width: 100%;
     position: relative;
   }
 
