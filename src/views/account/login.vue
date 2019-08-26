@@ -1,6 +1,27 @@
 <template>
   <div class="login-container">
-    <div class="login-left"></div>
+    <div class="login-left">
+      <a-carousel class="carousel" autoplay>
+        <div :style="{ height: height + 'px' }">
+          <img
+            src="https://img-tookbra.oss-cn-hangzhou.aliyuncs.com/1123.jpg"
+            alt
+          />
+        </div>
+        <div :style="{ height: height + 'px' }">
+          <img
+            src="https://img-tookbra.oss-cn-hangzhou.aliyuncs.com/20190825221215.jpg"
+            alt
+          />
+        </div>
+        <div :style="{ height: height + 'px' }">
+          <img
+            src="https://img-tookbra.oss-cn-hangzhou.aliyuncs.com/timg%20%281%29.jpg"
+            alt
+          />
+        </div>
+      </a-carousel>
+    </div>
     <div class="login-right">
       <div class="login-main">
         <h4 class="login-title">登陆</h4>
@@ -21,8 +42,16 @@
 import UserLogin from "components/login/user-login";
 export default {
   name: "login",
+  data() {
+    return {
+      height: "500px"
+    };
+  },
   components: {
     UserLogin
+  },
+  beforeMount: function() {
+    this.height = `${document.documentElement.clientHeight}`;
   }
 };
 </script>
@@ -30,14 +59,8 @@ export default {
 <style lang="less" scoped>
 .login-container {
   display: flex;
-  align-items: center;
-  position: relative;
-  width: 100%;
-  height: 100%;
   justify-content: space-between;
-  /*background: url("http://www.17sucai.com/preview/242158/2015-01-10/%E7%99%BB%E5%BD%95/images/cloud.jpg")*/
-  /*  0 bottom repeat-x #049ec4;*/
-  /*animation: animate-cloud 20s linear infinite;*/
+  height: 100%;
 
   .login-wrapper {
     position: absolute;
@@ -48,24 +71,32 @@ export default {
   }
 
   .login-left {
-    background: url("http://img-tookbra.oss-cn-hangzhou.aliyuncs.com/20190825221215.jpg");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    color: #fff;
-    height: 100%;
-    width: 100%;
-    position: relative;
+    flex: 1;
+    .carousel {
+      height: 100%;
+      img {
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        width: 100%;
+        height: 100%;
+      }
+      .ant-carousel {
+        .slick-slider {
+          height: 100%;
+        }
+      }
+    }
   }
 
   .login-right {
-    max-width: 500px;
+    min-width: 500px;
     height: 100%;
     border-left: none;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     color: #fff;
     background-color: #fff;
-    width: 50%;
+    /*width: 50%;*/
     float: left;
     position: relative;
     -webkit-box-align: center;
@@ -83,7 +114,7 @@ export default {
 
   .login-right,
   .login-left {
-    min-height: 500px;
+    min-width: 500px;
   }
 
   .login-title {
@@ -110,9 +141,9 @@ export default {
   .slick-slide {
     text-align: center;
     overflow: hidden;
-    div {
-      min-height: 500px;
-    }
+  }
+  .slick-slider {
+    height: 100%;
   }
 }
 </style>
