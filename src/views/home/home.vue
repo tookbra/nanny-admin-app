@@ -145,7 +145,7 @@ export default {
           {
             title: "送洗单",
             subtitle: "实时",
-            count: 0,
+            count: 1000,
             allcount: 0,
             text: "当日送洗单",
             color: "rgb(27, 201, 142)"
