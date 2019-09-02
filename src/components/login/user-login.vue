@@ -103,7 +103,6 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           const loginParams = { ...values };
-          loginParams.username += "|" + loginParams.tenantCode;
           loginParams.password = md5(loginParams.password);
           Login(loginParams)
             .then(() => this.loginSuccess())

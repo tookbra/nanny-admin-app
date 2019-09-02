@@ -5,7 +5,8 @@ import { getStore } from "@/libs/store";
 import {
   ACCESS_TOKEN,
   REFRESH_ACCESS_TOKEN,
-  EXPIRES_IN
+  EXPIRES_IN,
+  TENANT_CODE
 } from "@/store/mutation-types";
 import { clearStore } from "@/libs/store";
 export default {
@@ -35,6 +36,7 @@ export default {
   actions: {
     // 登录
     Login({ commit }, userInfo) {
+      commit("SET_TENANT_CODE", userInfo.tenantCode);
       return new Promise((resolve, reject) => {
         login(userInfo)
           .then(response => {
@@ -109,6 +111,10 @@ export default {
     SET_TOKEN(state, token) {
       state.token = token;
       Vue.ls.set(ACCESS_TOKEN, token);
+    },
+    SET_TENANT_CODE(state, tenantCode) {
+      state.tenantCode = tenantCode;
+      Vue.ls.set(TENANT_CODE, tenantCode);
     },
     SET_REFRESH_TOKEN(state, token) {
       state.refreshToken = token;

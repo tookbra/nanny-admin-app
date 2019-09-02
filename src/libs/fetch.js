@@ -1,6 +1,6 @@
 import axios from "axios";
 import Vue from "vue";
-import { ACCESS_TOKEN } from "@/store/mutation-types";
+import { ACCESS_TOKEN, TENANT_CODE } from "@/store/mutation-types";
 import errorCode from "@/const/errorCode";
 import notification from "ant-design-vue/es/notification";
 import { showLoading, hideLoading } from "./util";
@@ -33,6 +33,10 @@ fetch.interceptors.request.use(config => {
   }
   if (config.showLoading) {
     showLoading();
+  }
+  const tenantCode = Vue.ls.get(TENANT_CODE);
+  if (tenantCode) {
+    config.headers.tenant_code = tenantCode;
   }
   return config;
 }, err);
