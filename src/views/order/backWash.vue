@@ -4,52 +4,6 @@
       <a-form layout="inline">
         <a-row :gutter="16">
           <a-col :md="6" :sm="24">
-            <a-form-item label="科室">
-              <a-tree-select
-                showSearch
-                allowClear
-                v-model="queryParam.departmentId"
-                :treeData="orgTree"
-                placeholder="请选择所属科室"
-                :treeNodeFilterProp="'title'"
-                treeDefaultExpandAll
-              />
-            </a-form-item>
-          </a-col>
-          <a-col :md="6" :sm="24">
-            <a-form-item label="产品类型">
-              <a-select
-                allowClear
-                v-model="queryParam.productTypeId"
-                placeholder="请选择产品类型"
-                @change="handleProductType"
-              >
-                <a-select-option
-                  v-for="(item, index) in productType"
-                  :key="index"
-                  :value="item.data"
-                  >{{ item.name }}</a-select-option
-                >
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="6" :sm="24">
-            <a-form-item label="产品名称">
-              <a-select
-                v-model="queryParam.productId"
-                allowClear
-                placeholder="请选择产品"
-              >
-                <a-select-option
-                  v-for="(item, index) in products"
-                  :key="index"
-                  :value="item.id"
-                  >{{ item.name }}</a-select-option
-                >
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :md="6" :sm="24">
             <a-form-item label="订单日期">
               <a-range-picker v-model="picker" @change="rangePickerChange" />
             </a-form-item>
@@ -129,21 +83,12 @@ export default {
           dataIndex: "orderNo"
         },
         {
-          title: "RFID编码",
-          fixed: "left",
-          dataIndex: "rfid"
+          title: "洗涤公司",
+          dataIndex: "washCompanyName"
         },
         {
-          title: "产品名称",
-          dataIndex: "productName"
-        },
-        {
-          title: "部门名称",
-          dataIndex: "departmentName"
-        },
-        {
-          title: "用户名称",
-          dataIndex: "userName"
+          title: "订单状态",
+          dataIndex: "orderStatus"
         },
         {
           title: "创建时间",

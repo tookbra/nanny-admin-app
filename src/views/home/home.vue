@@ -144,7 +144,7 @@ export default {
   computed: {
     option() {
       return {
-        span: 6,
+        span: 8,
         data: [
           {
             title: "送洗单",
@@ -152,7 +152,7 @@ export default {
             count: this.washNum,
             allcount: 0,
             text: "当日送洗单",
-            color: "rgb(27, 201, 142)"
+            color: "rgb(230, 71, 88)"
           },
           // {
           //   title: "收货单",
@@ -168,7 +168,7 @@ export default {
             count: this.backWashNum,
             allcount: 0,
             text: "当日反洗单",
-            color: "rgb(56, 161, 242)"
+            color: "rgb(27, 201, 142)"
           },
           {
             title: "维修单",
