@@ -34,7 +34,7 @@
 <script>
 import { Bar, DataTabs } from "@/components";
 import { pageOrder } from "@/api/system/order";
-import { washReport } from "@/api/report/report";
+import { washReport, orderNumReport } from "@/api/report/report";
 import moment from "moment";
 export default {
   name: "home",
@@ -131,11 +131,15 @@ export default {
         ).then(res => {
           return res.data;
         });
-      }
+      },
+      washNum: 0,
+      maintainNum: 0,
+      backWashNum: 0
     };
   },
   mounted() {
     this.loadWashOrderReport();
+    this.loadOrderNumReport();
   },
   computed: {
     option() {
@@ -145,23 +149,23 @@ export default {
           {
             title: "送洗单",
             subtitle: "实时",
-            count: 1000,
+            count: this.washNum,
             allcount: 0,
             text: "当日送洗单",
             color: "rgb(27, 201, 142)"
           },
-          {
-            title: "收货单",
-            subtitle: "实时",
-            count: 0,
-            allcount: 0,
-            text: "当日收货单",
-            color: "rgb(230, 71, 88)"
-          },
+          // {
+          //   title: "收货单",
+          //   subtitle: "实时",
+          //   count: 0,
+          //   allcount: 0,
+          //   text: "当日收货单",
+          //   color: "rgb(230, 71, 88)"
+          // },
           {
             title: "反洗单",
             subtitle: "实时",
-            count: 0,
+            count: this.backWashNum,
             allcount: 0,
             text: "当日反洗单",
             color: "rgb(56, 161, 242)"
@@ -169,7 +173,7 @@ export default {
           {
             title: "维修单",
             subtitle: "实时",
-            count: 0,
+            count: this.maintainNum,
             allcount: 0,
             text: "当日维修单",
             color: "rgb(56, 161, 242)"
@@ -189,6 +193,13 @@ export default {
             key: item.item
           });
         });
+      });
+    },
+    loadOrderNumReport() {
+      orderNumReport({ date: moment().format("YYYY-MM-DD") }).then(res => {
+        this.washNum = res.data.washNum;
+        this.maintainNum = res.data.washNum;
+        this.backWashNum = res.data.washNum;
       });
     }
   }

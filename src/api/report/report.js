@@ -35,3 +35,12 @@ export function rfidAddReport(parameter) {
     params: parameter
   });
 }
+
+// 当日订单数
+export function orderNumReport(parameter) {
+  return fetch({
+    url: "/system/reports/order/num",
+    method: "get",
+    params: parameter
+  });
+}
