@@ -7,8 +7,22 @@ const statusMap = {
   2: "禁用"
 };
 
+const orderStatusMap = {
+  0: "初始",
+  1: "完成"
+};
+
 export function statusFilter(status) {
   return statusMap[status];
+}
+
+/**
+ * 订单状态
+ * @param status
+ * @returns {*}
+ */
+export function orderStatusFilter(status) {
+  return orderStatusMap[status];
 }
 
 export function typeFilter(type, typeMap) {

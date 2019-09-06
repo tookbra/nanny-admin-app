@@ -4,8 +4,32 @@
       <a-form layout="inline">
         <a-row :gutter="16">
           <a-col :md="6" :sm="24">
+            <a-form-item label="产品名称">
+              <a-input v-model="queryParam.orderNo" placeholder="订单号" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="6" :sm="24">
+            <a-form-item label="洗涤公司">
+              <a-select
+                allowClear
+                v-model="queryParam.washCompanyId"
+                placeholder="请选择洗涤公司"
+              >
+                <a-select-option
+                  v-for="(item, index) in washCompanies"
+                  :key="index"
+                  :value="item.id"
+                  >{{ item.name }}</a-select-option
+                >
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="6" :sm="24">
             <a-form-item label="订单日期">
-              <a-range-picker v-model="picker" @change="rangePickerChange" />
+              <a-range-picker
+                v-model="queryParam.picker"
+                @change="rangePickerChange"
+              />
             </a-form-item>
           </a-col>
           <a-col :md="3" :sm="24">
@@ -19,7 +43,7 @@
               <a-button
                 icon="delete"
                 style="margin-left: 8px"
-                @click="() => (queryParam = {})"
+                @click="resetForm"
                 >重置</a-button
               >
             </span>
@@ -36,7 +60,7 @@
     <s-table
       ref="table"
       size="default"
-      rowKey="id"
+      rowKey="orderNo"
       :columns="columns"
       :data="loadData"
       :alert="false"
@@ -46,16 +70,17 @@
       }"
       :showSizeChanger="true"
     >
+      <span slot="orderStatus" slot-scope="text">
+        {{ text | orderStatusFilter }}
+      </span>
     </s-table>
   </basicContainer>
 </template>
 
 <script>
-import moment from "moment";
 import { mapGetters } from "vuex";
 import { STable } from "@/components";
-import { getDepartmentByTenant } from "@/api/system/department";
-import { getProductByType } from "@/api/basicInfo/product";
+import { getAllWashCompany } from "@/api/system/washCompany";
 import { pageOrder } from "@/api/system/order";
 import AFormItem from "ant-design-vue/es/form/FormItem";
 export default {
@@ -72,14 +97,11 @@ export default {
       // 查询参数
       queryParam: {},
       showSearch: true,
-      orgTree: [],
-      products: [],
-      picker: [],
+      washCompanies: [],
       // 表头
       columns: [
         {
           title: "订单编号",
-          fixed: "left",
           dataIndex: "orderNo"
         },
         {
@@ -87,12 +109,17 @@ export default {
           dataIndex: "washCompanyName"
         },
         {
+          title: "件数",
+          dataIndex: "orderNum"
+        },
+        {
           title: "订单状态",
-          dataIndex: "orderStatus"
+          dataIndex: "orderStatus",
+          scopedSlots: { customRender: "orderStatus" }
         },
         {
           title: "创建时间",
-          dataIndex: "created_time"
+          dataIndex: "createdTime"
         }
       ],
       options: {
@@ -125,13 +152,9 @@ export default {
   },
   beforeMount() {
     this.tenantId = this.$store.getters.tenantId;
-    this.loadTree();
     this.queryParam.orderType = 1;
     this.queryParam.orderStatus = 0;
-    let now = moment();
-    this.picker = [now, now];
-    this.queryParam.beginDate = now.format("YYYY-MM-DD");
-    this.queryParam.endDate = now.format("YYYY-MM-DD");
+    this.getAllWashCompany();
   },
   methods: {
     tableOption() {
@@ -151,6 +174,12 @@ export default {
     refresh() {
       this.$refs.table.refresh(true);
     },
+    resetForm() {
+      this.queryParam = {};
+      this.queryParam.picker = [];
+      this.queryParam.orderType = 1;
+      this.queryParam.orderStatus = 0;
+    },
     onSelectChange(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys;
       this.selectedRows = selectedRows;
@@ -162,17 +191,10 @@ export default {
       this.queryParam.beginDate = dataStr[0];
       this.queryParam.endDate = dataStr[1];
     },
-    loadTree() {
-      getDepartmentByTenant(this.tenantId).then(res => {
-        this.orgTree = res.data;
+    getAllWashCompany() {
+      getAllWashCompany().then(res => {
+        this.washCompanies = res.data;
       });
-    },
-    handleProductType(value) {
-      if (value) {
-        getProductByType(value).then(res => {
-          this.products = res.data;
-        });
-      }
     }
   }
 };

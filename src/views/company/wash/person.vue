@@ -193,7 +193,7 @@
 
 <script>
 import { STable } from "@/components";
-import { getAllWashComapany } from "@/api/system/washCompany";
+import { getAllWashCompany } from "@/api/system/washCompany";
 import {
   pageWashPerson,
   removeWashPerson,
@@ -274,7 +274,7 @@ export default {
     this.tableOption();
   },
   beforeMount() {
-    getAllWashComapany().then(res => {
+    getAllWashCompany().then(res => {
       this.washCompanies = res.data;
       res.data.forEach(item => {
         this.companiesMap.set(item.id + "", item.name);

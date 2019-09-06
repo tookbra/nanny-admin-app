@@ -19,7 +19,7 @@ export function getCompany(id) {
 }
 
 // 获取所有洗涤公司
-export function getAllWashComapany() {
+export function getAllWashCompany() {
   return fetch({
     url: "/system/wash/companies/all",
     method: "get"
