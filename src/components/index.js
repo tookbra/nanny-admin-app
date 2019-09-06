@@ -15,6 +15,7 @@ import importFile from "@/components/importFile/index";
 import uploadPicInput from "@/components/upload/upload-pic-input.vue";
 import DataBox from "@/components/data/box";
 import DataTabs from "@/components/data/tabs";
+import OrderDetail from "@/components/table/order-detail.vue";
 
 export {
   Bar,
@@ -32,5 +33,6 @@ export {
   uploadPicInput,
   RouteView,
   DataBox,
-  DataTabs
+  DataTabs,
+  OrderDetail
 };

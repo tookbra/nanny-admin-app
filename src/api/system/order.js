@@ -9,3 +9,13 @@ export function pageOrder(parameter) {
     params: parameter
   });
 }
+
+// 分页查询订单
+export function pageOrderDetail(parameter) {
+  return fetch({
+    showLoading: true,
+    url: "/system/orders/details",
+    method: "get",
+    params: parameter
+  });
+}
