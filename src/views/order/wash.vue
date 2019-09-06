@@ -78,7 +78,11 @@
         </template>
       </span>
     </s-table>
-    <OrderDetail :show="visible" :orderNo="orderNo"></OrderDetail>
+    <OrderDetail
+      :show="visible"
+      :orderNo="orderNo"
+      @dialogCancel="dialogCancel"
+    ></OrderDetail>
   </basicContainer>
 </template>
 
@@ -133,7 +137,7 @@ export default {
           title: "操作",
           dataIndex: "action",
           fixed: "right",
-          width: "230px",
+          width: "100px",
           scopedSlots: { customRender: "action" }
         }
       ],
@@ -184,7 +188,7 @@ export default {
       this.orderNo = row.orderNo;
       this.visible = true;
     },
-    modalClose() {
+    dialogCancel() {
       this.visible = false;
     }
   }

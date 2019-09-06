@@ -1,6 +1,12 @@
 <template>
   <div>
-    <a-modal title="订单明细" v-model="show" width="880px" :footer="null">
+    <a-modal
+      title="订单明细"
+      :visible="show"
+      width="1180px"
+      :footer="null"
+      @cancel="handleCancel"
+    >
       <div class="search-wrapper">
         <a-form layout="inline">
           <a-row :gutter="16">
@@ -106,11 +112,15 @@ export default {
       type: String
     }
   },
+  mounted() {
+    this.loadTree();
+  },
+  beforeMount() {
+    this.tenantId = this.$store.getters.tenantId;
+  },
   data() {
     return {
-      queryParam: {
-        orderNo: this.orderNo
-      },
+      queryParam: {},
       visible: false,
       orgTree: [],
       products: [],
@@ -135,6 +145,7 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
+        this.queryParam.orderNo = this.orderNo;
         return pageOrderDetail(Object.assign(parameter, this.queryParam)).then(
           res => {
             return res.data;
@@ -158,6 +169,9 @@ export default {
           this.products = res.data;
         });
       }
+    },
+    handleCancel() {
+      this.$emit("dialogCancel", false);
     }
   }
 };

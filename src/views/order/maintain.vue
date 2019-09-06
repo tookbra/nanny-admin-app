@@ -69,13 +69,26 @@
       <span slot="orderStatus" slot-scope="text">
         {{ text | orderStatusFilter }}
       </span>
+      <span slot="action" class="table-nav" slot-scope="text, record">
+        <template>
+          <a @click="() => showDetail(record)">
+            <a-icon type="eye" />
+            明细
+          </a>
+        </template>
+      </span>
     </s-table>
+    <OrderDetail
+      :show="visible"
+      :orderNo="orderNo"
+      @dialogCancel="dialogCancel"
+    ></OrderDetail>
   </basicContainer>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import { STable } from "@/components";
+import { STable, OrderDetail } from "@/components";
 import { getAllWashCompany } from "@/api/system/washCompany";
 import { pageOrder } from "@/api/system/order";
 import AFormItem from "ant-design-vue/es/form/FormItem";
@@ -83,7 +96,8 @@ export default {
   name: "maintain",
   components: {
     AFormItem,
-    STable
+    STable,
+    OrderDetail
   },
   computed: {
     ...mapGetters(["productType"])
@@ -94,6 +108,8 @@ export default {
       queryParam: {},
       showSearch: true,
       washCompanies: [],
+      orderNo: "0",
+      visible: false,
       columns: [
         {
           title: "订单编号",
@@ -115,6 +131,13 @@ export default {
         {
           title: "创建时间",
           dataIndex: "createdTime"
+        },
+        {
+          title: "操作",
+          dataIndex: "action",
+          fixed: "right",
+          width: "100px",
+          scopedSlots: { customRender: "action" }
         }
       ],
       // 加载数据方法 必须为 Promise 对象
@@ -158,6 +181,13 @@ export default {
       getAllWashCompany().then(res => {
         this.washCompanies = res.data;
       });
+    },
+    showDetail(row) {
+      this.orderNo = row.orderNo;
+      this.visible = true;
+    },
+    dialogCancel() {
+      this.visible = false;
     }
   }
 };

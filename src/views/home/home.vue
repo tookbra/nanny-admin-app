@@ -198,8 +198,8 @@ export default {
     loadOrderNumReport() {
       orderNumReport({ date: moment().format("YYYY-MM-DD") }).then(res => {
         this.washNum = res.data.washNum;
-        this.maintainNum = res.data.washNum;
-        this.backWashNum = res.data.washNum;
+        this.maintainNum = res.data.maintainNum;
+        this.backWashNum = res.data.backWashNum;
       });
     }
   }
