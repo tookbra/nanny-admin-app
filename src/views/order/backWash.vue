@@ -64,10 +64,6 @@
       :columns="columns"
       :data="loadData"
       :alert="false"
-      :rowSelection="{
-        selectedRowKeys: selectedRowKeys,
-        onChange: onSelectChange
-      }"
       :showSizeChanger="true"
     >
       <span slot="orderStatus" slot-scope="text">
@@ -123,21 +119,6 @@ export default {
           dataIndex: "createdTime"
         }
       ],
-      options: {
-        alert: {
-          show: false,
-          clear: () => {
-            this.selectedRowKeys = [];
-          }
-        },
-        rowSelection: {
-          selectedRowKeys: this.selectedRowKeys,
-          onChange: this.onSelectChange
-        }
-      },
-      selectedRowKeys: [],
-      selectedRows: [],
-      optionAlertShow: false,
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         return pageOrder(Object.assign(parameter, this.queryParam)).then(
@@ -148,9 +129,6 @@ export default {
       }
     };
   },
-  created() {
-    this.tableOption();
-  },
   beforeMount() {
     this.tenantId = this.$store.getters.tenantId;
     this.queryParam.orderType = 2;
@@ -158,20 +136,6 @@ export default {
     this.getAllWashCompany();
   },
   methods: {
-    tableOption() {
-      this.options = {
-        alert: {
-          show: false,
-          clear: () => {
-            this.selectedRowKeys = [];
-          }
-        },
-        rowSelection: {
-          selectedRowKeys: this.selectedRowKeys,
-          onChange: this.onSelectChange
-        }
-      };
-    },
     refresh() {
       this.$refs.table.refresh(true);
     },
