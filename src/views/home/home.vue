@@ -144,26 +144,18 @@ export default {
   computed: {
     option() {
       return {
-        span: 8,
+        span: 6,
         data: [
           {
-            title: "送洗单",
+            title: "送洗数",
             subtitle: "实时",
             count: this.washNum,
             allcount: 0,
             text: "当日送洗单",
             color: "rgb(230, 71, 88)"
           },
-          // {
-          //   title: "收货单",
-          //   subtitle: "实时",
-          //   count: 0,
-          //   allcount: 0,
-          //   text: "当日收货单",
-          //   color: "rgb(230, 71, 88)"
-          // },
           {
-            title: "反洗单",
+            title: "反洗数",
             subtitle: "实时",
             count: this.backWashNum,
             allcount: 0,
@@ -171,12 +163,20 @@ export default {
             color: "rgb(27, 201, 142)"
           },
           {
-            title: "维修单",
+            title: "维修数",
             subtitle: "实时",
             count: this.maintainNum,
             allcount: 0,
             text: "当日维修单",
             color: "rgb(56, 161, 242)"
+          },
+          {
+            title: "报废数",
+            subtitle: "实时",
+            count: 0,
+            allcount: 0,
+            text: "当日报废单",
+            color: "rgb(230, 71, 88)"
           }
         ]
       };
@@ -196,7 +196,7 @@ export default {
       });
     },
     loadOrderNumReport() {
-      orderNumReport({ date: moment().format("YYYY-MM-DD") }).then(res => {
+      orderNumReport().then(res => {
         this.washNum = res.data.washNum;
         this.maintainNum = res.data.maintainNum;
         this.backWashNum = res.data.backWashNum;
