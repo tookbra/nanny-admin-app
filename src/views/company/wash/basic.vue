@@ -69,6 +69,9 @@
       }"
       :showSizeChanger="true"
     >
+      <span slot="defaulted" class="table-nav" slot-scope="text">
+        {{ text ? "是" : "否" }}
+      </span>
       <span slot="action" class="table-nav" slot-scope="text, record">
         <template>
           <a v-action:washCompany_view @click="() => showDetail(record)">
@@ -153,6 +156,18 @@
           ></a-textarea>
         </a-form-item>
         <a-form-item
+          label="是否默认"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 14 }"
+        >
+          <a-switch
+            checkedChildren="是"
+            unCheckedChildren="否"
+            :checked="defaulted"
+            @change="switchStatus"
+          />
+        </a-form-item>
+        <a-form-item
           label="备注"
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 14 }"
@@ -199,6 +214,7 @@ export default {
       okDisabled: false,
       title: "",
       edit: false,
+      defaulted: false,
       washCompanyForm: this.$form.createForm(this),
       washCompany: {},
       // 表头
@@ -210,6 +226,11 @@ export default {
         {
           title: "联系方式",
           dataIndex: "phone"
+        },
+        {
+          title: "是否默认",
+          dataIndex: "defaulted",
+          scopedSlots: { customRender: "defaulted" }
         },
         {
           title: "备注",
@@ -269,6 +290,9 @@ export default {
     onSelectChange(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys;
       this.selectedRows = selectedRows;
+    },
+    switchStatus(checked) {
+      this.defaulted = checked;
     },
     refresh() {
       this.$refs.table.refresh(true);
@@ -340,6 +364,7 @@ export default {
         if (!err) {
           let washCompany = this.washCompanyForm.getFieldsValue();
           washCompany.id = this.washCompany.id;
+          washCompany.defaulted = this.defaulted;
           if (this.edit) {
             modifyCompany(washCompany).then(res => {
               if (!res.success) {
@@ -372,6 +397,7 @@ export default {
       this.title = "";
       this.okDisabled = false;
       this.washCompanyForm.resetFields();
+      this.defaulted = false;
     },
     getCompany(id) {
       const vm = this;
@@ -395,7 +421,7 @@ export default {
           this.washCompanyForm.setFieldsValue(obj);
         }
       });
-
+      this.defaulted = washCompany["defaulted"];
       this.washCompany = washCompany;
     }
   }
