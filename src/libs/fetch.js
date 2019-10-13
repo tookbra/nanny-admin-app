@@ -18,7 +18,7 @@ export const fetch = axios.create({
     process.env.VUE_APP_PROXY === "true"
       ? process.env.VUE_APP_PROXY_URL
       : process.env.VUE_APP_URL,
-  timeout: 10000,
+  timeout: 6000,
   withCredentials: true,
   validateStatus: function(status) {
     return status >= 200 && status <= 6000;
@@ -48,7 +48,16 @@ fetch.interceptors.response.use(res => {
   const status = Number(res.status) || 200;
   const message = res.data.msg || errorCode[status] || errorCode["default"];
   if (status !== 200 || (res.data.success != null && !res.data.success)) {
-    if (!notNotfiy.includes(res.config.url)) {
+    if (status === 401) {
+      if (
+        !notNotfiy.includes(res.config.url.substring(res.config.baseURL.length))
+      ) {
+        notification.error({
+          message: "操作失败",
+          description: message
+        });
+      }
+    } else {
       notification.error({
         message: "操作失败",
         description: message

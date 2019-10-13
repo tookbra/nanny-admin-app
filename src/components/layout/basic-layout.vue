@@ -109,8 +109,8 @@ export default {
           });
           this.refreshLock = false;
         }
-        this.$store.commit("SET_EXPIRES_IN", this.expiresIn - 1000);
-      }, 1000);
+        this.$store.commit("SET_EXPIRES_IN", this.expiresIn - 10);
+      }, 10000);
     }
   }
 };
