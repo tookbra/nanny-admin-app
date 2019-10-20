@@ -9,6 +9,18 @@ const resolve = dir => {
 
 const BASE_URL = process.env.NODE_ENV === "production" ? "/" : "/";
 
+function getProdExternals() {
+  return {
+    vue: "Vue",
+    axios: "axios",
+    vuex: "Vuex",
+    "vue-router": "VueRouter",
+    "vue-ls": "VueStorage",
+    "countup.js": "CountUp",
+    nprogress: "NProgress"
+  };
+}
+
 module.exports = {
   publicPath: BASE_URL,
   lintOnSave: true,
@@ -22,6 +34,7 @@ module.exports = {
           minRatio: 0.8
         })
       );
+      config.externals = getProdExternals();
     }
   },
   chainWebpack: config => {
