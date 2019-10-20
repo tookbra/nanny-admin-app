@@ -79,7 +79,7 @@
 <script>
 import { Bar, STable } from "@/components";
 import { getProductByType } from "@/api/basicInfo/product";
-import { pageOrder } from "@/api/system/order";
+import { pageOrderProduct } from "@/api/system/order";
 import { washReport } from "@/api/report/report";
 import { mapGetters } from "vuex";
 import ACol from "ant-design-vue/es/grid/Col";
@@ -109,7 +109,7 @@ export default {
       ],
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
-        return pageOrder(Object.assign(parameter, this.queryParam)).then(
+        return pageOrderProduct(Object.assign(parameter, this.queryParam)).then(
           res => {
             return res.data;
           }
@@ -117,21 +117,21 @@ export default {
       },
       columns: [
         {
-          title: "RFID编码",
-          fixed: "left",
-          dataIndex: "rfid"
-        },
-        {
-          title: "产品名称",
-          dataIndex: "productName"
+          title: "订单编号",
+          // fixed: "left",
+          dataIndex: "orderNo"
         },
         {
           title: "科室",
           dataIndex: "departmentName"
         },
         {
-          title: "员工",
-          dataIndex: "userName"
+          title: "产品名称",
+          dataIndex: "productName"
+        },
+        {
+          title: "数量",
+          dataIndex: "detailNum"
         }
       ]
     };

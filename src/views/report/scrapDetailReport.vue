@@ -114,21 +114,21 @@ export default {
       },
       columns: [
         {
-          title: "RFID编码",
-          fixed: "left",
-          dataIndex: "rfid"
-        },
-        {
-          title: "产品名称",
-          dataIndex: "productName"
+          title: "订单编号",
+          // fixed: "left",
+          dataIndex: "orderNo"
         },
         {
           title: "科室",
           dataIndex: "departmentName"
         },
         {
-          title: "员工",
-          dataIndex: "userName"
+          title: "产品名称",
+          dataIndex: "productName"
+        },
+        {
+          title: "数量",
+          dataIndex: "detailNum"
         }
       ]
     };
