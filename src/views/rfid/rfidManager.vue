@@ -446,7 +446,8 @@ export default {
       importConfirm({ list: data }).then(res => {
         if (res.success) {
           if (res.data.length > 0) {
-            this.importFile.data = res.data;
+            console.log(res.data);
+            this.$refs.importFile.refreshData(res.data);
           } else {
             this.$refs.importFile.onClose();
             this.$refs.table.refresh(true);

@@ -144,7 +144,7 @@ export default {
           return;
         }
         if (res.data.length > 0) {
-          let errors = res.data.filter(data => data.message !== "");
+          let errors = res.data.filter(data => data.message !== null);
           if (errors.length === 0) {
             this.disabled = false;
             this.importText = "确认导入" + res.data.length + "条数据";
@@ -155,6 +155,9 @@ export default {
     },
     handleOk() {
       this.$emit("handleImport", this.data);
+    },
+    refreshData(data) {
+      this.data = data;
     }
   }
 };
