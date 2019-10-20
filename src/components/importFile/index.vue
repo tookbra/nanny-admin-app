@@ -37,6 +37,13 @@
       :columns="columns"
       :dataSource="data"
     >
+      <span slot="message" slot-scope="text">
+        <template>
+          <div class="alert-error">
+            {{ text }}
+          </div>
+        </template>
+      </span>
     </a-table>
     <div
       :style="{
@@ -137,8 +144,11 @@ export default {
           return;
         }
         if (res.data.length > 0) {
-          this.disabled = false;
-          this.importText = "确认导入" + res.data.length + "条数据";
+          let errors = res.data.filter(data => data.message !== "");
+          if (errors.length === 0) {
+            this.disabled = false;
+            this.importText = "确认导入" + res.data.length + "条数据";
+          }
         }
         this.data = info.file.response.data;
       }

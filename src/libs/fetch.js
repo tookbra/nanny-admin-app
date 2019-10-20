@@ -57,6 +57,11 @@ fetch.interceptors.response.use(res => {
           description: message
         });
       }
+    } else if (status === 503) {
+      notification.error({
+        message: "服务繁忙，请稍后再试",
+        description: message
+      });
     } else {
       notification.error({
         message: "操作失败",

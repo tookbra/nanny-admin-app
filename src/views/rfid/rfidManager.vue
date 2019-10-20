@@ -267,6 +267,11 @@ export default {
           {
             title: "员工姓名",
             dataIndex: "employeeName"
+          },
+          {
+            title: "错误信息",
+            dataIndex: "message",
+            scopedSlots: { customRender: "message" }
           }
         ]
       },
@@ -438,9 +443,20 @@ export default {
         });
         return;
       }
-      importConfirm({ list: data }).then(() => {
-        this.$refs.importFile.onClose();
-        this.$refs.table.refresh(true);
+      importConfirm({ list: data }).then(res => {
+        if (res.success) {
+          if (res.data.length > 0) {
+            this.importFile.data = res.data;
+          } else {
+            this.$refs.importFile.onClose();
+            this.$refs.table.refresh(true);
+          }
+        } else {
+          this.$notification.error({
+            message: "错误提示",
+            description: "导入数据错误"
+          });
+        }
       });
     },
     batchRemove() {
