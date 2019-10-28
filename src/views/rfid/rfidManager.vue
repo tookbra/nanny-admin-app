@@ -186,7 +186,7 @@
           :label-col="{ span: 5 }"
           :wrapper-col="{ span: 14 }"
         >
-          <a-select placeholder="请选择员工" v-decorator="['userId']">
+          <a-select placeholder="请选择员工" v-decorator="['employeeId']">
             <a-select-option
               v-for="(item, index) in users"
               :key="index"
