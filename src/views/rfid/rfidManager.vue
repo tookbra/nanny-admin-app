@@ -130,7 +130,7 @@
           <a-input
             placeholder="请输入RFID编码"
             v-decorator="[
-              'code',
+              'rfid',
               {
                 rules: [{ min: 2, max: 56, message: 'RFID编码长度为[4,10]' }]
               }
