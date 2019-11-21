@@ -7,6 +7,19 @@ const resolve = dir => {
   return path.join(__dirname, dir);
 };
 
+const cdn = {
+  css: ["https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css"],
+  js: [
+    "https://cdn.bootcss.com/vue/2.6.10/vue.min.js",
+    "https://cdn.bootcss.com/axios/0.18.0/axios.min.js",
+    "https://cdn.bootcss.com/vuex/3.0.1/vuex.min.js",
+    "https://cdn.bootcss.com/vue-router/3.0.3/vue-router.min.js",
+    "https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js",
+    "https://cdn.bootcss.com/vue-ls/3.2.1/vue-ls.min.js",
+    "https://cdn.bootcss.com/countup.js/1.9.3/countUp.min.js"
+  ]
+};
+
 const BASE_URL = process.env.NODE_ENV === "production" ? "/" : "/";
 
 function getProdExternals() {
@@ -56,6 +69,14 @@ module.exports = {
       .options({
         name: "assets/[name].[hash:8].[ext]"
       });
+    // 生产环境配置
+    if (IS_PRODUCTION) {
+      // 生产环境注入cdn
+      config.plugin("html").tap(args => {
+        args[0].cdn = cdn;
+        return args;
+      });
+    }
   },
   css: {
     loaderOptions: {
@@ -75,6 +96,7 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     open: true,
+    port: 4100,
     proxy: {
       "/system": {
         target: "http://127.0.0.1:20000",
